@@ -17,6 +17,7 @@
 				title: 'map',
 				latitude: 39.909,
 				longitude: 116.39742,
+				// iconPath: '../../static/c1.png',
 				covers: [{
 					latitude: 39.909,
 					longitude: 116.39742,

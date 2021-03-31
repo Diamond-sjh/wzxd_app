@@ -15,7 +15,8 @@ const httpRequest = (url, method, params) => {
 			"Content-Type": "application/json; charset=UTF-8"
 		} : {
 			'X-Requested-With': 'XMLHttpRequest',
-			'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+			// 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+			'Content-Type': 'application/json; charset=UTF-8'
 		},
 		dataType: 'json',
 	}
@@ -57,7 +58,8 @@ const httpTokenRequest = (url, method, params) => {
 		} : {
 			'Token': token,
 			'X-Requested-With': 'XMLHttpRequest',
-			'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+			// 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+			"Content-Type": "application/json; charset=UTF-8"
 		},
 		dataType: 'json',
 	}
