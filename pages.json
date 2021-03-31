@@ -1,0 +1,39 @@
+{
+	"pages": [{
+		"path": "pages/home/home",
+		"style": {
+			"navigationBarTitleText": "机电定检",
+			"enablePullDownRefresh":true
+			
+		}
+	},{
+		"path": "pages/home/addVirus",
+		"style": {
+			"navigationBarTitleText": "添加病毒"
+		}
+	},{
+		"path": "pages/home/viewProject",
+		"style": {
+			"navigationBarTitleText": "测试跳转"
+		}
+	},{
+		"path": "pages/home/home",
+		"style": {
+			"navigationBarTitleText": "uni-app"
+		}
+	},{
+		"path": "pages/home/home",
+		"style": {
+			"navigationBarTitleText": "uni-app"
+		}
+	}],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8",
+		"app-plus": {
+			"background": "#efeff4"
+		}
+	}
+}
