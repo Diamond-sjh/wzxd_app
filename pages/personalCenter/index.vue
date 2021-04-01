@@ -32,13 +32,17 @@
 				</view>
 			</view>	
 		</view>		
+<<<<<<< HEAD
 		<u-modal v-model="islogout" :content="content" :show-cancel-button="true" @confirm="toLogin"></u-modal>
+=======
+>>>>>>> fc4e2a2 (个人中心)
 		<button class="logout-btn" type="default" @click="logout">退出登录</button>
 	</view>
 	
 </template>
 
 <script>
+<<<<<<< HEAD
 	import { mapMutations } from 'vuex'
 	export default {
 		data() {
@@ -53,12 +57,29 @@
 				if(val == 'info'){
 					uni.navigateTo({
 						url:'/pages/personalCenter/userInfo/index'
+=======
+	export default {
+		data() {
+			return {
+				
+			}
+		},
+		methods: {
+			clickItem(val){
+				if(val == 'info'){
+					uni.navigateTo({
+						url:'/pages/personalCenter/userInfo'
+>>>>>>> fc4e2a2 (个人中心)
 					})
 					return
 				}
 				if(val == 'pwd'){
 					uni.navigateTo({
+<<<<<<< HEAD
 						url:'/pages/personalCenter/changePWD/index'
+=======
+						url:'/pages/personalCenter/changePWD'
+>>>>>>> fc4e2a2 (个人中心)
 					})
 					return
 				}
@@ -76,10 +97,13 @@
 				}
 			},
 			logout() {
+<<<<<<< HEAD
 				this.islogout = true
 			},
 			toLogin(){
 				this.DELET_INFO()
+=======
+>>>>>>> fc4e2a2 (个人中心)
 				uni.reLaunch({
 				    url: '/pages/login/login',
 				});
@@ -94,6 +118,7 @@
 		background-color: #55aaff;
 		text-align: center;
 		/* padding-bottom: 20px; */
+<<<<<<< HEAD
 		position: relative;
 	}
 	.userback .imgName {
@@ -105,6 +130,8 @@
 		right: 0;
 		bottom: 0;
 		left: 0;
+=======
+>>>>>>> fc4e2a2 (个人中心)
 	}
 
 	.userback img {
@@ -112,8 +139,13 @@
 		border-radius: 51px;
 		margin-top: 15%;
 		margin-bottom: 3%;
+<<<<<<< HEAD
 		width: 100px;
 		height: 100px;
+=======
+		width: 97px;
+		height: 97px;
+>>>>>>> fc4e2a2 (个人中心)
 	}
 	.userName{
 		color: #111111;
