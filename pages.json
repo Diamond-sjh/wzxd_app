@@ -1,40 +1,58 @@
 {
 	"pages": [
 		{
-			"path": "pages/login/login"
-		},{
-		"path": "pages/home/home",
-		"style": {
-			"navigationBarTitleText": "机电定检",
-			"enablePullDownRefresh":true
-			
-		}
-	},{
-		"path": "pages/home/addVirus",
-		"style": {
-			"navigationBarTitleText": "添加病毒"
-		}
-	},{
-		"path": "pages/home/viewProject",
-		"style": {
-			"navigationBarTitleText": "测试跳转"
-		}
-	},{
-		"path": "pages/personalCenter/index",
-		"style": {
-			"navigationBarTitleText": "个人中心"
-		}
-	}],
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录中心"
+			}
+		},
+		{
+			"path": "pages/home/home",
+			"style": {
+				"navigationBarTitleText": "机电定检",
+				"enablePullDownRefresh":true
+			}
+		},
+		{
+			"path": "pages/home/addVirus",
+			"style": {
+				"navigationBarTitleText": "添加病毒"
+			}
+		},
+		{
+			"path": "pages/home/viewProject",
+			"style": {
+				"navigationBarTitleText": "测试跳转"
+			}
+		},
+		{
+			"path": "pages/personalCenter/index",
+			"style": {
+				"navigationBarTitleText": "个人中心"
+			}
+		},
+		{
+			"path": "pages/personalCenter/userInfo",
+			"style": {
+				"navigationBarTitleText": "个人信息"
+			}
+		},
+		{
+			"path": "pages/personalCenter/changePWD",
+			"style": {
+				"navigationBarTitleText": "修改密码"
+			}
+		}],
 	"tabBar": {
 		"list":[{
 			"pagePath": "pages/home/home",
-			"iconPath": "/static/c2.png",
-			"selectedIconPath": "/static/c4.png",
-			"text": "机电定检"
+			"iconPath": "/static/zhuye0.png",
+			"selectedIconPath": "/static/zhuye1.png",
+			"text": "首页"
 		},{
 			"pagePath": "pages/personalCenter/index",
-			"iconPath": "/static/c3.png",
-			"selectedIconPath": "/static/c5.png",
+			"iconPath": "/static/mycenter0.png",
+			"selectedIconPath": "/static/mycenter1.png",
 			"text": "个人中心"
 		}]
 	},
