@@ -1,4 +1,5 @@
 {
-  "enablePullDownRefresh": true,
+  "navigationBarTitleText": "登录中心",
+  "navigationStyle": "custom",
   "usingComponents": {}
 }

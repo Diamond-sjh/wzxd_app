@@ -30,29 +30,33 @@
 				</view>
 			</view>	
 		</view>		
+		<u-modal v-model="islogout" :content="content" :show-cancel-button="true" @confirm="toLogin"></u-modal>
 		<button class="logout-btn" type="default" @click="logout">退出登录</button>
 	</view>
 	
 </template>
 
 <script>
+	import { mapMutations } from 'vuex'
 	export default {
 		data() {
 			return {
-				
+				islogout:false,
+				content:'确认退出当前登录？'
 			}
 		},
 		methods: {
+			...mapMutations(['DELET_INFO']),
 			clickItem(val){
 				if(val == 'info'){
 					uni.navigateTo({
-						url:'/pages/personalCenter/userInfo'
+						url:'/pages/personalCenter/userInfo/index'
 					})
 					return
 				}
 				if(val == 'pwd'){
 					uni.navigateTo({
-						url:'/pages/personalCenter/changePWD'
+						url:'/pages/personalCenter/changePWD/index'
 					})
 					return
 				}
@@ -70,6 +74,10 @@
 				}
 			},
 			logout() {
+				this.islogout = true
+			},
+			toLogin(){
+				this.DELET_INFO()
 				uni.reLaunch({
 				    url: '/pages/login/login',
 				});

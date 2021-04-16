@@ -2,7 +2,7 @@
 	<view class="content">
 		<view class="avatorWrapper">
 			<view class="avator">
-				<image class="img" src="../../static/c1.png" mode="widthFix"></image>
+				<!-- <image class="img" src="../../static/wzxdlogo.png" mode="widthFix"></image> -->
 			</view>
 		</view>
 		<view class="form">
@@ -23,12 +23,13 @@
 </template>
 
 <script>
+	import { mapActions } from 'vuex'
 	import JSEncrypt from '../../static/js/jsencrypt.js'
 	export default {
 		data() {
 			return {
-				username:'',
-				password:'',
+				username:'admin',
+				password:'111111',
 				params:{
 					account:'',
 					password:''
@@ -39,6 +40,7 @@
 
 		},
 		methods: {
+			...mapActions(['setUserToken']),
 			loginBtn(){
 				if(!this.username){
 					uni.showToast({
@@ -60,16 +62,33 @@
 				this.params.password = encrypt.encrypt(this.password)
 				this.params.account = this.username
 				this.$http.login(this.params).then((res)=>{
-					if(res.statusCode == '200'){
-						uni.reLaunch({
-						    url: '/pages/home/home',
+					// uni.hideLoading()
+					if(res.code == '200'){
+						console.log(res)
+						this.setUserToken({
+							data:{
+								clientId:'20005',
+								code:res.data.code
+								},
+							callback:this.backFunction
 						})
 					}else{
 						uni.showToast({
 						    icon: 'none',
-						    title: res.data.message,
+						    title: res.message,
 						});
 					}
+				}).catch(e=>{
+					console.log(e)
+					uni.showToast({
+					    icon: 'none',
+					    title: e.errMsg,
+					});
+				})
+			},
+			backFunction(){
+				uni.reLaunch({
+				    url: '/pages/index',
 				})
 			}
 		}
@@ -78,62 +97,65 @@
 
 <style>
 	.content {
-			background: #377EB4;
-			width: 100vw;
-			height: 100vh;
-		}
-		.avatorWrapper{
-			height: 30vh;
-			width: 100vw;
-			display: flex;
-			justify-content: center;
-			align-items: flex-end;
-		}
-		.avator{
-			width: 200upx;
-			height: 200upx;
-			overflow: hidden;
-		}
-		.avator .img{
-			width: 100%
-		}
-		.form{
-			padding: 0 100upx;
-			margin-top: 80px;
-		}
-		.inputWrapper{
-			width: 100%;
-			height: 80upx;
-			background: white;
-			border-radius: 20px;
-			box-sizing: border-box;
-			padding: 0 20px;
-			margin-top: 25px;
-		}
-		.inputWrapper .input{
-			width: 100%;
-			height: 100%;
-			text-align: center;
-			font-size: 15px;
-		}
-		.loginBtn{
-			width: 100%;
-			height: 80upx;
-			background: #77B307;
-			border-radius: 50upx;
-			margin-top: 50px;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			
-		}
-		.loginBtn .btnValue{
-			color: white;
-		}
-		.forgotBtn{
-			text-align: center;
-			color: #EAF6F9;
-			font-size: 15px;
-			margin-top: 20px;
-		}
+		background: #377EB4;
+		width: 100vw;
+		height: 100vh;
+		background: url('~@/static/shouye.png');
+		background-position: 65% 100%;
+		background-repeat: no-repeat;
+	}
+	.avatorWrapper{
+		height: 30vh;
+		width: 100vw;
+		display: flex;
+		justify-content: center;
+		align-items: flex-end;
+	}
+	.avator{
+		width: 200upx;
+		height: 200upx;
+		overflow: hidden;
+	}
+	.avator .img{
+		width: 100%
+	}
+	.form{
+		padding: 0 100upx;
+		margin-top: 80px;
+	}
+	.inputWrapper{
+		width: 100%;
+		height: 80upx;
+		background: white;
+		border-radius: 20px;
+		box-sizing: border-box;
+		padding: 0 20px;
+		margin-top: 25px;
+	}
+	.inputWrapper .input{
+		width: 100%;
+		height: 100%;
+		text-align: center;
+		font-size: 15px;
+	}
+	.loginBtn{
+		width: 100%;
+		height: 80upx;
+		background: #77B307;
+		border-radius: 50upx;
+		margin-top: 50px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		
+	}
+	.loginBtn .btnValue{
+		color: white;
+	}
+	.forgotBtn{
+		text-align: center;
+		color: #EAF6F9;
+		font-size: 15px;
+		margin-top: 20px;
+	}
 </style>
