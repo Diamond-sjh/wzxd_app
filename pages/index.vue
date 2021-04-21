@@ -17,13 +17,18 @@
 </template>
 
 <script>
-	import { mapMutations } from 'vuex'
+	import { mapMutations,mapGetters } from 'vuex'
 	export default {
 	    data() {
 	        return {
-				
+				virusList:new Map(),
+				length:0,
+				timer:null
 			}
 	    },
+		computed: {
+			...mapGetters(['getVirusList','getVirusListLen','getCurrentTimestamp','getVirusTimestamp','getCurrentTimestamp']),
+		},
 		onLoad() {
 			this.$http.getCurrentUser().then(res=>{
 				if(res.code == '200'){
@@ -35,17 +40,42 @@
 		onNavigationBarButtonTap() {
 			
 		},
+		created() {
+			this.virusList = new Map(this.getVirusList )
+			this.length = this.getVirusList.size
+			console.log(this.virusList.size)
+		},
+		watch:{
+			getVirusListLen(curVal,oldVal){
+				console.log(curVal)
+				if(curVal != 0 && this.timer == null){
+					this.SET_TIMESTAMP([...this.getVirusList.keys()][0])
+					let data = this.getVirusTimestamp([...this.getVirusList.keys()][0])
+					// 每半分钟发送一次
+					this.timer = setInterval(()=>{
+						this.$http.addDisease(data).then(res=>{
+							console.log('发送成功')
+							this.DELET_VIRUS(this.getCurrentTimestamp)
+							clearInterval(this.timer)
+							this.timer = null
+						}).catch(e=>{
+							console.log('发送失败')
+						})
+					},30000)
+				}
+			}
+		},
 	    methods: {
-			...mapMutations(['SET_CUSTINFO']),
+			...mapMutations(['SET_CUSTINFO','SET_TIMESTAMP','DELET_VIRUS']),
 			jump(val){
 				if(val == 'addProject'){
-					uni.redirectTo({
+					uni.navigateTo({
 					    url: '/pages/addProject/index'
 					});
 					return
 				}
 				if(val == 'project'){
-					uni.redirectTo({
+					uni.navigateTo({
 					    url: '/pages/home/index'
 					});
 				}

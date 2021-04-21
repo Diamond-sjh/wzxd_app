@@ -89,7 +89,7 @@
 </template>
 
 <script>
-	import { mapGetters } from 'vuex'
+	import { mapGetters,mapMutations } from 'vuex'
 	export default {
 	    data() {
 	        return {
@@ -128,6 +128,7 @@
 				faultDay:true,//故障天数是否可以输入
 				checkDiseaseList:[],
 				action: 'http://47.114.76.25:9505/guns-cloud-config/gunscheckRecords/upload',
+				timestamp: '',
 				rules: {
 					checker: [
 						{
@@ -154,14 +155,14 @@
 			}
 	    },
 		computed: {
-			...mapGetters(['getCustInfo']),
+			...mapGetters(['getCustInfo','getVirusList']),
 		},
 		// 必须要在onReady生命周期设置验证规则
 		onReady() {
 			this.$refs.uForm.setRules(this.rules);
 		},
 		onLoad() {
-			console.log(this.$utils.getDate(new Date()))
+			this.timestamp = new Date().getTime()
 			// 获取eventChannel事件
 			const eventChannel = this.getOpenerEventChannel()
 			eventChannel.on('homeIndexToAddVirus', (data) => {
@@ -230,11 +231,18 @@
 								type: 'error'
 							})
 						}
+					}).catch(e=>{
+						let virusInfo = {
+							timestamp:this.timestamp,
+							data: JSON.parse(JSON.stringify(this.form))
+						}
+						this.SET_VIRUSINFO(virusInfo)
 					})
 				}
 			})
 		},
 	    methods: {
+			...mapMutations(['SET_VIRUSINFO']),
 			// 检测时间
 			checkDateChange(e){
 				this.form.checkDate = e.result
