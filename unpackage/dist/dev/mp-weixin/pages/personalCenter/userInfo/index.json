@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "个人信息",
-  "usingComponents": {
-    "u-select": "/uview-ui/components/u-select/u-select",
-    "u-button": "/uview-ui/components/u-button/u-button"
-  }
-}

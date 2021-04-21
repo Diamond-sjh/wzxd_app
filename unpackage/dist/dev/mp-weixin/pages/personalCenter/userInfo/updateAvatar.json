@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "修改头像",
-  "usingComponents": {
-    "kps-image-cutter": "/components/ksp-image-cutter/ksp-image-cutter"
-  }
-}
