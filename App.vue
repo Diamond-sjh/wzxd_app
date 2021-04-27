@@ -138,15 +138,14 @@
 			},
 			// 消息推送
 			sendMessage(){
-				console.log(111)
 				var info = plus.push.getClientInfo()
 				let content = `clientid:${info.clientid},token:${info.token}`
 				console.log(content)
-				uni.showModal({
-					title: '提示',
-					content: content,
-					showCancel: false
-				});
+				// uni.showModal({
+				// 	title: '提示',
+				// 	content: content,
+				// 	showCancel: false
+				// });
 				// 使用5+App的方式进行监听消息推送
 				plus.push.addEventListener("click", function(msg) {
 					console.log("click:" + JSON.stringify(msg));

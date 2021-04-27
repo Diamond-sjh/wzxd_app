@@ -21,39 +21,52 @@ export default {
 		return request.httpTokenRequest("/guns-cloud-system/entUser/updatePassword", "POST", params)
 	},
 	
+	// --------------------------------------设施分项----------------------------------
+	// 查询隧道列表
+	queryChunnelList(params) {
+		return request.httpTokenRequest("/guns-cloud-config/chunnelInfo/queryList", "POST", params)
+	},
 	
-	// ---------------------------待检测项目----------------------------------
-	// 筛选待检测项目
+	// 根据隧道id查询设施分项
+	queryCheckRecordsList(params) {
+		return request.httpTokenRequest("/guns-cloud-config/gunscheckRecords/queryList", "POST", params)
+	},
+	// 修改设施分项
+	updataDisease(params){
+		return request.httpTokenRequest("/guns-cloud-config/projectDevice/update", "POST",params)
+	},
+	// 添加设施分项
+	addProjectDevice(params){
+		return request.httpTokenRequest("/guns-cloud-config/projectDevice/addAndUpdate", "POST", params)
+	},
+	// 删除设施分项
+	delProjectDevice(params){
+		return request.httpTokenRequest("/guns-cloud-config/projectDevice/delete", "POST", params)
+	},
+	queryProjectInfo(params){
+		return request.httpTokenRequest("/guns-cloud-config/projectInfo/queryList", "POST", params)
+	},
+	updateProjectInfo(params){
+		return request.httpTokenRequest("/guns-cloud-config/projectInfo/update", "POST", params)
+	},
+	// --------------------------------------设施分项----------------------------------
+	
+	// ------------------------------病害信息----------------------------------
+	// 查询病害信息
 	queryList(params) {
-		return request.httpRequest("/guns-cloud-config/gunscheckRecords/queryLists", "POST", params)
+		return request.httpRequest("/guns-cloud-config/gunscheckRecords/queryList", "POST", params)
+	},
+	// 添加修改病害信息
+	updateVirusInfo(params) {
+		return request.httpRequest("/guns-cloud-config/gunscheckRecords/update", "POST", params)
 	},
 	// 根据设备名称编号查询病害列表
 	diseaseList(params) {
 		return request.httpRequest("/guns-cloud-config/gunsdiseaseParams/queryList", "POST", params)
 	},
-	// 添加病害信息
-	addDisease(params){
-		return request.httpTokenRequest("/guns-cloud-config/gunscheckRecords/update", "POST", params)
+	// 查看病害详情
+	VirusDetailInfo(params) {
+		return request.httpRequest("/guns-cloud-config/gunscheckRecords/queryDetail", "POST", params)
 	},
-	// 修改病害信息
-	updataDisease(params){
-		return request.httpTokenRequest("/guns-cloud-config/projectDevice/update", "POST",params)
-	},
-	// 修改/新增的 新增 按钮 调用接口1
-	queryListProjectInfo(params){
-		return request.httpTokenRequest("/guns-cloud-config/projectInfo/queryList", "POST", params)
-	},
-	// 修改/新增的 新增 按钮 调用接口2
-	addProjectDevice(params){
-		return request.httpTokenRequest("/guns-cloud-config/projectDevice/add", "POST", params)
-	},
-	// 修改/新增的 新增 按钮 调用接口3
-	updateProjectInfo(params){
-		return request.httpTokenRequest("/guns-cloud-config/projectInfo/update", "POST", params)
-	},
-	// --------------------------------添加待检测项目--------------------------------
-	// 查询隧道列表
-	queryChunnelList(params) {
-		return request.httpTokenRequest("/guns-cloud-config/chunnelInfo/queryList", "POST", params)
-	}
+	// --------------------------------病害信息--------------------------------
 }

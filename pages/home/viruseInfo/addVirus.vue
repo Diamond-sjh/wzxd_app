@@ -1,5 +1,15 @@
 <template>
 	<view class="addVirus">
+		<u-navbar 
+		back-text="返回" 
+		title="添加/修改病害信息" 
+		back-icon-color="white" 
+		title-color="white" 
+		:back-text-style="letVal">
+			<view class="slot-wrap" slot="right">
+				<u-button size="mini" type="success" @click="saveVirusInfo">保存</u-button>
+			</view>
+		</u-navbar>
 		<u-form :model="form" ref="uForm" label-width="150">
 			<u-form-item label="检测人：" prop="checker" :required="true">
 				<u-input v-model="form.checker" placeholder="请输入检测人" />
@@ -84,6 +94,7 @@
 				:border="true"/>
 			</u-form-item>
 		</u-form>
+		<u-modal v-model="isShow" :content="content" @confirm="toBack"></u-modal>
 		<u-toast ref="uToast" />
 	</view>
 </template>
@@ -93,6 +104,12 @@
 	export default {
 	    data() {
 	        return {
+				letVal:{
+					color:'white'
+				},//导航栏左边字体颜色
+				isBack:false,//返回上一页参数
+				isShow: false,//是否显示提示消息
+				content:'数据已本地保存，请勿关闭应用，等待自动上传！！！',//无网络保存病害提示信息
 				form:{
 					addTime: "",//添加时间
 					branchName: "",//设施分项
@@ -161,13 +178,17 @@
 		onReady() {
 			this.$refs.uForm.setRules(this.rules);
 		},
+		// 页面加载
 		onLoad() {
 			this.timestamp = new Date().getTime()
 			// 获取eventChannel事件
 			const eventChannel = this.getOpenerEventChannel()
-			eventChannel.on('homeIndexToAddVirus', (data) => {
+			eventChannel.on('toAddVirus', (data) => {
 				console.log(data)
 				Object.assign(this.form,data)
+				if(data.isfault == 1){
+					this.faultDay = false
+				}
 				// 检测人
 				if(this.getCustInfo&&(this.getCustInfo.lastName||this.getCustInfo.firstName)){
 					this.form.checker = this.getCustInfo.lastName + this.getCustInfo.firstName
@@ -209,37 +230,28 @@
 				})
 			})
 		},
-		// 右上角  保存  按钮的点击方法
-		onNavigationBarButtonTap() {
-			// this.$refs.uUpload.upload()
-			// 获取eventChannel事件
-			const eventChannel = this.getOpenerEventChannel()
-			this.$refs.uForm.validate(valid=>{
-				if (valid) {
-					this.$http.addDisease(this.form).then(res=>{
-						if(res.code == '200'){
-							// 触发父级页面定义的方法
-							eventChannel.emit('updateCurrentInfo', this.form);
-							this.$refs.uToast.show({
-								title: '保存成功',
-								type: 'success',
-								back: true
-							})
-						}else{
-							this.$refs.uToast.show({
-								title: '保存失败',
-								type: 'error'
-							})
-						}
-					}).catch(e=>{
-						let virusInfo = {
-							timestamp:this.timestamp,
-							data: JSON.parse(JSON.stringify(this.form))
-						}
-						this.SET_VIRUSINFO(virusInfo)
-					})
-				}
-			})
+		// 监听页面返回
+		onBackPress(e){
+			let that = this
+			if(this.isBack){
+				return false
+			}else{
+				uni.showModal({  
+					title: '提示',  
+					content: '请确认信息是否保存！',  
+					success(res){  
+						if (res.confirm) {  
+							that.isBack = true
+							uni.navigateBack({
+							    delta: 1
+							});
+						} else {  
+							that.isBack = false
+						}  
+					}  
+				});  
+				return true
+			}
 		},
 	    methods: {
 			...mapMutations(['SET_VIRUSINFO']),
@@ -277,6 +289,50 @@
 					this.faultDay = true
 					this.form.faultDays = ''
 				}
+			},
+			// 保存信息
+			saveVirusInfo(){
+				// 获取eventChannel事件
+				const eventChannel = this.getOpenerEventChannel()
+				this.$refs.uForm.validate(valid=>{
+					if (valid) {
+						this.$http.updateVirusInfo(this.form).then(res=>{
+							if(res.code == '200'){
+								this.isBack = true
+								// 触发父级页面定义的方法
+								eventChannel.emit('updateCurrentInfo', this.form);
+								this.$refs.uToast.show({
+									title: '信息保存成功',
+									type: 'success',
+									back: true,
+									duration: 500
+								})
+							}else{
+								this.$refs.uToast.show({
+									title: '信息保存失败',
+									type: 'error'
+								})
+							}
+						}).catch(e=>{
+							let virusInfo = {
+								timestamp:this.timestamp,
+								data: JSON.parse(JSON.stringify(this.form))
+							}
+							this.SET_VIRUSINFO(virusInfo)
+							this.isShow = true
+							// this.$refs.uToast.show({
+							// 	title: '数据已本地保存，请勿关闭应用，等待自动上传数据！！！',
+							// 	type: 'warning'
+							// })
+						})
+					}
+				})
+			},
+			toBack(){
+				this.isBack = true
+				uni.navigateBack({
+				    delta: 1
+				});
 			}
 	    }
 	}
@@ -285,6 +341,12 @@
 <style scoped>
 	.addVirus {
 		padding: 20px;
+	}
+	.addVirus /deep/ .u-navbar {
+		background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
+	}
+	.addVirus .slot-wrap {
+		padding-right: 12px;
 	}
 	.addVirus .u-form .u-form-item{
 		padding: 5px 0;

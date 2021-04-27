@@ -16,67 +16,60 @@
 				"navigationBarTitleText": "首页"
 			}
 		},
-		// 待检测项目-----------------------------开始
+		// 隧道检测项目-----------------------------开始
 		{
 			"path": "pages/home/index",
 			"style": {
-				"navigationBarTitleText": "待检测项目",
+				"navigationBarTitleText": "隧道检测项目",
 				"enablePullDownRefresh":true,
-				"app-plus": {
-					"titleNView": {
-						"buttons": [{
-							"text": "查询",
-							"fontSize":"16px"
-						},{
-							"type":"home",
-							"float":"left"
-						}]
-					}
-				}
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
 			}
 		},
 		{
-			"path": "pages/home/addVirus",
+			"path": "pages/home/projectInfo/index",
 			"style": {
-				"navigationBarTitleText": "添加病毒",
-				"app-plus": {
-					"titleNView": {
-						"buttons": [{
-							"text": "保存",
-							"fontSize":"16px"
-						}]
-						
-					}
-				}
+				"navigationBarTitleText": "设施分项",
+				"enablePullDownRefresh":true,
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},	
+		{
+			"path": "pages/home/projectInfo/editAndAdd",
+			"style": {
+				"navigationBarTitleText": "新增/修改",
+				"enablePullDownRefresh":true,
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
 			}
 		},
 		{
-			"path": "pages/home/updateAndAdd",
+			"path": "pages/home/viruseInfo/index",
 			"style": {
-				"navigationBarTitleText": "修改/新增"
+				"navigationBarTitleText": "病害信息",
+				"enablePullDownRefresh":true,
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},
+		{
+			"path": "pages/home/viruseInfo/addVirus",
+			"style": {
+				"navigationBarTitleText": "添加病害",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},
+		{
+			"path": "pages/home/viruseInfo/virusDetail",
+			"style": {
+				"navigationBarTitleText": "病害详情",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
 			}
 		},
 		// 待检测项目------------------------------结束
-		// 添加检测项目------------------------------开始
-		{
-			"path": "pages/addProject/index",
-			"style": {
-				"navigationBarTitleText": "添加检测项目",
-				"enablePullDownRefresh":true,
-				"app-plus": {
-					"titleNView": {
-						"buttons": [{
-							"text": "查询",
-							"fontSize":"16px"
-						},{
-							"type":"home",
-							"float":"left"
-						}]
-					}
-				}
-			}
-		},
-		// 添加检测项目------------------------------结束
 		// 个人中心---------------------------------开始
 		{
 			"path": "pages/personalCenter/index",
@@ -135,7 +128,8 @@
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#e6e6e6",
 		"app-plus": {
-			"background": "#efeff4"
+			"background": "#efeff4",
+			"softinputMode": "adjustResize"
 		}
 	}
 }

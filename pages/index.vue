@@ -10,7 +10,7 @@
 			</view> -->
 			<view class="applicationItem" @click="jump('project')">
 				<u-image width="100px" height="100px" src="/static/project.png"></u-image>
-				<view class="textContent">待检测项目</view>
+				<view class="textContent">隧道检测项目</view>
 			</view>
 		</view>
 	</view>
@@ -48,12 +48,20 @@
 		watch:{
 			getVirusListLen(curVal,oldVal){
 				console.log(curVal)
+				if(curVal == 0){
+					uni.showModal({
+						title: '提示',  
+						content: '病害信息已全部上传成功！',  
+						showCancel: false
+					})
+					return
+				}
 				if(curVal != 0 && this.timer == null){
 					this.SET_TIMESTAMP([...this.getVirusList.keys()][0])
 					let data = this.getVirusTimestamp([...this.getVirusList.keys()][0])
 					// 每半分钟发送一次
 					this.timer = setInterval(()=>{
-						this.$http.addDisease(data).then(res=>{
+						this.$http.updateVirusInfo(data).then(res=>{
 							console.log('发送成功')
 							this.DELET_VIRUS(this.getCurrentTimestamp)
 							clearInterval(this.timer)
