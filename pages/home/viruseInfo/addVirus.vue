@@ -180,11 +180,11 @@
 		},
 		// 页面加载
 		onLoad() {
+			let that = this
 			this.timestamp = new Date().getTime()
 			// 获取eventChannel事件
 			const eventChannel = this.getOpenerEventChannel()
 			eventChannel.on('toAddVirus', (data) => {
-				console.log(data)
 				Object.assign(this.form,data)
 				if(data.isfault == 1){
 					this.faultDay = false
@@ -195,39 +195,49 @@
 				}
 				//检测时间
 				this.form.checkDate = this.$utils.getDate(new Date())
-				// 获取检测项目  病害 列表
-				this.$http.diseaseList({facilitiesNo:data.deviceCode}).then(res=>{
-					if(res.code == '200'){
-						this.allDataList = res.data
-						let list = new Set()
-						let list2 = new Set()
-						// 检查项目列表
-						if(data.checkCode != ''){
-							this.checkItemList = [{name:data.checkItem,checked:true}]
+				
+				// 获取当前网络状态
+				uni.getNetworkType({
+				    success: function (res) {
+				        console.log(res.networkType);
+						if(res.networkType == 'none'){
+							try {
+								const value = uni.getStorageSync('disease_key');
+								if (value) {
+									let arr = value.filter(val => {
+										if(val.facilitiesNo == data.deviceCode){
+											return val
+										}
+									})
+									that.allDataList = arr
+									that.handleDiseaseList(data)
+								}
+							} catch (e) {
+							   console.log(e)
+							}
 						}else{
-							this.allDataList.forEach((item)=>{
-								list.add(item.checkItem)
-							})
-							list.forEach(val=>{
-								let flag = false
-								flag = data.checkItem.split(',').some(item => {
-									if(val == item){ return true }
-								})
-								this.checkItemList.push({name:val,checked:flag})
-								
+							that.$http.diseaseList({facilitiesNo:data.deviceCode}).then(res=>{
+								if(res.code == '200'){
+									that.allDataList = res.data
+									that.handleDiseaseList(data)
+								}
+							}).catch(e => {
+								const value = uni.getStorageSync('disease_key');
+								if (value) {
+									let arr = value.filter(val => {
+										if(val.facilitiesNo == data.deviceCode){
+											return val
+										}
+									})
+									that.allDataList = arr
+									that.handleDiseaseList(data)
+								}
 							})
 						}
-						// 病害列表
-						this.allDataList.forEach(val=>{
-							let flag = false
-							flag = data.diseaseContent.split(',').some(item => {
-								if(val.diseaseName == item){ return true }
-							})
-							list2.add({name:val.diseaseName,checked:flag})
-						})
-						this.diseaseList.push(...Array.from(list2))
-					}
-				})
+				    }
+				});
+				// 获取检测项目  病害 列表
+				
 			})
 		},
 		// 监听页面返回
@@ -255,6 +265,35 @@
 		},
 	    methods: {
 			...mapMutations(['SET_VIRUSINFO']),
+			// 处理病害信息
+			handleDiseaseList(data){
+				let list = new Set()
+				let list2 = new Set()
+				// 检查项目列表
+				if(data.checkCode != ''){
+					this.checkItemList = [{name:data.checkItem,checked:true}]
+				}else{
+					this.allDataList.forEach((item)=>{
+						list.add(item.checkItem)
+					})
+					list.forEach(val=>{
+						let flag = false
+						flag = data.checkItem.split(',').some(item => {
+							if(val == item){ return true }
+						})
+						this.checkItemList.push({name:val,checked:flag})
+					})
+				}
+				// 病害列表
+				this.allDataList.forEach(val=>{
+					let flag = false
+					flag = data.diseaseContent.split(',').some(item => {
+						if(val.diseaseName == item){ return true }
+					})
+					list2.add({name:val.diseaseName,checked:flag})
+				})
+				this.diseaseList.push(...Array.from(list2))
+			},
 			// 检测时间
 			checkDateChange(e){
 				this.form.checkDate = e.result

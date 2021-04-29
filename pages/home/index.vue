@@ -106,18 +106,15 @@
 			// #endif
 			uni.getSystemInfo({
 				success:  (res)=> {
-					console.log(barHeight)
-					console.log(res)
 					const wid = res.windowWidth
 					const hei = res.windowHeight
-					console.log(wid,hei)
 					// 140是除了可滚动区域外的其它部分占的rpx高度
 					this.scrollHeight=(hei/(wid/750)-140)*(wid/750) - barHeight +'px'
-					console.log(this.scrollHeight)
 				}
 			});
 			this.status = 'loading'
 			this.getData()
+			this.getDiseaseList()
 		},
 		//下拉刷新
 		onPullDownRefresh(){
@@ -209,8 +206,23 @@
 							return {label:item,value:item}
 						})
 						// 所属路线  列表结束--------------------
-						console.log(this.dataList)
 					}
+				})
+			},
+			// 获取全部病害信息
+			getDiseaseList(){
+				this.$http.diseaseList({}).then(res => {
+					if(res.code == 200){
+						uni.setStorage({
+						    key: 'disease_key',
+						    data: res.data,
+						    success: function () {
+						        console.log('success');
+						    }
+						});
+					}
+				}).catch(e => {
+					
 				})
 			},
 			// 路线名称变换
@@ -231,7 +243,6 @@
 				}
 				this.roadsectionName = '请选择'
 				this.chunnelName = '请选择'
-				console.log(data)
 				// 默认展示10条数据
 				this.dataList = data.slice(0,10)
 				this.routeLineDataListCopy = data
@@ -248,7 +259,6 @@
 						roadSectionList.add(val.roadsectionName)
 					}
 				})
-				console.log(roadSectionList)
 				this.roadSectionList = Array.from(roadSectionList).map(item => {
 					return {label:item,value:item}
 				})
@@ -270,7 +280,6 @@
 					data = this.routeLineDataListCopy
 				}
 				this.chunnelName = '请选择'
-				console.log(data)
 				// 默认展示10条数据
 				this.dataList = data.slice(0,10)
 				this.roadSectionDataListCopy = data
@@ -305,7 +314,6 @@
 				}else{
 					data = this.roadSectionDataListCopy
 				}
-				console.log(data)
 				// 默认展示10条数据
 				this.dataList = data.slice(0,10)
 				this.chunnelNameDataListCopy = data
@@ -345,7 +353,6 @@
 							return val
 						}
 					})
-					console.log(arr)
 					this.dataList = arr
 					this.status = 'noMore'
 				}
@@ -359,7 +366,6 @@
 			},
 			// 跳转页面
 			jumpToPage(val,item){
-				console.log(val,item)
 				let that = this
 				if(val == 'project'){
 					uni.navigateTo({

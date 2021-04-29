@@ -21,8 +21,6 @@
 	export default {
 	    data() {
 	        return {
-				virusList:new Map(),
-				length:0,
 				timer:null
 			}
 	    },
@@ -39,11 +37,6 @@
 		// 右上角按钮的点击方法
 		onNavigationBarButtonTap() {
 			
-		},
-		created() {
-			this.virusList = new Map(this.getVirusList )
-			this.length = this.getVirusList.size
-			console.log(this.virusList.size)
 		},
 		watch:{
 			getVirusListLen(curVal,oldVal){

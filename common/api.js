@@ -60,7 +60,7 @@ export default {
 	updateVirusInfo(params) {
 		return request.httpRequest("/guns-cloud-config/gunscheckRecords/update", "POST", params)
 	},
-	// 根据设备名称编号查询病害列表
+	// 根据查询病害列表
 	diseaseList(params) {
 		return request.httpRequest("/guns-cloud-config/gunsdiseaseParams/queryList", "POST", params)
 	},

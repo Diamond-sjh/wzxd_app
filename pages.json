@@ -69,6 +69,22 @@
 				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
 			}
 		},
+		{
+			"path": "pages/home/viruseInfo/updateMsgList/index",
+			"style": {
+				"navigationBarTitleText": "自动上传任务",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},
+		{
+			"path": "pages/home/viruseInfo/updateMsgList/virusDetail",
+			"style": {
+				"navigationBarTitleText": "任务详情",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},
 		// 待检测项目------------------------------结束
 		// 个人中心---------------------------------开始
 		{

@@ -1,6 +1,10 @@
 <template>
 	<view class="homeContainer">
-		<u-navbar back-text="返回" title="病害信息" back-icon-color="white" title-color="white" :back-text-style="letVal"></u-navbar>
+		<u-navbar back-text="返回" title="病害信息" back-icon-color="white" title-color="white" :back-text-style="letVal">
+			<view slot="right" class="iconfont icon-shangchuan navUpdateIcon" @click="jumpToPage('updateList')">
+				<u-badge size="mini" type="success" :count='count' :offset="offset"></u-badge>
+			</view>
+		</u-navbar>
 		<uni-forms ref="form">
 			<uni-forms-item label="设施分项:">
 				<picker @change="branchNameChange" :value="branchNameIndex" :range="branchNameList">
@@ -37,7 +41,6 @@
 				<button type="primary" size="mini" class="footerBtn" @click="jumpToPage('detail',item)">详情</button>
 			</view>
 		</u-card>
-
 		<view class="example-body">
 			<uni-load-more :status="status" :content-text="contentText"  @clickLoadMore="clickLoadMore"/>
 		</view>
@@ -46,12 +49,15 @@
 </template>
 
 <script>
+	import { mapGetters } from 'vuex'
 	export default {
 		data() {
 			return {
 				letVal:{
 					color:'white'
 				},//导航栏左边字体颜色
+				offset:[15,20],
+				count:'2',
 				chunnelName:'',//隧道名称
 				tunnelId:'',//隧道ID
 				// 筛选条件的值
@@ -86,6 +92,7 @@
 		},
 		// 进入页面加载
 		onLoad(){
+			this.count = this.getVirusListLen
 			// 获取eventChannel事件
 			const eventChannel = this.getOpenerEventChannel()
 			eventChannel.on('toViruseInfoIndex', (val) => {
@@ -153,6 +160,14 @@
 		// 页面滚动
 		onPageScroll(e) {
 			this.scrollTop = e.scrollTop;
+		},
+		computed: {
+			...mapGetters(['getVirusListLen']),
+		},
+		watch:{
+			getVirusListLen(curVal,oldVal){
+				this.count = curVal
+			}
 		},
 		methods: {
 			// 获取全部的待检数据
@@ -351,6 +366,11 @@
 					})
 					return
 				}
+				if(val == 'updateList'){
+					uni.navigateTo({
+						url:'/pages/home/viruseInfo/updateMsgList/index'
+					})
+				}
 			},
 			clickLoadMore(){
 				console.log('加载')
@@ -364,6 +384,11 @@
 		padding: 20px;
 		font-size: 14px;
 		line-height: 36px;
+	}
+	.homeContainer .navUpdateIcon {
+		padding-right: 20px;
+		line-height: 44px;
+		font-size: 20px;
 	}
 	.homeContainer /deep/ .u-navbar {
 		background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
