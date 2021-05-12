@@ -12,6 +12,14 @@
 				<u-image width="100px" height="100px" src="/static/project.png"></u-image>
 				<view class="textContent">隧道检测项目</view>
 			</view>
+			<view class="applicationItem" @click="jump('bridgeInfo')">
+				<u-image width="100px" height="100px" src="/static/img/erweima/banner6.jpg"></u-image>
+				<view class="textContent">创建桥梁</view>
+			</view>
+			<view class="applicationItem" @click="jump('qrCodeInfo')">
+				<u-image width="100px" height="100px" src="/static/img/erweima/erweima.png"></u-image>
+				<view class="textContent">桥梁二维码</view>
+			</view>
 		</view>
 	</view>
 </template>
@@ -147,6 +155,16 @@
 				if(val == 'project'){
 					uni.navigateTo({
 					    url: '/pages/home/index'
+					});
+				}
+				if(val == 'qrCodeInfo'){
+					uni.navigateTo({
+					    url: '/pages/bridgeInfo/queryBridgeInfo'
+					});
+				}
+				if(val == 'bridgeInfo'){
+					uni.navigateTo({
+					    url: '/pages/bridgeInfo/createBridgeInfo'
 					});
 				}
 			}

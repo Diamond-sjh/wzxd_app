@@ -80,5 +80,17 @@ export default {
 	VirusDetailInfo(params) {
 		return request.httpRequest("/guns-cloud-config/gunscheckRecords/queryDetail", "POST", params)
 	},
-	// --------------------------------病害信息--------------------------------
+	// --------------------------------桥梁二维码信息--------------------------------
+	// 新增桥梁信息
+	addBridgeInfo(params) {
+		return request.httpRequest("/guns-cloud-config/bridgeQrcodeInfo/add", "POST", params)
+	},
+	// 修改桥梁信息
+	updateBridgeInfo(params) {
+		return request.httpRequest("/guns-cloud-config/bridgeQrcodeInfo/update", "POST", params)
+	},
+	// 查询桥梁列表
+	queryBridgeInfoList(params) {
+		return request.httpTokenRequest("/guns-cloud-config/bridgeQrcodeInfo/queryList", "POST", params)
+	},
 }

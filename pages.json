@@ -16,6 +16,43 @@
 				"navigationBarTitleText": "首页"
 			}
 		},
+			// 桥梁二维码项目-----------------------------开始
+		{
+			"path": "pages/bridgeInfo/previewPicture",
+			"style": {
+				"navigationBarTitleText": "桥梁二维码轮播图",
+				"enablePullDownRefresh":false
+			}
+		},
+		{
+			"path": "pages/bridgeInfo/QRCode",
+			"style": {
+				"navigationBarTitleText": "生成二维码",
+				"enablePullDownRefresh":false
+			}
+		},
+		{
+			"path": "pages/bridgeInfo/createBridgeInfo",
+			"style": {
+				"navigationBarTitleText": "创建桥梁信息",
+				"enablePullDownRefresh":false
+			}
+		},
+		{
+			"path": "pages/bridgeInfo/queryBridgeInfo",
+			"style": {
+				"navigationBarTitleText": "查询桥梁信息",
+				"enablePullDownRefresh":false
+			}
+		},
+		{
+			"path": "pages/bridgeInfo/previewOujiang",
+			"style": {
+				"navigationBarTitleText": "瓯江大桥",
+				"enablePullDownRefresh":false
+			}
+		},
+		// 桥梁二维码项目-----------------------------结束
 		// 隧道检测项目-----------------------------开始
 		{
 			"path": "pages/home/index",
