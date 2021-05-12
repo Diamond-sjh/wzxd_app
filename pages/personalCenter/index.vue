@@ -1,8 +1,10 @@
 <template>
 	<view class="user">
 		<view class="userback">
-			<img src="https://ossweb-img.qq.com/images/lol/img/champion/Morgana.png">
-			<view class="userName">木子李</view>
+			<view class="imgName">
+				<img src="https://ossweb-img.qq.com/images/lol/img/champion/Morgana.png">
+				<view class="userName">木子李</view>
+			</view>
 		</view>
 		<view class="userinfo-list">			
 			<view class="userinfo-item" @click="clickItem('info')">
@@ -92,6 +94,17 @@
 		background-color: #55aaff;
 		text-align: center;
 		/* padding-bottom: 20px; */
+		position: relative;
+	}
+	.userback .imgName {
+		width: 300rpx;
+		height: 300rpx;
+		position: absolute;
+		margin: auto;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
 	}
 
 	.userback img {
@@ -99,8 +112,8 @@
 		border-radius: 51px;
 		margin-top: 15%;
 		margin-bottom: 3%;
-		width: 97px;
-		height: 97px;
+		width: 100px;
+		height: 100px;
 	}
 	.userName{
 		color: #111111;

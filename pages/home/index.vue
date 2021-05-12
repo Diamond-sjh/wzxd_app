@@ -38,20 +38,24 @@
 			scroll-with-animation="true"
 			lower-threshold="300"
 			@scrolltolower="myOnReachBottom">
-				<u-card padding="20" v-for="item in dataList" :key=item.id>
-					<view class="cardHearder" slot="head">
-						<view class="tunnel">{{item.chunnelName}}</view>
-					</view>
-					<view class="cardBody" slot="body">
-						<view>路线: {{item.routeName}}</view>
-						<view class="second">路段: {{item.roadsectionName}}</view>
-						<view>幅别: {{item.floatDirection==1?'左幅':item.projectFloat==2?'右幅':'———'}}</view>
-					</view>
-					<view class="footBtns" slot="foot">
-						<button type="primary" size="mini" class="footerBtn" @click="jumpToPage('project',item)">查看设施分项</button>
-						<button type="primary" size="mini" class="footerBtn" @click="jumpToPage('viruse',item)">病害信息</button>
-					</view>
-				</u-card>
+				<uni-row class="demo-uni-row">
+					<uni-col :xs="24" :sm="12" :md="8" v-for="item in dataList" :key=item.id>
+						<u-card padding="20">
+							<view class="cardHearder" slot="head">
+								<view class="tunnel">{{item.chunnelName}}</view>
+							</view>
+							<view class="cardBody" slot="body">
+								<view>路线: {{item.routeName}}</view>
+								<view class="second">路段: {{item.roadsectionName}}</view>
+								<view>幅别: {{item.floatDirection==1?'左幅':item.projectFloat==2?'右幅':'———'}}</view>
+							</view>
+							<view class="footBtns" slot="foot">
+								<button type="primary" size="mini" class="footerBtn" @click="jumpToPage('project',item)">查看设施分项</button>
+								<button type="primary" size="mini" class="footerBtn" @click="jumpToPage('viruse',item)">病害信息</button>
+							</view>
+						</u-card>
+					</uni-col>
+				</uni-row>
 				<view class="example-body">
 					<uni-load-more :status="status" :content-text="contentText"/>
 				</view>
@@ -89,6 +93,7 @@
 					scrollTop:0
 				},
 				scrollHeight:0,//滚动区域高度
+				downMenuHeight:0,//下拉菜单区域高度
 				status: 'more',
 				contentText: {
 					contentdown: '查看更多',
@@ -109,12 +114,27 @@
 					const wid = res.windowWidth
 					const hei = res.windowHeight
 					// 140是除了可滚动区域外的其它部分占的rpx高度
-					this.scrollHeight=(hei/(wid/750)-140)*(wid/750) - barHeight +'px'
+					this.downMenuHeight = wid > hei?140*(hei/750):140*(wid/750)
+					this.scrollHeight=(hei/(wid/750))*(wid/750) - this.downMenuHeight - barHeight +'px'
 				}
 			});
 			this.status = 'loading'
 			this.getData()
 			this.getDiseaseList()
+		},
+		onResize(){
+			let barHeight = 0
+			//#ifdef APP-PLUS
+			barHeight = plus.navigator.getStatusbarHeight()*plus.screen.scale
+			// #endif
+			uni.getSystemInfo({
+				success:  (res)=> {
+					const wid = res.windowWidth
+					const hei = res.windowHeight
+					// 140是除了可滚动区域外的其它部分占的rpx高度
+					this.scrollHeight=(hei/(wid/750))*(wid/750) - this.downMenuHeight - barHeight +'px'
+				}
+			});
 		},
 		//下拉刷新
 		onPullDownRefresh(){
@@ -399,14 +419,6 @@
 </script>
 
 <style scoped>	
-	page{
-		width: 100%;
-		height: 100%;
-	}
-	uni-page-body {
-		width: 100%;
-		height: 100%;
-	}
 	.addProject {
 		display: flex;
 		flex-direction: column;
@@ -453,6 +465,7 @@
 		right: 0;
 		top: 0;
 		bottom: 0;
+		touch-action: none 
 	}
 /* 	.addProject .cards .scrool-more .example-body .uni-load-more {
 		height: 80rpx;

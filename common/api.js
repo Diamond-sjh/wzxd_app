@@ -56,9 +56,21 @@ export default {
 	queryList(params) {
 		return request.httpRequest("/guns-cloud-config/gunscheckRecords/queryList", "POST", params)
 	},
-	// 添加修改病害信息
+	// 删除上传图片
+	deletVirusImg(params) {
+		return request.httpTokenRequest("/guns-cloud-config/gunscheckRecords/removeImg", "POST", params)
+	},
+	// 添加修改病害信息（暂未使用）
 	updateVirusInfo(params) {
-		return request.httpRequest("/guns-cloud-config/gunscheckRecords/update", "POST", params)
+		return request.httpTokenRequest("/guns-cloud-config/gunscheckRecords/update", "POST", params)
+	},
+	// 保存并上传图片（暂未使用）
+	updateAndUpload(params) {
+		return request.httpUploadRequest("/guns-cloud-config/gunscheckRecords/updateAndUpload", "POST", params)
+	},
+	// 修改检测状态
+	updateChecked(params) {
+		return request.httpTokenRequest("/guns-cloud-config/gunscheckRecords/updateChecked", "POST", params)
 	},
 	// 根据查询病害列表
 	diseaseList(params) {

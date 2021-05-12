@@ -9,7 +9,7 @@
 			<view class="u-tabbar__content__item" v-for="(item, index) in list" :key="index" :class="{
 				'u-tabbar__content__circle': midButton &&item.midButton
 			}" @tap.stop="clickHandler(index)" :style="{
-				backgroundColor: bgColor
+				backgroundColor: elBgColor(index)
 			}">
 				<view :class="[
 					midButton && item.midButton ? 'u-tabbar__content__circle__button' : 'u-tabbar__content__item__button'
@@ -83,12 +83,22 @@
 			// 激活时的演示，包括字体图标，提示文字等的演示
 			activeColor: {
 				type: String,
-				default: '#303133'
+				default: '#1296db'
 			},
 			// 未激活时的颜色
 			inactiveColor: {
 				type: String,
 				default: '#606266'
+			},
+			// 激活时背景颜色
+			activeBgColor: {
+				type: String,
+				default: '#6de49d',
+			},
+			// 未激活时背景颜色
+			inactiveBgColor: {
+				type: String,
+				default: '#ffffff',
 			},
 			// 是否显示中部的凸起按钮
 			midButton: {
@@ -163,6 +173,18 @@
 						else return this.inactiveColor;
 					} else {
 						return index == this.value ? this.activeColor : this.inactiveColor;
+					}
+				}
+			},
+			elBgColor() {
+				return (index) => {
+					// 判断方法同理于elIconPath
+					let pagePath = this.list[index].pagePath;
+					if(pagePath) {
+						if(pagePath == this.pageUrl || pagePath == '/' + this.pageUrl) return this.activeBgColor;
+						else return this.inactiveBgColor;
+					} else {
+						return index == this.value ? this.activeBgColor : this.inactiveBgColor;
 					}
 				}
 			}

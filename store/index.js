@@ -10,7 +10,8 @@ const store = new Vuex.Store({
 		custInfo: {},
 		virusList: new Map(),
 		virusListLength:0,
-		currentTimestamp: ''
+		currentTimestamp: '',
+		statueList: new Map()
 	},
 	mutations: {
 		// 设置登录的token
@@ -34,6 +35,14 @@ const store = new Vuex.Store({
 		DELET_VIRUS(state,info){
 			state.virusList.delete(info)
 			state.virusListLength = state.virusList.size	//map对象的长度
+		},
+		// 存储修改检测项目检测状态
+		SET_STATUElIST(state,info){
+			state.statueList.set(info.timestamp,info.data)
+		},
+		// 根据时间戳删除map对象中已经修改的检测状态信息
+		DELET_STATUElIST(state,info){
+			state.statueList.delete(info)
 		},
 		// 退出登录，清空数据
 		DELET_INFO(state,info){
@@ -72,7 +81,9 @@ const store = new Vuex.Store({
 		// 获取对应时间戳的病害信息
 		getVirusTimestamp:(state) => (timestamp) => {
 			return state.virusList.get(timestamp)
-		}
+		},
+		// 获取检测状态上传列表
+		getStatueList:state => state.statueList,
 	}
 })
 

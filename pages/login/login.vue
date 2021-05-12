@@ -1,5 +1,5 @@
 <template>
-	<view class="content">
+	<view class="content" style="'height:'+ screenHeight +'px !important;'">
 		<view class="avatorWrapper">
 			<view class="avator">
 				<!-- <image class="img" src="../../static/wzxdlogo.png" mode="widthFix"></image> -->
@@ -12,8 +12,8 @@
 			<view class="inputWrapper">
 				<input class="input" type="password" v-model="password" placeholder="请输入密码"/>
 			</view>
-			<view class="loginBtn">
-				<text class="btnValue" @click="loginBtn">登录</text>
+			<view class="loginBtn" @click="loginBtn">
+				<text class="btnValue">登录</text>
 			</view>
 			<view class="forgotBtn">
 				<text>找回密码</text>
@@ -34,10 +34,12 @@
 					account:'',
 					password:''
 				},
+				screenHeight:''
 			}
 		},
 		onLoad() {
-
+			this.screenHeight = uni.getSystemInfoSync().windowHeight;
+			console.log(this.screenHeight)
 		},
 		methods: {
 			...mapActions(['setUserToken']),
@@ -96,13 +98,18 @@
 </script>
 
 <style>
+	page{
+		width: 100%;
+		height: 100%;
+	}
 	.content {
 		background: #377EB4;
-		width: 100vw;
-		height: 100vh;
+		width: 100%;
+		min-height: 100%;
 		background: url('~@/static/shouye.png');
 		background-position: 65% 100%;
 		background-repeat: no-repeat;
+		background-size:cover
 	}
 	.avatorWrapper{
 		height: 30vh;

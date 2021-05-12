@@ -89,10 +89,10 @@
 				this.$http.VirusDetailInfo({id:this.id}).then(res => {
 					if(res.code == 200){
 						Object.assign(this.form,res.data)
-						this.src = res.data.imageUrl
+						this.src = res.data.imagePreviewUrl?res.data.imagePreviewUrl:''
 					}
 				})
-			},
+			},			
 			// 图片加载失败
 			imageError(e){
 				console.log(e)
@@ -104,21 +104,28 @@
 					title:"图片处理中..."
 				})
 				//src为base64为图片流
-				base64ToPath(src).then(path => {
-					let imgsArray = [];
-					uni.hideLoading()
-					imgsArray.push(path);
-					uni.previewImage({
-						current: 0, 
-						urls: imgsArray
-					});
-				}).catch(error => {
-					that.$refs.uToast.show({
-						title: '图片加载失败',
-						type: 'warning'
-					})
-					uni.hideLoading()
-				})
+				// base64ToPath(src).then(path => {
+				// 	let imgsArray = [];
+				// 	uni.hideLoading()
+				// 	imgsArray.push(path);
+				// 	uni.previewImage({
+				// 		current: 0, 
+				// 		urls: imgsArray
+				// 	});
+				// }).catch(error => {
+				// 	that.$refs.uToast.show({
+				// 		title: '图片加载失败',
+				// 		type: 'warning'
+				// 	})
+				// 	uni.hideLoading()
+				// })
+				let imgsArray = [];
+				uni.hideLoading()
+				imgsArray.push(this.captchaSrc);
+				uni.previewImage({
+					current: 0, 
+					urls: imgsArray
+				});
 			}
 	    }
 	}

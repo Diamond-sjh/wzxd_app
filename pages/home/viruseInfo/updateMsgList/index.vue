@@ -27,8 +27,10 @@
 			}
 	    },
 		onLoad() {
-			console.log(12)
-			this.msgList = [...this.getVirusList.values()]
+			let lists = [...this.getVirusList.values()]
+			this.msgList = lists.map(val => {
+				return JSON.parse(decodeURIComponent(val.formData.gunsCheckRecordsParam))
+			})
 			if(this.msgList.length > 0){
 				this.isShow = false
 			}

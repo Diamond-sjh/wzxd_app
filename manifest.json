@@ -15,6 +15,13 @@
             "autoclose" : true,
             "delay" : 0
         },
+        // 屏幕方向
+        "screenOrientation" : [
+            "portrait-primary",
+            "landscape-primary",
+            "portrait-secondary",
+            "landscape-secondary"
+        ],
         "modules" : {
             "Maps" : {},
             "Push" : {}

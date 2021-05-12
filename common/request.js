@@ -68,8 +68,39 @@ const httpTokenRequest = (url, method, params) => {
 		})
 	})
 };
+//带带文件上传的请求
+const httpUploadRequest = (url, method, params) => {
+	uni.showLoading({
+		title: "加载中"
+	});
+	let token = store.state.token?store.state.token:''
+	return new Promise((resolve,reject)=>{
+		uni.request({
+			url: baseUrl + url,
+			data: params,
+			method: method,
+			header:{
+				'Authorization': token,
+				'X-Requested-With': 'XMLHttpRequest',
+				"Accept": "*/*",
+				"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+			},
+			dataType:'JSON',
+			success(res){
+				resolve(res.data)
+			},
+			fail(err) {
+				reject(err);
+			},
+			complete() {
+				uni.hideLoading();
+			}
+		})
+	})
+};
 export default {
 	baseUrl,
 	httpRequest,
-	httpTokenRequest
+	httpTokenRequest,
+	httpUploadRequest
 }

@@ -15,20 +15,24 @@
 				</view>
 			</view>
 		</u-navbar>
-		<u-card padding="20" v-for="item in dataList" :key=item.id>
-			<view class="cardHearder" slot="head">
-				<view class="tunnel">{{chunnelName}}</view>
-			</view>
-			<view class="cardBody" slot="body">
-				<view>设施分项: {{item.branchName}}</view>
-				<view class="second">设备名称: {{item.facilitiesName}}</view>
-				<view>检测项目: {{item.checkItem?item.checkItem:'———'}}</view>
-			</view>
-			<view class="footBtns" slot="foot">
-				<button type="primary" size="mini" class="footerBtn" @click="jumpToPage('editAndAdd',item)">修改/新增</button>
-				<button type="primary" size="mini" class="footerBtn" @click="jumpToPage('delet',item)">删除</button>
-			</view>
-		</u-card>
+		<uni-row class="demo-uni-row">
+			<uni-col :xs="24" :sm="12" :md="8" v-for="item in dataList" :key=item.id>
+				<u-card padding="20">
+					<view class="cardHearder" slot="head">
+						<view class="tunnel">{{chunnelName}}</view>
+					</view>
+					<view class="cardBody" slot="body">
+						<view>设施分项: {{item.branchName}}</view>
+						<view class="second">设备名称: {{item.facilitiesName}}</view>
+						<view>检测项目: {{item.checkItem?item.checkItem:'———'}}</view>
+					</view>
+					<view class="footBtns" slot="foot">
+						<button type="primary" size="mini" class="footerBtn" @click="jumpToPage('editAndAdd',item)">修改/新增</button>
+						<button type="primary" size="mini" class="footerBtn" @click="jumpToPage('delet',item)">删除</button>
+					</view>
+				</u-card>
+			</uni-col>
+		</uni-row>
 		<view class="example-body">
 			<uni-load-more :status="status" :content-text="contentText"/>
 		</view>

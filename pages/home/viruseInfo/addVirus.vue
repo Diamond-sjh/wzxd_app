@@ -46,6 +46,7 @@
 						v-model="item.checked"
 						v-for="(item, index) in diseaseList" :key="index" 
 						:name="item.name"
+						@change="checkboxChange"
 						style="flex: 0 1 auto;"
 					>{{item.name}}</u-checkbox>
 				</u-checkbox-group>
@@ -53,12 +54,11 @@
 			<u-form-item label="病害图片url：">
 				<u-upload 
 				ref="uUpload" 
-				:action="action" 
-				:auto-upload="true" 
-				max-count="1"
-				@on-success="uploadSuccess" >
+				:auto-upload="false" 
+				:file-list="fileList"
+				@on-choose-complete="checkImg"
+				max-count="1">
 				</u-upload>
-				<!-- <u-input v-model="form.imageUrl" type="select" /> -->
 			</u-form-item>
 			<u-form-item label="病害图片名称:" label-width="200">
 				<u-input v-model="form.imageName" placeholder="" />
@@ -132,8 +132,10 @@
 					routeSection: "",//所属路段
 					statusCode: "",//状态描述
 					isfault:'0',//是否故障
-					faultDays:''//故障天数
+					faultDays:'',//故障天数
+					ischecked:1
 				},
+				fileList:[],//病害图片预置
 				updateForm:{},//更新接口的参数
 				checkDateShow:false,//是否显示日期组件
 				checkItemIndex:0,//选中的检查项目
@@ -144,7 +146,8 @@
 				isFaultList: [{value:'1',label:'是'},{value:'0',label:'否'}],//是否故障
 				faultDay:true,//故障天数是否可以输入
 				checkDiseaseList:[],
-				action: 'http://47.114.76.25:9505/guns-cloud-config/gunscheckRecords/upload',
+				removeImgUrl:'',//待删除图片地址
+				uploadImgUrl:[],
 				timestamp: '',
 				rules: {
 					checker: [
@@ -186,6 +189,9 @@
 			const eventChannel = this.getOpenerEventChannel()
 			eventChannel.on('toAddVirus', (data) => {
 				Object.assign(this.form,data)
+				if(data.imagePreviewUrl){
+					this.fileList.push({url:data.imagePreviewUrl})
+				}
 				if(data.isfault == 1){
 					this.faultDay = false
 				}
@@ -235,9 +241,7 @@
 							})
 						}
 				    }
-				});
-				// 获取检测项目  病害 列表
-				
+				});			
 			})
 		},
 		// 监听页面返回
@@ -316,9 +320,12 @@
 			checkboxGroupChange(e){
 				this.form.diseaseContent = e.join(",")
 			},
-			// 图片上传成功的回调
-			uploadSuccess(data, index, lists, name){
-				this.form.imageUrl = data.src
+			checkboxChange(e){
+				console.log(e)
+			},
+			// 每次选择图片后触发
+			checkImg(lists,name){
+				this.uploadImgUrl = lists
 			},
 			// 是否故障
 			radioGroupChange(e){
@@ -335,34 +342,50 @@
 				const eventChannel = this.getOpenerEventChannel()
 				this.$refs.uForm.validate(valid=>{
 					if (valid) {
-						this.$http.updateVirusInfo(this.form).then(res=>{
-							if(res.code == '200'){
-								this.isBack = true
-								// 触发父级页面定义的方法
-								eventChannel.emit('updateCurrentInfo', this.form);
-								this.$refs.uToast.show({
-									title: '信息保存成功',
-									type: 'success',
-									back: true,
-									duration: 500
-								})
-							}else{
-								this.$refs.uToast.show({
-									title: '信息保存失败',
-									type: 'error'
-								})
+						uni.uploadFile({
+							url: 'http://47.114.76.25:9505/guns-cloud-config/gunscheckRecords/updateAndUpload',//你上传接口
+							filePath:this.uploadImgUrl[0]?this.uploadImgUrl[0].url:'',//上传的文件
+							name:this.uploadImgUrl[0]?"file":"noFile", //后台接收文件的标识
+							formData:{
+								'gunsCheckRecordsParam':encodeURIComponent(JSON.stringify(this.form))
+							}, 
+							success: (res) => {
+								console.log(res)
+								if (res.statusCode == '200') {
+									this.isBack = true
+									// 触发父级页面定义的方法
+									this.form.ischecked = 1
+									eventChannel.emit('updateCurrentInfo', this.form);
+									this.removeImgUrl = ''
+									this.$refs.uToast.show({
+										title: '信息保存成功',
+										type: 'success',
+										back: true,
+										duration: 500
+									})
+								} else {
+									this.$refs.uToast.show({
+										title: '信息保存失败',
+										type: 'error'
+									})
+								}
+							},
+							fail: (err) => {
+								console.log(err)
+								let data = {
+									filePath:this.uploadImgUrl[0].url,//上传的文件
+									formData:{
+										'gunsCheckRecordsParam':encodeURIComponent(JSON.stringify(this.form))
+									}, 
+								}
+								let virusInfo = {
+									timestamp:this.timestamp,
+									data: JSON.parse(JSON.stringify(data))
+								}
+								this.SET_VIRUSINFO(virusInfo)
+								this.removeImgUrl = ''
+								this.isShow = true
 							}
-						}).catch(e=>{
-							let virusInfo = {
-								timestamp:this.timestamp,
-								data: JSON.parse(JSON.stringify(this.form))
-							}
-							this.SET_VIRUSINFO(virusInfo)
-							this.isShow = true
-							// this.$refs.uToast.show({
-							// 	title: '数据已本地保存，请勿关闭应用，等待自动上传数据！！！',
-							// 	type: 'warning'
-							// })
 						})
 					}
 				})

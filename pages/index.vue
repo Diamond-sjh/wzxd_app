@@ -21,13 +21,28 @@
 	export default {
 	    data() {
 	        return {
-				timer:null
+				timer:null,
+				isConnected:true,
+				updateStatusTimestamp:''
 			}
 	    },
 		computed: {
-			...mapGetters(['getVirusList','getVirusListLen','getCurrentTimestamp','getVirusTimestamp','getCurrentTimestamp']),
+			...mapGetters(['getVirusList','getVirusListLen','getVirusTimestamp','getCurrentTimestamp','getStatueList']),
 		},
 		onLoad() {
+			uni.onNetworkStatusChange(res => {
+				console.log(res)
+				console.log(this.getStatueList.size)
+				this.isConnected = res.isConnected
+				if(res.isConnected && this.timer != null){
+					clearInterval(this.timer)
+					this.timer = null
+					this.sendMsg()
+				}
+				if(res.isConnected && this.getStatueList.size > 0){
+					this.updateStatus()
+				}
+			})
 			this.$http.getCurrentUser().then(res=>{
 				if(res.code == '200'){
 					this.SET_CUSTINFO(res.data)
@@ -50,24 +65,78 @@
 					return
 				}
 				if(curVal != 0 && this.timer == null){
-					this.SET_TIMESTAMP([...this.getVirusList.keys()][0])
-					let data = this.getVirusTimestamp([...this.getVirusList.keys()][0])
-					// 每半分钟发送一次
-					this.timer = setInterval(()=>{
-						this.$http.updateVirusInfo(data).then(res=>{
-							console.log('发送成功')
-							this.DELET_VIRUS(this.getCurrentTimestamp)
-							clearInterval(this.timer)
-							this.timer = null
-						}).catch(e=>{
-							console.log('发送失败')
-						})
-					},30000)
+					if(this.isConnected){
+						this.sendMsg()
+					}else{
+						console.log('无网络')
+						this.timer = setInterval(()=>{
+							if(this.isConnected){
+								clearInterval(this.timer)
+								this.timer = null
+								this.sendMsg()
+							}else{
+								console.log('无网络')
+							}
+						},30000)
+					}
 				}
 			}
 		},
 	    methods: {
-			...mapMutations(['SET_CUSTINFO','SET_TIMESTAMP','DELET_VIRUS']),
+			...mapMutations(['SET_CUSTINFO','SET_TIMESTAMP','DELET_VIRUS','DELET_STATUElIST']),
+			sendMsg(){
+				this.SET_TIMESTAMP([...this.getVirusList.keys()][0])
+				let data = this.getVirusTimestamp([...this.getVirusList.keys()][0])
+				uni.uploadFile({
+					url: 'http://47.114.76.25:9505/guns-cloud-config/gunscheckRecords/updateAndUpload',//你上传接口
+					filePath:data.filePath,//上传的文件
+					name:"file", //后台接收文件的标识
+					formData:data.formData, 
+					success: (res) => {
+						console.log('发送成功')
+						this.DELET_VIRUS(this.getCurrentTimestamp)
+						clearInterval(this.timer)
+						this.timer = null
+					},
+					fail: (err) => {
+						console.log('发送失败')
+						if(this.isConnected){
+							this.sendMsg()
+						}else{
+							this.timer = setInterval(()=>{
+								if(this.isConnected){
+									clearInterval(this.timer)
+									this.timer = null
+									this.sendMsg()
+								}
+							},30000)
+						}
+						
+					}
+				})
+			},
+			updateStatus(){
+				console.log([...this.getStatueList.keys()])
+				this.updateStatusTimestamp = [...this.getStatueList.keys()][0]
+				let data = [...this.getStatueList.values()][0]
+				console.log(data)
+				this.$http.updateChecked(data).then(res => {
+					if(res.code == 200){
+						this.DELET_STATUElIST(this.updateStatusTimestamp)
+						if(this.isConnected && this.getStatueList.size > 0){
+							this.updateStatus()
+						}else{
+							console.log('全部上传')
+						}
+					}
+				}).catch(e => {
+					if(this.isConnected){
+						this.updateStatus()
+					}else{
+						console.log('无网络')
+					}
+				})
+			},
 			jump(val){
 				if(val == 'addProject'){
 					uni.navigateTo({
