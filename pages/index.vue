@@ -4,10 +4,6 @@
 			我的应用
 		</view>
 		<view class="applicationList">
-			<!-- <view class="applicationItem" @click="jump('addProject')">
-				<u-image width="100px" height="100px" src="/static/addProject.png"></u-image>
-				<view class="textContent">添加检测项目</view>
-			</view> -->
 			<view class="applicationItem" @click="jump('project')">
 				<u-image width="100px" height="100px" src="/static/project.png"></u-image>
 				<view class="textContent">隧道检测项目</view>

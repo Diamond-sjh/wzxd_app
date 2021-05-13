@@ -51,6 +51,36 @@
 					>{{item.name}}</u-checkbox>
 				</u-checkbox-group>
 			</u-form-item>
+			<u-form-item v-show="isShowLightTable">
+				<view style="width: 100%;">
+					<view class="">
+						<u-form label-width="150">
+							<u-form-item label="测试路段：" :required="true">
+								<u-input v-model="testRoadSection" placeholder="入口段/过渡段/基本段/出口段..." :border="true"/>
+							</u-form-item>
+						</u-form>
+					</view>
+					<u-table>
+						<u-tr>
+							<u-th style="height:80rpx">1</u-th>
+							<u-th style="height:80rpx">2</u-th>
+							<u-th style="height:80rpx">3</u-th>
+							<u-th style="height:80rpx">4</u-th>
+							<u-th style="height:80rpx">5</u-th>
+							<u-th style="height:80rpx">6</u-th>
+						</u-tr>
+						<u-tr v-for="(item,index) in num" :key="index">
+							<u-td><u-input v-model="item.number1" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
+							<u-td><u-input v-model="item.number2" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
+							<u-td><u-input v-model="item.number3" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
+							<u-td><u-input v-model="item.number4" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
+							<u-td><u-input v-model="item.number5" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
+							<u-td><u-input v-model="item.number6" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
+						</u-tr>
+					</u-table>
+					<view class="warningText">※照度测试新增数据保存之后需刷新页面才可修改※</view>
+				</view>
+			</u-form-item>
 			<u-form-item label="病害图片url：">
 				<u-upload 
 				ref="uUpload" 
@@ -104,6 +134,7 @@
 	export default {
 	    data() {
 	        return {
+				scrollTop:0,
 				letVal:{
 					color:'white'
 				},//导航栏左边字体颜色
@@ -133,8 +164,92 @@
 					statusCode: "",//状态描述
 					isfault:'0',//是否故障
 					faultDays:'',//故障天数
-					ischecked:1
+					tunnelLightList:''//隧道灯具照度
 				},
+				// 隧道灯具照度参数
+				testRoadSection:'',//测试路段名称
+				num:[{
+						id:0,
+						number1:null,
+						number2:null,
+						number3:null,
+						number4:null,
+						number5:null,
+						number6:null
+					},{
+						id:0,
+						number1:null,
+						number2:null,
+						number3:null,
+						number4:null,
+						number5:null,
+						number6:null
+					},{
+						id:0,
+						number1:null,
+						number2:null,
+						number3:null,
+						number4:null,
+						number5:null,
+						number6:null
+					},{
+						id:0,
+						number1:null,
+						number2:null,
+						number3:null,
+						number4:null,
+						number5:null,
+						number6:null
+					},{
+						id:0,
+						number1:null,
+						number2:null,
+						number3:null,
+						number4:null,
+						number5:null,
+						number6:null
+					},{
+						id:0,
+						number1:null,
+						number2:null,
+						number3:null,
+						number4:null,
+						number5:null,
+						number6:null
+					},{
+						id:0,
+						number1:null,
+						number2:null,
+						number3:null,
+						number4:null,
+						number5:null,
+						number6:null
+					},{
+						id:0,
+						number1:null,
+						number2:null,
+						number3:null,
+						number4:null,
+						number5:null,
+						number6:null
+					},{
+						id:0,
+						number1:null,
+						number2:null,
+						number3:null,
+						number4:null,
+						number5:null,
+						number6:null
+					},{
+						id:0,
+						number1:null,
+						number2:null,
+						number3:null,
+						number4:null,
+						number5:null,
+						number6:null
+				}],
+				// 隧道灯具照度参数
 				fileList:[],//病害图片预置
 				updateForm:{},//更新接口的参数
 				checkDateShow:false,//是否显示日期组件
@@ -143,6 +258,7 @@
 				allDataList:[],//所有的检测项目加病害
 				checkItemList:[],//检查项目列表
 				diseaseList: [],//病害列表
+				isShowLightTable: false,//是否展示照度测试输入区域
 				isFaultList: [{value:'1',label:'是'},{value:'0',label:'否'}],//是否故障
 				faultDay:true,//故障天数是否可以输入
 				checkDiseaseList:[],
@@ -194,6 +310,13 @@
 				}
 				if(data.isfault == 1){
 					this.faultDay = false
+				}
+				if(data.tunnelLightList && data.tunnelLightList.length>0){
+					console.log(data.tunnelLightList)
+					this.num.splice(0,data.tunnelLightList.length,...data.tunnelLightList)
+					console.log(this.num)
+					this.testRoadSection = data.tunnelLightList[0].testRoadSection
+					this.isShowLightTable = true
 				}
 				// 检测人
 				if(this.getCustInfo&&(this.getCustInfo.lastName||this.getCustInfo.firstName)){
@@ -321,7 +444,10 @@
 				this.form.diseaseContent = e.join(",")
 			},
 			checkboxChange(e){
-				console.log(e)
+				console.log(this.allDataList.filter(d=>d.diseaseName == e.name)[0])
+				if(this.allDataList.filter(d=>d.diseaseName == e.name)[0].id == 1115){
+					this.isShowLightTable = e.value
+				}
 			},
 			// 每次选择图片后触发
 			checkImg(lists,name){
@@ -338,10 +464,30 @@
 			},
 			// 保存信息
 			saveVirusInfo(){
+				if(this.isShowLightTable){
+					this.form.tunnelLightList = []
+					this.num.forEach(val => {
+						if(val.id == 0){
+							if(!val.number1 && !val.number2 && !val.number3 && !val.number4 && !val.number5 && !val.number6){
+								return
+							}else{
+								val.facilitiesName = this.form.facilitiesName
+								val.testRoadSection = this.testRoadSection,
+								val.testYear = this.form.testYear,
+								val.tunnelId = this.form.tunnelId
+							}
+							console.log(val)
+						}
+						this.form.tunnelLightList.push(val)
+					})
+				}else{
+					this.form.tunnelLightList = []
+				}
 				// 获取eventChannel事件
 				const eventChannel = this.getOpenerEventChannel()
 				this.$refs.uForm.validate(valid=>{
 					if (valid) {
+						console.log(this.form)
 						uni.uploadFile({
 							url: 'http://47.114.76.25:9505/guns-cloud-config/gunscheckRecords/updateAndUpload',//你上传接口
 							filePath:this.uploadImgUrl[0]?this.uploadImgUrl[0].url:'',//上传的文件
@@ -409,6 +555,13 @@
 	}
 	.addVirus .slot-wrap {
 		padding-right: 12px;
+	}
+	.addVirus .warningText {
+		color: red;
+		text-align: center;
+		font-size: 12px;
+		line-height: 12px;
+		padding-top: 5px;
 	}
 	.addVirus .u-form .u-form-item{
 		padding: 5px 0;
