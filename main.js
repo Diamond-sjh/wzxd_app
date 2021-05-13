@@ -4,7 +4,7 @@ import store from './store/index.js'
 import http from './common/api.js'
 import utils from './common/utils.js'
 import uView from "uview-ui";
-import QRCode from 'qrcodejs2';
+
 
 Vue.use(uView);
 

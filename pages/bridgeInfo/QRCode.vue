@@ -1,38 +1,41 @@
 <template>
-	<div id="qrCode" ref="qrCodeDiv"></div>
+	<view class="qrcode">
+		<qrcode ref="qrcode" :modal="modal" :url="url" @hideQrcode="hideQrcode"></qrcode>
+	</view>
 </template>
 
 <script>
-	 import QRCode from 'qrcodejs2';
-	
 	export default {
 	    name: "qrCode",
 	    data() {
 	      return {
-			  bridgeName:''
+			  url:'',
+			  modal:false
 		  }
 	    },
-	    mounted: function () {
-	      this.$nextTick(function () {
-	        this.bindQRCode();
-	      })
-	    },
-	    methods: {
-	      bindQRCode: function () {
+		onLoad() {
 			// 获取eventChannel事件
 			const eventChannel = this.getOpenerEventChannel()
 			eventChannel.on('toQrCodeInfoIndex', (data) => {
-				this.bridgeName = data.bridgeName
+				this.url = 'http://www.baidu.com?bridgeName='+data.bridgeName
 			})
-	        new QRCode(this.$refs.qrCodeDiv, {
-	          text: 'http://www.baidu.com?bridgeName='+this.bridgeName,
-			  width: 200,
-	          height: 200,
-	          colorDark: "#333333", //二维码颜色
-	          colorLight: "#ffffff", //二维码背景色
-	          correctLevel: QRCode.CorrectLevel.L//容错率，L/M/H
-	        })
-	      }
+		},
+	    mounted: function () {
+			this.showQrcode()
+	    },
+	    methods: {
+			// 展示二维码
+			showQrcode() {
+				let _this = this;
+				this.modal = true;
+				setTimeout(function() {
+					_this.$refs.qrcode.couponQrCode()
+				}, 500)
+			},
+			//传入组件的方法
+			hideQrcode() {
+				// this.modal = false;
+			}
 	    }
 	  }
 </script>

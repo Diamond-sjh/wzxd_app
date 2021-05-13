@@ -65,15 +65,15 @@
 			</u-form>
 			<view class="btns">
 				<u-button type="success" size="medium" @click="clickAdd">新增</u-button>
-				<u-button type="warning" size="medium" style="margin-left: 3px;" @click="generateQrCode">生成二维码</u-button>
+				<u-button type="warning" size="medium" style="margin-left: 3px;" @click="showQrcode">生成二维码</u-button>
 			</view>
 			<u-toast ref="uToast" />
 		</view>
+		<qrcode ref="qrcode" :modal="modal" :url="url" @hideQrcode="hideQrcode"></qrcode>
 	</div>
 </template>
 
 <script>
-	import QRCode from 'qrcodejs2';
 	export default {
 		data() {
 			return {
@@ -81,6 +81,8 @@
 				letVal:{
 					color:'white'
 				},//导航栏左边字体颜色
+				modal:false,//是否展示二维码
+				url:'http://47.114.76.25/img/banner1.e50f7eae.jpg',//生成二维码的url
 				opentrafficDateShow:false,
 				show1:false,
 				show2:false,
@@ -216,15 +218,17 @@
 				this.form.bridgePicturesUrl = data.src
 			},
 			// 3.生成二维码
-			generateQrCode(){
-				new QRCode(this.$refs.qrCodeDiv, {
-				  text: 'http://47.114.76.25/img/banner1.e50f7eae.jpg',
-				  width: 200,
-				  height: 200,
-				  colorDark: "#333333", //二维码颜色
-				  colorLight: "#ffffff", //二维码背景色
-				  correctLevel: QRCode.CorrectLevel.L//容错率，L/M/H
-				})	
+			// 展示二维码
+			showQrcode() {
+				let _this = this;
+				this.modal = true;
+				setTimeout(function() {
+					_this.$refs.qrcode.couponQrCode()
+				}, 200)
+			},
+			//传入组件的方法
+			hideQrcode() {
+				this.modal = false;
 			},
 			// 4.注意返回值为一个数组，单列时取数组的第一个元素即可(只有一个元素)
 			confirm(e) {
