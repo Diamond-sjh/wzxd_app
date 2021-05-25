@@ -29,7 +29,7 @@ export default {
 	
 	// 根据隧道id查询设施分项
 	queryCheckRecordsList(params) {
-		return request.httpTokenRequest("/guns-cloud-config/gunscheckRecords/queryList", "POST", params)
+		return request.httpTokenRequest("/guns-cloud-config/projectDevice/queryList", "GET", params)
 	},
 	// 修改设施分项
 	updataDisease(params){

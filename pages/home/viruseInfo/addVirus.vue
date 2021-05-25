@@ -488,6 +488,7 @@
 				this.$refs.uForm.validate(valid=>{
 					if (valid) {
 						console.log(this.form)
+						console.log(this.uploadImgUrl[0])
 						uni.uploadFile({
 							url: 'http://47.114.76.25:9505/guns-cloud-config/gunscheckRecords/updateAndUpload',//你上传接口
 							filePath:this.uploadImgUrl[0]?this.uploadImgUrl[0].url:'',//上传的文件
@@ -519,7 +520,7 @@
 							fail: (err) => {
 								console.log(err)
 								let data = {
-									filePath:this.uploadImgUrl[0].url,//上传的文件
+									filePath:this.uploadImgUrl[0]?this.uploadImgUrl[0].url:'',//上传的文件
 									formData:{
 										'gunsCheckRecordsParam':encodeURIComponent(JSON.stringify(this.form))
 									}, 

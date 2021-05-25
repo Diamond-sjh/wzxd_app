@@ -6,25 +6,25 @@
 				<text>{{form.routeLine}}</text>
 			</u-form-item>
 			<u-form-item label="所属路段：">
-				<text>{{form.routeSection}}</text>
+				<text>{{form.roadSection}}</text>
 			</u-form-item>
 			<u-form-item label="所属隧道：">
-				<text>{{form.chunnel}}</text>
+				<text>{{form.tunnelName}}</text>
 			</u-form-item>
 			<u-form-item label="幅别：">
-				<text>{{form.directionType==1?'左幅':form.directionType==2?'右幅':'———'}}</text>
+				<text>{{form.projectFloat==1?'左幅':form.projectFloat==2?'右幅':'———'}}</text>
 			</u-form-item>
 			<u-form-item label="状态：">
-				<text>{{form.isfault==0?'正常':'异常'}}</text>
+				<text>{{form.state==0?'正常':'异常'}}</text>
 			</u-form-item>
 			<u-form-item label="设施名称：">
 				<text>{{form.branchName}}</text>
 			</u-form-item>
 			<u-form-item label="设备名称：">
-				<u-input v-model="form.facilitiesName" placeholder="" :border="true" />
+				<u-input v-model="form.deviceName" placeholder="" :border="true" :disabled="form.checkContent !=''"/>
 			</u-form-item>
 			<u-form-item label="检查项目：">
-				<u-input v-model="form.checkItem" placeholder="" :border="true" />
+				<u-input v-model="form.checkContent" placeholder="" :border="true" :disabled="form.checkContent == ''" />
 			</u-form-item>
 		</u-form>
 		<view class="btns">
@@ -45,13 +45,13 @@
 				},//导航栏左边字体颜色
 				form:{
 					routeLine: "",//所属路线
-					routeSection: "",//所属路段
-					chunnel: "",//所属隧道
-					directionType:'',//幅别
-					isfault:'',//状态
+					roadSection: "",//所属路段
+					tunnelName: "",//所属隧道
+					projectFloat:'',//幅别
+					state:'',//状态
 					branchName: "",//设施分项
-					facilitiesName:"",//设备名称
-					checkItem: "",//检测项目
+					deviceName:"",//设备名称
+					checkContent: "",//检测项目
 					checkCode: "",
 					deviceCode: "",
 					deviceRemark: "",
@@ -73,18 +73,18 @@
 				let params = {
 					branchName: this.form.branchName,
 					checkCode: this.form.checkCode,
-					checkContent: this.form.checkItem,
+					checkContent: this.form.checkContent,
 					deviceCode: this.form.deviceCode,
-					deviceName: this.form.facilitiesName,
+					deviceName: this.form.deviceName,
 					deviceRemark: "",
-					id: this.form.pdId,
-					projectFloat: this.form.directionType,
+					id: this.form.id,
+					projectFloat: this.form.projectFloat,
 					remark: "",
-					roadSection: this.form.routeSection,
+					roadSection: this.form.roadSection,
 					routeLine: this.form.routeLine,
-					state: this.form.isfault,
+					state: this.form.state,
 					tunnelId: this.form.trunelId,
-					tunnelName: this.form.chunnel
+					tunnelName: this.form.tunnelName
 				}
 				this.$http.updataDisease(params).then(res=>{
 					console.log(res)
@@ -109,14 +109,14 @@
 				let params = {
 					branchName:this.form.branchName,
 					checkCode: this.form.checkCode,
-					checkContent: this.form.checkItem,
+					checkContent: this.form.checkContent,
 					deviceCode: this.form.deviceCode,
-					deviceName: this.form.facilitiesName,
-					projectFloat: this.form.directionType,
+					deviceName: this.form.deviceName,
+					projectFloat: this.form.projectFloat,
 					remark: "",
-					roadSection: this.form.routeSection,
+					roadSection: this.form.roadSection,
 					routeLine: this.form.routeLine,
-					tunnelName:this.form.chunnel,
+					tunnelName:this.form.tunnelName,
 					tunnelId: this.form.tunnelId,
 				}
 				let addParams = JSON.parse(JSON.stringify(params))

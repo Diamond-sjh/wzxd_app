@@ -93,8 +93,8 @@
 				let data = this.getVirusTimestamp([...this.getVirusList.keys()][0])
 				uni.uploadFile({
 					url: 'http://47.114.76.25:9505/guns-cloud-config/gunscheckRecords/updateAndUpload',//你上传接口
-					filePath:data.filePath,//上传的文件
-					name:"file", //后台接收文件的标识
+					filePath:data.filePath?data.filePath:'',//上传的文件
+					name:data.filePath?"file":"noFile", //后台接收文件的标识
 					formData:data.formData, 
 					success: (res) => {
 						console.log('发送成功')

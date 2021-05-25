@@ -23,8 +23,8 @@
 					</view>
 					<view class="cardBody" slot="body">
 						<view>设施分项: {{item.branchName}}</view>
-						<view class="second">设备名称: {{item.facilitiesName}}</view>
-						<view>检测项目: {{item.checkItem?item.checkItem:'———'}}</view>
+						<view class="second">设备名称: {{item.deviceName}}</view>
+						<view>检测项目: {{item.checkContent?item.checkContent:'———'}}</view>
 					</view>
 					<view class="footBtns" slot="foot">
 						<button type="primary" size="mini" class="footerBtn" @click="jumpToPage('editAndAdd',item)">修改/新增</button>
@@ -153,14 +153,12 @@
 					return
 				}
 				if(val == 'delet'){
-					this.$http.delProjectDevice({id:item.pdId}).then(res=>{
+					this.$http.delProjectDevice({id:item.id}).then(res=>{
 						if(res.code == 200){
 							let params1 = {
-								branchName: item.branchName,
 								checkCode: item.checkCode,
 								deviceCode: item.deviceCode,
-								deviceName: item.facilitiesName,
-								tunnelName: item.chunnel
+								tunnelId: item.tunnelId
 							}
 							this.$http.queryProjectInfo(params1).then(res=>{
 								if(res.code == 200){
