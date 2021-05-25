@@ -1,5 +1,5 @@
 <template>
-	<view class="content" style="'height:'+ screenHeight +'px !important;'">
+	<view class="content" :style="[{backgroundImage: bgWx},{height: (screenHeight +'px !important;')}]">
 		<view class="avatorWrapper">
 			<view class="avator">
 				<!-- <image class="img" src="../../static/wzxdlogo.png" mode="widthFix"></image> -->
@@ -25,6 +25,7 @@
 <script>
 	import { mapActions } from 'vuex'
 	import JSEncrypt from '../../static/js/jsencrypt.js'
+	import { pathToBase64, base64ToPath } from '../../static/js/image-tools.js'
 	export default {
 		data() {
 			return {
@@ -34,7 +35,8 @@
 					account:'',
 					password:''
 				},
-				screenHeight:''
+				screenHeight:'',
+				bgWx:'url(../../static/shouye.png)'
 			}
 		},
 		onLoad() {
@@ -106,7 +108,7 @@
 		background: #377EB4;
 		width: 100%;
 		min-height: 100%;
-		background: url('~@/static/shouye.png');
+		/* background: url('~@/static/shouye.png'); */
 		background-position: 65% 100%;
 		background-repeat: no-repeat;
 		background-size:cover
