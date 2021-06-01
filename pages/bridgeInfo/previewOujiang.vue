@@ -13,7 +13,7 @@
 	  	</div>	
    <div style="border: 1px solid #999999;height: auto;">
    		<h1 style="background-color:seagreen;width: 240px;font-size: 1.875rem;color: #F9F9F9;">瓯江大桥</h1>
-   		 <ul style="padding: 2.5rem">
+<!--  		 <ul style="padding: 2.5rem">
    		  <li style="padding-left: 5px;margin-top: 0.3125rem;margin-bottom: 1.25rem;">
    		  <p style="font-weight: bold;color: seagreen;">桥梁概况</p>
    		  <p style="text-indent: 2em;">
@@ -35,7 +35,23 @@
    			  	  {{'地震动峰值加速度&lt;0.05g。'}}
    			  </p>
    		  </li>
-   		</ul> 
+   		</ul> -->
+				<u-cell-group>
+					<u-cell-item title="桥梁名称:" :arrow="false">{{data.bridgeName}}</u-cell-item>
+					<u-cell-item title="路线名称:" :arrow="false">{{data.routeName}}</u-cell-item>
+					<u-cell-item title="路线编号:" :arrow="false">{{data.routeNo}}</u-cell-item>
+					<u-cell-item title="桥型:" :arrow="false">{{data.bridgeType}}</u-cell-item>
+					<u-cell-item title="通车日期:" :arrow="false">{{data.opentrafficDate}}</u-cell-item>
+					<u-cell-item title="中心桩号:" :arrow="false">{{data.centerMileage}}</u-cell-item>
+					<u-cell-item title="长度(M):" :arrow="false">{{data.bridgeLength}}</u-cell-item>
+					<u-cell-item title="管理单位:" :arrow="false">{{data.manageCompany}}</u-cell-item>
+					<u-cell-item title="联系电话:" :arrow="false">{{data.managePhone}}</u-cell-item>
+					<u-cell-item title="交通运输综合行政执法单位:" :arrow="false">{{data.lawEnforceCompany}}</u-cell-item>
+					<u-cell-item title="联系电话:" :arrow="false">{{data.lawEnforcePhone}}</u-cell-item>
+					<u-cell-item title="监管单位:" :arrow="false">{{data.superviseCompany}}</u-cell-item>
+					<u-cell-item title="联系电话:" :arrow="false">{{data.supervisePhone}}</u-cell-item>
+					<u-cell-item title="备注:" :arrow="false">{{data.remarks}}</u-cell-item>
+				</u-cell-group>
        </div>
   </div>
 </template>
@@ -52,6 +68,23 @@ export default {
   components: {},
   data(){
 	  return{
+			id:'',
+			data:{
+				bridgeName:'',
+				routeName:'',
+				routeNo:'',
+				bridgeType:'',
+				opentrafficDate:'',
+				centerMileage:'',
+				bridgeLength:'',
+				manageCompany:'',
+				managePhone:'',
+				lawEnforceCompany:'',
+				lawEnforcePhone:'',
+				superviseCompany:'',
+				supervisePhone:'',
+				remarks:''
+			},
 		  img:[banner1,
 		      banner2,
 		      banner3,
@@ -60,9 +93,22 @@ export default {
 		  n:2,
 	  }
   },
+	
+	onLoad() {
+		//获取事件对象
+		const eventChannel = this.getOpenerEventChannel()
+		// 监听toPictureInfoIndex事件，获取上一页面通过eventChannel传送到当前页面的数据
+		eventChannel.on('toPictureInfoIndex', (data) => {
+			//data的结构是{id:item.id,bridgeName:item.bridgeName}
+			this.id = data.id
+		})
+	},
+	
   created(){    //生命周期  钩子函数   挂载完成
-      this.fun();
+    this.fun();
 	  this.play();
+		this.getData();
+		
   },
   methods:{
       fun(){
@@ -74,7 +120,14 @@ export default {
           if(this.n == this.img.length){
               this.n = 0;
           }
-      }
+      },
+			getData(){
+				//后端接口只能用id来查询
+				this.$http.queryBridgeInfoDetail({id:this.id}).then(res =>{
+					console.log('res = ',res)
+					this.data = res.data
+				})
+			}
   },
 }
 </script>

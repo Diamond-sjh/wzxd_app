@@ -17,7 +17,8 @@
 			// 获取eventChannel事件
 			const eventChannel = this.getOpenerEventChannel()
 			eventChannel.on('toQrCodeInfoIndex', (data) => {
-				this.url = 'http://www.baidu.com?bridgeName='+data.bridgeName
+				//this.url = 'http://www.baidu.com?bridgeName='+data.bridgeName
+				this.url = 'http://47.114.76.25/?bridgeName='+data.bridgeName
 			})
 		},
 	    mounted: function () {

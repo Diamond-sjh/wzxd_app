@@ -93,4 +93,8 @@ export default {
 	queryBridgeInfoList(params) {
 		return request.httpTokenRequest("/guns-cloud-config/bridgeQrcodeInfo/queryList", "POST", params)
 	},
+	// 查询桥梁详情
+	queryBridgeInfoDetail(params) {
+		return request.httpTokenRequest("/guns-cloud-config//bridgeQrcodeInfo/detail", "POST", params)
+	}
 }
