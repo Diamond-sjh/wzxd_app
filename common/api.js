@@ -80,21 +80,15 @@ export default {
 	VirusDetailInfo(params) {
 		return request.httpRequest("/guns-cloud-config/gunscheckRecords/queryDetail", "POST", params)
 	},
-	// --------------------------------桥梁二维码信息--------------------------------
-	// 新增桥梁信息
-	addBridgeInfo(params) {
-		return request.httpRequest("/guns-cloud-config/bridgeQrcodeInfo/add", "POST", params)
-	},
-	// 修改桥梁信息
-	updateBridgeInfo(params) {
-		return request.httpRequest("/guns-cloud-config/bridgeQrcodeInfo/update", "POST", params)
-	},
+	// --------------------------------桥梁资产信息--------------------------------
 	// 查询桥梁列表
 	queryBridgeInfoList(params) {
-		return request.httpTokenRequest("/guns-cloud-config/bridgeQrcodeInfo/queryList", "POST", params)
+		return request.httpTokenRequest("/guns-cloud-assets/bridgeQrcodeInfo/queryList", "POST", params, 9516)
 	},
 	// 查询桥梁详情
 	queryBridgeInfoDetail(params) {
-		return request.httpTokenRequest("/guns-cloud-config//bridgeQrcodeInfo/detail", "POST", params)
-	}
+		return request.httpTokenRequest("/guns-cloud-config/bridgeQrcodeInfo/detail", "POST", params)
+	},
+
+	
 }
