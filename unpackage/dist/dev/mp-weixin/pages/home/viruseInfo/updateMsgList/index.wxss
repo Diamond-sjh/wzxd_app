@@ -1,0 +1,6 @@
+
+.updateMsg.data-v-ef194e72 .u-navbar {
+	background: -webkit-linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
+	background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
+}
+

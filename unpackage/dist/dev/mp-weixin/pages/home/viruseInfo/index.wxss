@@ -1,0 +1,65 @@
+
+.homeContainer.data-v-23e9b140 {
+	padding: 20px;
+	font-size: 14px;
+	line-height: 36px;
+}
+.homeContainer .navUpdateIcon.data-v-23e9b140 {
+	padding-right: 20px;
+	line-height: 44px;
+	font-size: 20px;
+}
+.homeContainer.data-v-23e9b140 .u-navbar {
+	background: -webkit-linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
+	background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
+}
+.homeContainer .uni-forms-item.data-v-23e9b140 .uni-forms-item__inner {
+	padding-bottom: 0;
+}
+.homeContainer .uni-forms-item.data-v-23e9b140 {
+	border-bottom: 1px solid #cccccc;
+}
+.homeContainer .uni-forms-item uni-picker.data-v-23e9b140{
+	height: 100%;
+}
+.homeContainer .iconfont.data-v-23e9b140{
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+.homeContainer.data-v-23e9b140 .uni-forms-item__content {
+	padding-right: 15px;
+}
+.homeContainer.data-v-23e9b140 .uni-forms-item__content .uni-input {
+	line-height: 36px;
+	float: right;
+}
+.homeContainer .uni-col .u-card.data-v-23e9b140 {
+	margin: 5px 15px!important;
+}
+.homeContainer .cardHearder.data-v-23e9b140 {
+	font-size: 16px;
+	font-weight: 800;
+	line-height: 26px;
+}
+.homeContainer .cardBody.data-v-23e9b140 {
+	line-height: 20px;
+}
+.homeContainer .footBtns.data-v-23e9b140 {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+            flex-direction: row;
+    -webkit-flex-wrap: nowrap;
+            flex-wrap: nowrap;
+    -webkit-justify-content: space-around;
+            justify-content: space-around;
+}
+.homeContainer .u-tabbar.data-v-23e9b140 .u-tabbar__content__item__button .u-badge {
+	top: 2px!important;
+	right: -10px!important;
+}
+

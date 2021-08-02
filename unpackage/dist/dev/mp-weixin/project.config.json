@@ -4,12 +4,13 @@
     "ignore": []
   },
   "setting": {
-    "urlCheck": false
+    "urlCheck": false,
+    "es6": true
   },
   "compileType": "miniprogram",
   "libVersion": "",
-  "appid": "touristappid",
-  "projectname": "uni-ui",
+  "appid": "wx8ae5f9a30274ff2d",
+  "projectname": "信达检测",
   "condition": {
     "search": {
       "current": -1,

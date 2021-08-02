@@ -1,0 +1,22 @@
+
+.addVirus.data-v-caeb5a84 {
+	padding: 20px;
+}
+.addVirus.data-v-caeb5a84 .u-navbar {
+	background: -webkit-linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
+	background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
+}
+.addVirus .slot-wrap.data-v-caeb5a84 {
+	padding-right: 12px;
+}
+.addVirus .warningText.data-v-caeb5a84 {
+	color: red;
+	text-align: center;
+	font-size: 12px;
+	line-height: 12px;
+	padding-top: 5px;
+}
+.addVirus .u-form .u-form-item.data-v-caeb5a84{
+	padding: 5px 0;
+}
+

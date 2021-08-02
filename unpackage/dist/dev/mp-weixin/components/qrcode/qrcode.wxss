@@ -1,0 +1,96 @@
+
+.qrcode-box.data-v-14913484 {
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	height: 100vh;
+	width: 100vw;
+	background-color: rgba(59, 59, 59, 0.6);
+	/* opacity: 0.8; */
+	text-align: center;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+	display: none;
+}
+.qrcode-box	.qrcode-item.data-v-14913484 {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	        flex: 1;
+	position: relative;
+	text-align: center;
+}
+.qrcode-box	.qrcode-item .item-box.data-v-14913484 {
+	width: 90%;
+	margin: auto;
+	display: inline-block;
+	margin-top: 30%;
+	padding-bottom: 30rpx;
+	background-color: #FFFFFF;
+	/* animation: show 0.7s; */
+}
+.qrcode-box	.qrcode-item .item-box .title.data-v-14913484 {
+	font-size: 46rpx;
+	text-align: center;
+	margin-bottom: 24rpx;
+}
+.qrcode-box	.qrcode-item .item-box .canvas.data-v-14913484 {
+	margin: auto;
+	display: inline-block;
+	margin: auto;
+}
+.opacity.data-v-14913484 {
+	opacity: 0;
+	display: block;
+}
+.show.data-v-14913484 {
+	display: block;
+	-webkit-animation: fade-data-v-14913484 0.7s;
+	        animation: fade-data-v-14913484 0.7s;
+	/* -moz-animation: fade 0.5s;	/* Firefox *\/ */
+	/* -webkit-animation: fade 0.5s;	/* Safari 和 Chrome *\/ */
+	/* -o-animation: fade 0.5s; */
+	z-index: 2;
+}
+.hide.data-v-14913484 {
+	-webkit-animation: hide-data-v-14913484 0.7s;
+	        animation: hide-data-v-14913484 0.7s;
+}
+@-webkit-keyframes fade-data-v-14913484 {
+from {
+		opacity: 0.8;
+}
+to {
+		opacity: 1;
+}
+}
+@keyframes fade-data-v-14913484 {
+from {
+		opacity: 0.8;
+}
+to {
+		opacity: 1;
+}
+}
+@-webkit-keyframes hide-data-v-14913484 {
+from {
+		opacity: 1;
+}
+to {
+		opacity: 0;
+}
+}
+@keyframes hide-data-v-14913484 {
+from {
+		opacity: 1;
+}
+to {
+		opacity: 0;
+}
+}
+

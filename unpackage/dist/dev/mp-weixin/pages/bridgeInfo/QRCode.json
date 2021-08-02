@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "生成二维码",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "qrcode": "/components/qrcode/qrcode"
+  }
+}

@@ -1,16 +1,50 @@
 {
   "pages": [
     "pages/login/login",
-    "pages/home/home",
-    "pages/home/addVirus",
-    "pages/home/viewProject"
+    "pages/index",
+    "pages/bridgeInfo/previewPicture",
+    "pages/bridgeInfo/QRCode",
+    "pages/bridgeInfo/createBridgeInfo",
+    "pages/bridgeInfo/queryBridgeInfo",
+    "pages/bridgeInfo/previewOujiang",
+    "pages/home/index",
+    "pages/home/projectInfo/index",
+    "pages/home/projectInfo/editAndAdd",
+    "pages/home/viruseInfo/index",
+    "pages/home/viruseInfo/addVirus",
+    "pages/home/viruseInfo/virusDetail",
+    "pages/home/viruseInfo/updateMsgList/index",
+    "pages/home/viruseInfo/updateMsgList/virusDetail",
+    "pages/personalCenter/index",
+    "pages/personalCenter/userInfo/index",
+    "pages/personalCenter/userInfo/updateAvatar",
+    "pages/personalCenter/userInfo/updateUserInfo",
+    "pages/personalCenter/changePWD/index"
   ],
   "subPackages": [],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "uni-app",
     "navigationBarBackgroundColor": "#F8F8F8",
-    "backgroundColor": "#F8F8F8"
+    "backgroundColor": "#e6e6e6",
+    "rpxCalcMaxDeviceWidth": 0,
+    "rpxCalcBaseDeviceWidth": 375,
+    "rpxCalcIncludeWidth": 750
+  },
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "pages/index",
+        "iconPath": "/static/zhuye0.png",
+        "selectedIconPath": "/static/zhuye1.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/personalCenter/index",
+        "iconPath": "/static/mycenter0.png",
+        "selectedIconPath": "/static/mycenter1.png",
+        "text": "个人中心"
+      }
+    ]
   },
   "usingComponents": {},
   "sitemapLocation": "sitemap.json"

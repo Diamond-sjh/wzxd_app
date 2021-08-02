@@ -1,0 +1,15 @@
+{
+  "navigationBarTitleText": "设施分项",
+  "enablePullDownRefresh": true,
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "u-input": "/uview-ui/components/u-input/u-input",
+    "uni-row": "/uni_modules/uni-row/components/uni-row/uni-row",
+    "uni-col": "/uni_modules/uni-row/components/uni-col/uni-col",
+    "u-card": "/uview-ui/components/u-card/u-card",
+    "uni-load-more": "/uni_modules/uni-load-more/components/uni-load-more/uni-load-more",
+    "u-toast": "/uview-ui/components/u-toast/u-toast"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "病害详情",
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "u-navbar": "/uview-ui/components/u-navbar/u-navbar",
+    "u-cell-group": "/uview-ui/components/u-cell-group/u-cell-group",
+    "u-cell-item": "/uview-ui/components/u-cell-item/u-cell-item",
+    "u-toast": "/uview-ui/components/u-toast/u-toast"
+  }
+}

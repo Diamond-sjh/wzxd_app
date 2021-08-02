@@ -1,0 +1,51 @@
+
+.userback {
+	height: 432rpx;
+	background-color: #55aaff;
+	text-align: center;
+	/* padding-bottom: 20px; */
+	position: relative;
+}
+.userback .imgName {
+	width: 300rpx;
+	height: 300rpx;
+	position: absolute;
+	margin: auto;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+.userback ._img {
+	margin: auto;
+	border-radius: 51px;
+	margin-top: 15%;
+	margin-bottom: 3%;
+	width: 100px;
+	height: 100px;
+}
+.userName{
+	color: #111111;
+	font-size: 0.9rem;
+}
+.userinfo-list .userinfo-item {
+	height: 80rpx;
+	line-height: 80rpx;
+	margin: 0 10px;
+	border-bottom: 1px solid #bfbfbf;
+}
+.userinfo-list .userinfo-item .iconfont:before {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+.userinfo-list .userinfo-item .iconfont.icon-right {
+	float: right;
+}
+.logout-btn {
+	position: absolute;
+	bottom: 10px;
+	width: calc(100% - 20px);
+	background-color: #918e8e;
+	margin: 0 10px;
+}
+

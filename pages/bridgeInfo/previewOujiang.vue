@@ -68,6 +68,7 @@ export default {
   components: {},
   data(){
 	  return{
+<<<<<<< HEAD
 			id:'',
 			data:{
 				bridgeName:'',
@@ -85,6 +86,8 @@ export default {
 				supervisePhone:'',
 				remarks:''
 			},
+=======
+>>>>>>> ad1138a (机电定检一次测试修改)
 		  img:[banner1,
 		      banner2,
 		      banner3,
@@ -93,6 +96,7 @@ export default {
 		  n:2,
 	  }
   },
+<<<<<<< HEAD
 	
 	onLoad() {
 		//获取事件对象
@@ -109,6 +113,11 @@ export default {
 	  this.play();
 		this.getData();
 		
+=======
+  created(){    //生命周期  钩子函数   挂载完成
+      this.fun();
+	  this.play();
+>>>>>>> ad1138a (机电定检一次测试修改)
   },
   methods:{
       fun(){
@@ -120,6 +129,7 @@ export default {
           if(this.n == this.img.length){
               this.n = 0;
           }
+<<<<<<< HEAD
       },
 			getData(){
 				//后端接口只能用id来查询
@@ -128,6 +138,9 @@ export default {
 					this.data = res.data
 				})
 			}
+=======
+      }
+>>>>>>> ad1138a (机电定检一次测试修改)
   },
 }
 </script>

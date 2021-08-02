@@ -1,0 +1,60 @@
+
+page.data-v-01f1549a{
+	width: 100%;
+	height: 100%;
+}
+.projectContent.data-v-01f1549a .u-navbar {
+	background: -webkit-linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
+	background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
+}
+.projectContent .slot-wrap.data-v-01f1549a {
+	width: 100%;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	        align-items: center;
+	padding: 0 12px;
+	-webkit-box-orient: horizontal;
+	-webkit-box-direction: reverse;
+	-webkit-flex-direction: row-reverse;
+	        flex-direction: row-reverse;
+}
+.projectContent .slot-wrap .search.data-v-01f1549a {
+	width: 80%;
+	border: 1px solid;
+	border-radius: 40px;
+	height: 26px;
+	background: white;
+	padding: 3px 15px;
+}
+.projectContent .slot-wrap .search.data-v-01f1549a .u-input__input {
+	height: 18px;
+	line-height: 18px;
+}
+.projectContent .slot-wrap .content.data-v-01f1549a {
+	color: white;
+	margin: 0 5px 0 10px;
+}
+.projectContent .cardHearder.data-v-01f1549a {
+	font-size: 16px;
+	font-weight: 800;
+}
+.projectContent .second.data-v-01f1549a {
+	margin: 20rpx 0;
+}
+.projectContent .footBtns.data-v-01f1549a {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+            flex-direction: row;
+    -webkit-flex-wrap: nowrap;
+            flex-wrap: nowrap;
+    -webkit-justify-content: space-around;
+            justify-content: space-around;
+}
+
