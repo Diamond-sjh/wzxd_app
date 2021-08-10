@@ -81,13 +81,9 @@ export default {
 		return request.httpRequest("/guns-cloud-config/gunscheckRecords/queryDetail", "POST", params)
 	},
 	// --------------------------------桥梁资产信息--------------------------------
-	// 查询桥梁列表
-	queryBridgeInfoList(params) {
-		return request.httpTokenRequest("/guns-cloud-assets/bridgeQrcodeInfo/queryList", "POST", params, 9516)
-	},
-	// 查询桥梁详情
-	queryBridgeInfoDetail(params) {
-		return request.httpTokenRequest("/guns-cloud-config/bridgeQrcodeInfo/detail", "POST", params)
+	// 查询检测数据列表
+	queryStructureTestData(params) {
+		return request.httpTokenRequest("/guns-cloud-assets/structureTestData/queryList", "POST", params, 9516)
 	},
 
 	

@@ -1,8 +1,8 @@
 import store from '../store/index.js'
 // 全局请求封装
 const baseUrl1 = 'http://47.114.76.25:9505'
-// const baseUrl2 = 'http://47.114.76.25:9516'
-const baseUrl2 = 'http://localhost:9516'
+const baseUrl2 = 'http://47.114.76.25:9516'
+// const baseUrl2 = 'http://localhost:9516'
 let baseUrl
 // 不需要token的请求
 const httpRequest = (url, method, params, port) => {
