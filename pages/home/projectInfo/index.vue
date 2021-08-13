@@ -11,7 +11,7 @@
 					@confirm="search"
 					v-model="checkItemValue" 
 					height="20" 
-					placeholder="输入设备名称" />
+					placeholder="输入设备名称(区分大小写)" />
 				</view>
 			</view>
 		</u-navbar>
@@ -217,7 +217,7 @@
 				}
 				if(this.checkItemValue){
 					let arr = this.dataListCopy.filter(val => {
-						if(val.facilitiesName.indexOf(this.checkItemValue) != -1){
+						if(val.deviceName.indexOf(this.checkItemValue) != -1){
 							return val
 						}
 					})

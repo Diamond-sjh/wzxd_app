@@ -128,7 +128,8 @@
 					contentnomore: '没有更多'
 				},
 				pageNo:1,
-				scrollTop:0
+				scrollTop:0,
+				isBack:false //页面返回
 			}
 		},
 		// 进入页面加载
@@ -238,6 +239,28 @@
 		// 页面滚动
 		onPageScroll(e) {
 			this.scrollTop = e.scrollTop;
+		},
+		// 监听页面返回
+		onBackPress(e){
+			let that = this
+			if(this.isBack){
+				return false
+			}else{
+				uni.showModal({  
+					title: '确认返回隧道列表？',  
+					success(res){  
+						if (res.confirm) {  
+							that.isBack = true
+							uni.navigateBack({
+							    delta: 1
+							});
+						} else {  
+							that.isBack = false
+						}  
+					}  
+				});  
+				return true
+			}
 		},
 		computed: {
 			...mapGetters(['getVirusListLen']),

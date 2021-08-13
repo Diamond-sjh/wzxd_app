@@ -70,13 +70,24 @@
 							<u-th style="height:80rpx">6</u-th>
 						</u-tr>
 						<u-tr v-for="(item,index) in num" :key="index">
-							<u-td><u-input v-model="item.number1" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
-							<u-td><u-input v-model="item.number2" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
-							<u-td><u-input v-model="item.number3" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
-							<u-td><u-input v-model="item.number4" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
-							<u-td><u-input v-model="item.number5" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
-							<u-td><u-input v-model="item.number6" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
+							<u-td><u-input v-model="item.number1" type="number" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
+							<u-td><u-input v-model="item.number2" type="number" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
+							<u-td><u-input v-model="item.number3" type="number" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
+							<u-td><u-input v-model="item.number4" type="number" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
+							<u-td><u-input v-model="item.number5" type="number" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
+							<u-td><u-input v-model="item.number6" type="number" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
 						</u-tr>
+						<!-- <u-tr>
+							<u-td style="height: 35px;">平均值计算结果</u-td>
+						</u-tr>
+						<u-tr>
+							<u-td style="height: 35px;">{{getMeanIlluminance.mean1}}</u-td>
+							<u-td style="height: 35px;">{{getMeanIlluminance.mean2}}</u-td>
+							<u-td style="height: 35px;">{{getMeanIlluminance.mean3}}</u-td>
+							<u-td style="height: 35px;">{{getMeanIlluminance.mean4}}</u-td>
+							<u-td style="height: 35px;">{{getMeanIlluminance.mean5}}</u-td>
+							<u-td style="height: 35px;">{{getMeanIlluminance.mean6}}</u-td>
+						</u-tr> -->
 					</u-table>
 					<view class="warningText">※照度测试新增数据保存之后需刷新页面才可修改※</view>
 				</view>
@@ -87,6 +98,7 @@
 				:auto-upload="false" 
 				:file-list="fileList"
 				@on-choose-complete="checkImg"
+				@on-remove="removeImg"
 				max-count="1">
 				</u-upload>
 			</u-form-item>
@@ -292,6 +304,44 @@
 	    },
 		computed: {
 			...mapGetters(['getCustInfo','getVirusList']),
+			// getMeanIlluminance(){
+			// 	let [sum1,sum2,sum3,sum4,sum5,sum6] = [0,0,0,0,0,0]
+			// 	let [count1,count2,count3,count4,count5,count6] = [0,0,0,0,0,0]
+			// 	let [mean1,mean2,mean3,mean4,mean5,mean6] = [0,0,0,0,0,0]
+			// 	this.num.forEach((val)=>{
+			// 		if(val.number1){
+			// 			count1++ 
+			// 			sum1 += Number(val.number1)
+			// 		}
+			// 		if(val.number2){
+			// 			count2++
+			// 			sum2 += Number(val.number2)
+			// 		}
+			// 		if(val.number3){
+			// 			count3++
+			// 			sum3 += Number(val.number3)
+			// 		}
+			// 		if(val.number4){
+			// 			count4++
+			// 			sum4 += Number(val.number4)
+			// 		}
+			// 		if(val.number5){
+			// 			count5++
+			// 			sum5 += Number(val.number5)
+			// 		}
+			// 		if(val.number6){
+			// 			count6++
+			// 			sum6 += Number(val.number6)
+			// 		}
+			// 	})
+			// 	count1 == 0?mean1=null:mean1=Math.ceil(sum1/count1)
+			// 	count2 == 0?mean2=null:mean2=Math.ceil(sum2/count2)
+			// 	count3 == 0?mean3=null:mean3=Math.ceil(sum3/count3)
+			// 	count4 == 0?mean4=null:mean4=Math.ceil(sum4/count4)
+			// 	count5 == 0?mean5=null:mean5=Math.ceil(sum5/count5)
+			// 	count6 == 0?mean6=null:mean6=Math.ceil(sum6/count6)
+			// 	return {mean1,mean2,mean3,mean4,mean5,mean6}
+			// }
 		},
 		// 必须要在onReady生命周期设置验证规则
 		onReady() {
@@ -306,7 +356,7 @@
 			eventChannel.on('toAddVirus', (data) => {
 				Object.assign(this.form,data)
 				if(data.imagePreviewUrl){
-					this.fileList.push({url:data.imagePreviewUrl})
+					this.fileList.push({url:data.imagePreviewUrl,index:data.imageUrl})
 				}
 				if(data.isfault == 1){
 					this.faultDay = false
@@ -452,6 +502,17 @@
 			// 每次选择图片后触发
 			checkImg(lists,name){
 				this.uploadImgUrl = lists
+			},
+			// 删除图片
+			removeImg(index, lists, name){
+				console.log(this.fileList[index])
+				this.$http.deletVirusImg({imageUrl:this.fileList[index].index}).then(res => {
+					console.log(res)
+					if(res.code == 200){
+						this.uploadImgUrl = []
+						this.form.imageUrl = ''
+					}
+				})
 			},
 			// 是否故障
 			radioGroupChange(e){
