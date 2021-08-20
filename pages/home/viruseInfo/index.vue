@@ -5,51 +5,48 @@
 				<u-badge size="mini" type="success" :count='count' :offset="offset"></u-badge>
 			</view>
 		</u-navbar>
-		<uni-forms ref="form">
-			<uni-forms-item label="设施分项:">
-				<picker @change="branchNameChange" :value="branchNameIndex" :range="branchNameList">
-					<view class="uni-input">{{branchNameList[branchNameIndex]}}</view>
-				</picker>
-				<text class="iconfont icon-113fangxiang_xiangyou"></text>
-			</uni-forms-item>
-			<uni-forms-item label="设备名称:">
-				<picker @change="deviceNameChange" :value="deviceNameIndex" :range="deviceNameList">
-					<view class="uni-input">{{deviceNameList[deviceNameIndex]}}</view>
-				</picker>
-				<text class="iconfont icon-113fangxiang_xiangyou"></text>
-			</uni-forms-item>
-			<uni-forms-item label="检测项目:">
-				<picker @change="checkContentChange" :value="checkContentIndex" :range="checkContentList">
-					<view class="uni-input">{{checkContentList[checkContentIndex]}}</view>
-				</picker>
-				<text class="iconfont icon-113fangxiang_xiangyou"></text>
-			</uni-forms-item>
-		</uni-forms>
-		<uni-row class="demo-uni-row">
-			<uni-col :xs="24" :sm="12" :md="8" v-for="(item,index) in dataList" :key=item.id>
-				<u-card padding="10" v-if="deleteIndex&&index == deleteIndex?false:true">
-					<view class="cardHearder" slot="head">
-						<view class="tunnel">{{chunnelName}}</view>
-					</view>
-					<view class="cardBody" slot="body">
-						<view>设施分项: {{item.branchName}}</view>
-						<view>设备名称: {{item.facilitiesName}}</view>
-						<view>检测项目: {{item.checkItem?item.checkItem:'———'}}</view>
-						<view>是否故障: {{item.isfault==1?'故障':'正常'}}</view>
-					</view>
-					<view class="footBtns" slot="foot">
-						<button type="primary" size="mini" class="footerBtn" @click="jumpToPage('editAndAdd',item)">添加/修改</button>
-						<button type="primary" size="mini" class="footerBtn" @click="jumpToPage('detail',item)">详情</button>
-						<button type="primary" size="mini" class="footerBtn" :style="{backgroundColor:(item.ischecked==1?'#19be6b':'#f90')}" @click="updateChecked(item,index)">{{item.ischecked==1?'已检测':'未检测'}}</button>
-					</view>
-				</u-card>
-			</uni-col>
-		</uni-row>
-		<view class="example-body">
-			<uni-load-more :status="status" :content-text="contentText"/>
+		<view>
+			<u-tabs-swiper ref="uTabs" :list="branchNameList" :show-bar="false" :current="current" @change="tabsChange" :is-scroll="false" swiperWidth="750"></u-tabs-swiper>
 		</view>
+		<swiper :style="{height: scrollHeight}" :duration="200" disable-programmatic-animation="true" disable-touch="true" :current="swiperCurrent" @animationfinish="animationfinish" >
+			<swiper-item class="swiper-item" v-for="(item, index) in branchNameList" :key="index">
+				<u-tabs :list="item.data" :current="tabCurrent"  @change="tabChange"></u-tabs>
+				<scroll-view 
+					:scroll-top="scrollTop" 
+					@scroll="scroll" 
+					scroll-y 
+					:lower-threshold="200" 
+					style="height: calc(100% - 40px);width: 100%;" 
+					@scrolltolower="onreachBottom">
+					<uni-row class="demo-uni-row">
+						<uni-col :xs="24" :sm="12" :md="8" v-for="(item,index) in dataList" :key=item.id>
+							<u-card padding="10" v-if="deleteIndex&&index == deleteIndex?false:true">
+								<view class="cardHearder" slot="head">	
+									<view class="floatLeft">{{item.facilitiesName}}</view>
+									<view class="floatRight">{{item.checkNo}}</view>
+								</view>
+								<view class="cardBody" slot="body">
+									<!-- <view>设施分项: {{item.branchName}}</view> -->
+									<!-- <view>设备名称: {{item.facilitiesName}}</view> -->
+									<view>检测项目: {{item.checkItem?item.checkItem:'———'}}</view>
+									<view>是否故障: {{item.isfault==1?'故障':'正常'}}</view>
+								</view>
+								<view class="footBtns" slot="foot">
+									<button type="primary" size="mini" class="footerBtn" @click="jumpToPage('editAndAdd',item)">添加/修改</button>
+									<!-- <button type="primary" size="mini" class="footerBtn" @click="jumpToPage('detail',item)">详情</button> -->
+									<button type="primary" size="mini" class="footerBtn" :style="{backgroundColor:(item.ischecked==1?'#19be6b':'#f90')}" @click="updateChecked(item,index)">{{item.ischecked==1?'已检测':'未检测'}}</button>
+								</view>
+							</u-card>
+						</uni-col>
+					</uni-row>
+					<view class="example-body">
+						<uni-load-more :status="status" :content-text="contentText"/>
+					</view>
+				</scroll-view>
+			</swiper-item>
+		</swiper>
 		<u-back-top :scroll-top="scrollTop" top="2000"></u-back-top>
-		<u-tabbar v-model="current" :list="list" active-color="#ffffff" @change="checkTabItem"></u-tabbar>
+		<!-- <u-tabbar v-model="current" :list="list" active-color="#ffffff" @change="checkTabItem"></u-tabbar> -->
 	</view>
 </template>
 
@@ -80,6 +77,13 @@
 						customIcon: false,
 					},
 				],
+				// 因为内部的滑动机制限制，请将tabs组件和swiper组件的current用不同变量赋值
+				current: 0, // tabsSwiper组件的current值，表示当前活动的tab选项
+				swiperCurrent: 0, // swiper组件的current值，表示当前那个swiper-item是活动的
+				tabCurrent:0,//tabs组件的current值
+				clickTwoTabs:false,//点击二级菜单切换
+				
+				scrollHeight:0,//滚动区域高度
 				chunnelName:'',//隧道名称
 				tunnelId:'',//隧道ID
 				deleteIndex:'',//修改状态删除的卡片信息
@@ -89,20 +93,14 @@
 				facilitiesName: '',
 				checkItem:'',
 				// 对应筛选条件的下拉列表
-				branchNameList:['请选择'],//设施分项
-				deviceNameList:['请选择'],//设备名称
-				checkContentList:['请选择'],//检测项目
-				// 选中的下拉列表的索引
-				branchNameIndex:0,
-				deviceNameIndex:0,
-				checkContentIndex:0,
+				branchNameList:[],//设施分项
+				deviceNameList:[],//设备名称
 				dataList:[],//页面展示的列表
 				// ----------------------------------------全部-------------
 				// 查询返回的数据列表
 				dataListCopy:[],//查询所有的数据列表--备份
 				branchNameDataListCopy:[],//筛选设施分项之后的列表--备份
 				deviceNameDataListCopy:[],//筛选设备名称之后的列表--备份
-				checkContentDataListCopy:[],//筛选检测项目之后的列表--备份
 				// ---------------------------------------------全部
 				// ----------------------------------------待检测-------------
 
@@ -110,7 +108,6 @@
 				noTestDataListCopy:[],//查询所有的数据列表--备份
 				noTestBranchNameDataListCopy:[],//筛选设施分项之后的列表--备份
 				noTestDeviceNameDataListCopy:[],//筛选设备名称之后的列表--备份
-				noTestCheckContentDataListCopy:[],//筛选检测项目之后的列表--备份
 				// ---------------------------------------------待检测
 				// ----------------------------------------已检测-------------
 
@@ -118,7 +115,6 @@
 				isTestDataListCopy:[],//查询所有的数据列表--备份
 				isTestBranchNameDataListCopy:[],//筛选设施分项之后的列表--备份
 				isTestDeviceNameDataListCopy:[],//筛选设备名称之后的列表--备份
-				isTestCheckContentDataListCopy:[],//筛选检测项目之后的列表--备份
 				// ---------------------------------------------已检测
 				// 数据状态 more--查看更多  noMore--没有更多   loading--加载中
 				status: 'more',
@@ -129,12 +125,31 @@
 				},
 				pageNo:1,
 				scrollTop:0,
+				old: {
+					scrollTop:0
+				},
 				isBack:false //页面返回
 			}
 		},
 		// 进入页面加载
 		onLoad(){
+			// #ifdef APP-PLUS
+			plus.screen.lockOrientation('landscape-primary')
+			// #endif
 			this.count = this.getVirusListLen
+			let barHeight = 0
+			//#ifdef APP-PLUS
+			barHeight = plus.navigator.getStatusbarHeight()*plus.screen.scale
+			// #endif
+			uni.getSystemInfo({
+				success:  (res)=> {
+					const wid = res.windowWidth
+					const hei = res.windowHeight
+					// 140是除了可滚动区域外的其它部分占的rpx高度
+					this.downMenuHeight = wid > hei?140*(hei/750):140*(wid/750)
+					this.scrollHeight=(hei/(wid/750))*(wid/750) - this.downMenuHeight - barHeight +'px'
+				}
+			});
 			// 获取eventChannel事件
 			const eventChannel = this.getOpenerEventChannel()
 			eventChannel.on('toViruseInfoIndex', (val) => {
@@ -144,6 +159,11 @@
 				this.getData()
 			})
 		},
+		onUnload(){
+			// #ifdef APP-PLUS
+			plus.screen.lockOrientation('default')
+			// #endif
+		},
 		onNavigationBarButtonTap(e) {
 			this.getData()
 			uni.pageScrollTo({
@@ -151,93 +171,9 @@
 			    duration: 300
 			})
 		},
-		//上拉加载
-		onReachBottom(){
-			if (this.status == 'noMore'){
-				return;
-			}
-			this.pageNo++;
-			let dataCopy
-			let num = this.pageNo*10
-			if(this.checkContentIndex != 0){
-				if(this.current == 0){
-					dataCopy = this.checkContentDataListCopy
-				}
-				if(this.current == 1){
-					dataCopy = this.noTestCheckContentDataListCopy
-				}
-				if(this.current == 2){
-					dataCopy = this.isTestCheckContentDataListCopy
-				}
-				this.dataList = dataCopy.slice(0,num)
-				if(this.dataList.length >= dataCopy.length){
-					this.status = 'noMore'
-				}else{
-					this.status = 'more'
-				}
-				return
-			}
-			if(this.deviceNameIndex != 0){
-				if(this.current == 0){
-					dataCopy = this.deviceNameDataListCopy
-				}
-				if(this.current == 1){
-					dataCopy = this.noTestDeviceNameDataListCopy
-				}
-				if(this.current == 2){
-					dataCopy = this.isTestDeviceNameDataListCopy
-				}
-				this.dataList = dataCopy.slice(0,num)
-				if(this.dataList.length >= dataCopy.length){
-					this.status = 'noMore'
-				}else{
-					this.status = 'more'
-				}
-				return
-			}
-			if(this.branchNameIndex != 0){
-				if(this.current == 0){
-					dataCopy = this.branchNameDataListCopy
-				}
-				if(this.current == 1){
-					dataCopy = this.noTestBranchNameDataListCopy
-				}
-				if(this.current == 2){
-					dataCopy = this.isTestBranchNameDataListCopy
-				}
-				this.dataList = dataCopy.slice(0,num)
-				if(this.dataList.length >= dataCopy.length){
-					this.status = 'noMore'
-				}else{
-					this.status = 'more'
-				}
-				return
-			}
-			if(this.current == 0){
-				dataCopy = this.dataListCopy
-			}
-			if(this.current == 1){
-				dataCopy = this.noTestDataListCopy
-			}
-			if(this.current == 2){
-				dataCopy = this.isTestDataListCopy
-			}
-			this.dataList = dataCopy.slice(0,num)
-			if(this.dataList.length >= dataCopy.length){
-				this.status = 'noMore'
-			}else{
-				this.status = 'more'
-			}
-		},
-		//下拉刷新
-		onPullDownRefresh(){
-			uni.stopPullDownRefresh();
-			this.status = 'loading'
-			this.current = 0
-			this.getData()
-		},
 		// 页面滚动
 		onPageScroll(e) {
+			console.log(e)
 			this.scrollTop = e.scrollTop;
 		},
 		// 监听页面返回
@@ -285,203 +221,111 @@
 						this.dataList = [];
 						this.dataListCopy = []
 						this.branchNameDataListCopy = []
-						this.deviceNameDataListCopy = []
-						this.branchNameIndex = 0
-						this.deviceNameIndex = 0
-						this.checkContentIndex = 0
-						this.branchNameList = ['请选择']
-						this.deviceNameList = ['请选择']
-						this.checkContentList = ['请选择']
+						this.branchNameList = [{name:'全部',data:[{name:'全部'}]}]
 						// 还原数据--结束
 						// 默认展示10条数据
-						this.dataList = res.data.slice(0,10) //需要展示的数据
+						this.dataList = res.data.slice(0,9) //需要展示的数据
 						this.dataListCopy = res.data //备份的查询总数据
 						if(this.dataList.length >= this.dataListCopy.length){
 							this.status = 'noMore'
 						}else{
 							this.status = 'more'
 						}
-						// 所属路线  列表开始------------
-						let branchNameList = new Set()
+						// tabswiper菜单开始------------
 						this.dataListCopy.forEach((val)=>{
-							branchNameList.add(val.branchName)
+							if(this.branchNameList.length == 0){
+								if(val.facilitiesName.replace(/[0-9]/ig,"")!="kV电力变压器" ){
+									this.branchNameList.push({name:val.branchName,data:[{name:val.facilitiesName.replace(/[0-9]/ig,"")}]})
+								}else{
+									this.branchNameList.push({name:val.branchName,data:[{name:val.facilitiesName.slice(0,9)}]})
+								}
+							}else{
+								let flag = false
+								let flagTwo = false
+								let flagIdx
+								let flagIdxTwo
+								flag = this.branchNameList.some((item,index) => {
+									flagIdx = index
+									return item.name == val.branchName
+								})
+								if(flag){
+									if(this.branchNameList[flagIdx].data.length > 0){
+										flagTwo = this.branchNameList[flagIdx].data.some((item2,index) => {
+											flagIdxTwo = index
+											if(val.facilitiesName.replace(/[0-9]/ig,"")!="kV电力变压器" ){
+												return val.facilitiesName.replace(/[0-9]/ig,"") == item2.name.replace(/[0-9]/ig,"")
+											}else{
+												return val.facilitiesName.slice(0,9) == item2.name.slice(0,9)
+											}
+										})
+										if(!flagTwo){
+											if(val.facilitiesName.replace(/[0-9]/ig,"")!="kV电力变压器" ){
+												this.branchNameList[flagIdx].data.push({name:val.facilitiesName.replace(/[0-9]/ig,"")})
+											}else{
+												this.branchNameList[flagIdx].data.push({name:val.facilitiesName.slice(0,9)})
+											}
+										}
+									}else{
+										if(val.facilitiesName.replace(/[0-9]/ig,"")!="kV电力变压器" ){
+											this.branchNameList[flagIdx].data.push({name:val.facilitiesName.replace(/[0-9]/ig,"")})
+										}else{
+											this.branchNameList[flagIdx].data.push({name:val.facilitiesName.slice(0,9)})
+										}
+									}
+								}else{
+									if(val.facilitiesName.replace(/[0-9]/ig,"")!="kV电力变压器" ){
+										this.branchNameList.push({name:val.branchName,data:[{name:val.facilitiesName.replace(/[0-9]/ig,"")}]})
+									}else{
+										this.branchNameList.push({name:val.branchName,data:[{name:val.facilitiesName.slice(0,9)}]})
+									}
+								}
+							}
 						})
-						this.roadSectionList = ['请选择']
-						this.branchNameList.push(...Array.from(branchNameList))
+						console.log(this.branchNameList)
+						this.branchNameChange()
 						// 所属路线  列表结束--------------------
-						
-						this.noTestDataListCopy = res.data.filter(val => {
-							return val.ischecked != 1
-						})
-						this.isTestDataListCopy = res.data.filter(val => {
-							return val.ischecked == 1
-						})
-						this.list[0].count = this.dataListCopy.length
-						this.list[1].count = this.noTestDataListCopy.length
-						this.list[2].count = this.isTestDataListCopy.length
 					}
 				})
 			},
 			// 设施分项改变
-			branchNameChange(e){
-				if(e.detail.value == this.branchNameIndex){
+			branchNameChange(){
+				let data
+				if(this.branchNameList[this.current].name == '全部'){
+					data = this.dataListCopy
+					this.dataList = data.slice(0,9)
+					this.deviceNameDataListCopy = data
+					if(this.dataList.length >= data.length){
+						this.status = 'noMore'
+					}else{
+						this.status = 'more'
+					}
 					return
 				}
-				this.pageNo = 1
-				this.deviceNameIndex = 0
-				this.checkContentIndex = 0
-				this.deviceNameList = ['请选择']
-				this.checkContentList = ['请选择']
-				this.branchNameIndex = e.detail.value	//选中选项的索引值
-				this.branchName = this.branchNameList[this.branchNameIndex]	//选中的选项
-				let data,listCopy
-				if(this.current == 0){
-					listCopy = this.dataListCopy
-				}
-				if(this.current == 1){
-					listCopy = this.noTestDataListCopy
-				}
-				if(this.current == 2){
-					listCopy = this.isTestDataListCopy
-				}
-				if(this.branchNameIndex != '0'){
-					data = listCopy.filter((val)=>{
-						return val.branchName == this.branchName
-					})
-				}else{
-					data = listCopy
-				}
-				// 默认展示10条数据
-				this.dataList = data.slice(0,10)
-				if(this.current == 0){
-					this.branchNameDataListCopy = data
-				}
-				if(this.current == 1){
-					this.noTestBranchNameDataListCopy = data
-				}
-				if(this.current == 2){
-					this.isTestBranchNameDataListCopy = data
-				}
-				if(this.dataList.length >= data.length){
-					this.status = 'noMore'
-				}else{
-					this.status = 'more'
-				}
-				
-				// 设备名称  列表开始---------
-				let deviceNameList = new Set()
-				data.forEach((val)=>{
-					if(val.branchName == this.branchName){
-						if(val.facilitiesName.replace(/[0-9]/ig,"")!="kV电力变压器" ){
-							deviceNameList.add(val.facilitiesName.replace(/[0-9]/ig,""))
-						}else{
-							deviceNameList.add(val.facilitiesName.slice(0,9))
-						}
-					}
+				data = this.dataListCopy.filter((val)=>{
+					return val.branchName == this.branchNameList[this.current].name
 				})
-				this.deviceNameList = ['请选择']
-				this.deviceNameList.push(...Array.from(deviceNameList))
-				// 设备名称  列表结束---------
-				
+				this.dataList = data.slice(0,9)
+				this.branchNameDataListCopy = data
+				// if(this.dataList.length >= data.length){
+				// 	this.status = 'noMore'
+				// }else{
+				// 	this.status = 'more'
+				// }
+				this.deviceNameChange()
 				data = []
 			},
 			// 设备名称改变
-			deviceNameChange(e){
-				if(e.detail.value == this.deviceNameIndex){
-					return
-				}
-				this.pageNo = 1
-				this.checkContentIndex = 0
-				this.checkContentList = ['请选择']
-				this.deviceNameIndex = e.detail.value	//选中选项的索引值
-				this.facilitiesName = this.deviceNameList[this.deviceNameIndex]	//选中的选项
-				let data,listCopy
-				if(this.current == 0){
-					listCopy = this.branchNameDataListCopy
-				}
-				if(this.current == 1){
-					listCopy = this.noTestBranchNameDataListCopy
-				}
-				if(this.current == 2){
-					listCopy = this.isTestBranchNameDataListCopy
-				}
-				if(this.deviceNameIndex != '0'){
-					data = listCopy.filter((val)=>{
-						if(val.facilitiesName.replace(/[0-9]/ig,"")!="kV电力变压器" ){
-							return val.facilitiesName.replace(/[0-9]/ig,"") == this.facilitiesName
-						}else{
-							return val.facilitiesName.slice(0,9) == this.facilitiesName
-						}
-					})
-				}else{
-					data = listCopy
-				}
-				// 默认展示10条数据
-				this.dataList = data.slice(0,10)
-				if(this.current == 0){
-					this.deviceNameDataListCopy = data
-				}
-				if(this.current == 1){
-					this.noTestDeviceNameDataListCopy = data
-				}
-				if(this.current == 2){
-					this.isTestDeviceNameDataListCopy = data
-				}
-				if(this.dataList.length >= data.length){
-					this.status = 'noMore'
-				}else{
-					this.status = 'more'
-				}
-				
-				// 检测项目  列表开始---------
-				let checkContentList = new Set()
-				data.forEach((val)=>{
-					if(val.facilitiesName.replace(/[0-9]/ig,"") == this.facilitiesName){
-						checkContentList.add(val.checkItem.replace(/[0-9]/ig,""))
+			deviceNameChange(){
+				let data
+				data = this.branchNameDataListCopy.filter((val)=>{
+					if(val.facilitiesName.replace(/[0-9]/ig,"")!="kV电力变压器" ){
+						return val.facilitiesName.replace(/[0-9]/ig,"") == (this.branchNameList[this.current].data)[this.tabCurrent].name
+					}else{
+						return val.facilitiesName.slice(0,9) == this.branchNameList[this.current].data[this.tabCurrent].name
 					}
 				})
-				this.checkContentList = ['请选择']
-				this.checkContentList.push(...Array.from(checkContentList))
-				// 检测项目  列表结束---------
-				
-				data = []
-			},
-			// 检测项目改变
-			checkContentChange(e){
-				if(e.detail.value == this.checkContentIndex){
-					return
-				}
-				this.pageNo = 1
-				this.checkContentIndex = e.detail.value	//选中选项的索引值
-				this.checkItem = this.checkContentList[this.checkContentIndex]	//选中的选项
-				let data,listCopy
-				if(this.current == 0){
-					listCopy = this.deviceNameDataListCopy
-				}
-				if(this.current == 1){
-					listCopy = this.noTestDeviceNameDataListCopy
-				}
-				if(this.current == 2){
-					listCopy = this.isTestDeviceNameDataListCopy
-				}
-				if(this.checkContentIndex != '0'){
-					data = listCopy.filter((val)=>{
-						return val.checkItem.replace(/[0-9]/ig,"") == this.checkItem
-					})
-				}else{
-					data = listCopy
-				}
-				// 默认展示10条数据
-				this.dataList = data.slice(0,10)
-				if(this.current == 0){
-					this.checkContentDataListCopy = data
-				}
-				if(this.current == 1){
-					this.noTestCheckContentDataListCopy = data
-				}
-				if(this.current == 2){
-					this.isTestCheckContentDataListCopy = data
-				}
+				this.dataList = data.slice(0,9)
+				this.deviceNameDataListCopy = data
 				if(this.dataList.length >= data.length){
 					this.status = 'noMore'
 				}else{
@@ -626,12 +470,11 @@
 				this.checkContentIndex = 0
 				this.branchNameList = ['请选择']
 				this.deviceNameList = ['请选择']
-				this.checkContentList = ['请选择']
 				// 还原数据--结束
 				// 全部
 				if(index == 0){
 					// 默认展示10条数据
-					this.dataList = this.dataListCopy.slice(0,10) //需要展示的数据
+					this.dataList = this.dataListCopy.slice(0,9) //需要展示的数据
 					if(this.dataList.length >= this.dataListCopy.length){
 						this.status = 'noMore'
 					}else{
@@ -640,7 +483,7 @@
 					// 所属路线  列表开始------------
 					let branchNameList = new Set()
 					this.dataListCopy.forEach((val)=>{
-						branchNameList.add(val.branchName)
+						branchNameList.add({name:val.branchName})
 					})
 					this.roadSectionList = ['请选择']
 					this.branchNameList.push(...Array.from(branchNameList))
@@ -649,7 +492,7 @@
 				// 待检测
 				if(index == 1){
 					// 默认展示10条数据
-					this.dataList = this.noTestDataListCopy.slice(0,10) //需要展示的数据
+					this.dataList = this.noTestDataListCopy.slice(0,9) //需要展示的数据
 					if(this.dataList.length >= this.noTestDataListCopy.length){
 						this.status = 'noMore'
 					}else{
@@ -658,7 +501,7 @@
 					// 所属路线  列表开始------------
 					let branchNameList = new Set()
 					this.noTestDataListCopy.forEach((val)=>{
-						branchNameList.add(val.branchName)
+						branchNameList.add({name:val.branchName})
 					})
 					this.roadSectionList = ['请选择']
 					this.branchNameList.push(...Array.from(branchNameList))
@@ -667,7 +510,7 @@
 				// 已检测
 				if(index == 2){
 					// 默认展示10条数据
-					this.dataList = this.isTestDataListCopy.slice(0,10) //需要展示的数据
+					this.dataList = this.isTestDataListCopy.slice(0,9) //需要展示的数据
 					if(this.dataList.length >= this.isTestDataListCopy.length){
 						this.status = 'noMore'
 					}else{
@@ -676,11 +519,52 @@
 					// 所属路线  列表开始------------
 					let branchNameList = new Set()
 					this.isTestDataListCopy.forEach((val)=>{
-						branchNameList.add(val.branchName)
+						branchNameList.add({name:val.branchName})
 					})
 					this.roadSectionList = ['请选择']
 					this.branchNameList.push(...Array.from(branchNameList))
 					return
+				}
+			},
+			// tabs通知swiper切换
+			tabsChange(index) {
+				this.swiperCurrent = index;
+				this.current = index;
+			},
+			// 由于swiper的内部机制问题，快速切换swiper不会触发dx的连续变化，需要在结束时重置状态
+			// swiper滑动结束，分别设置tabs和swiper的状态
+			animationfinish(e) {
+				this.scrollTop = 0
+				this.old.scrollTop = 0
+				this.tabCurrent = 0
+				let current = e.detail.current;
+				this.current = current;
+				this.swiperCurrent = current;
+				this.branchNameChange()
+				this.$refs.uTabs.setFinishCurrent(current);
+			},
+			// 二级菜单切换
+			tabChange(index){
+				this.tabCurrent = index;
+				this.scrollTop = 0
+				this.old.scrollTop = 0
+				this.deviceNameChange()
+			},
+			scroll(e){
+				this.old.scrollTop = e.detail.scrollTop
+			},
+			// scroll-view到底部加载更多
+			onreachBottom() {
+				if (this.status == 'noMore'){
+					return;
+				}
+				this.pageNo++;
+				let num = this.pageNo*9
+				this.dataList = this.deviceNameDataListCopy.slice(0,num)
+				if(this.dataList.length >= this.deviceNameDataListCopy.length){
+					this.status = 'noMore'
+				}else{
+					this.status = 'more'
 				}
 			}
 		}
@@ -729,6 +613,13 @@
 		font-size: 16px;
 		font-weight: 800;
 		line-height: 26px;
+		overflow: hidden;
+	}
+	.homeContainer .floatLeft {
+		float: left;
+	}
+	.homeContainer .floatRight {
+		float: right;
 	}
 	.homeContainer .cardBody {
 		line-height: 20px;

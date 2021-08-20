@@ -12,10 +12,10 @@
 				<!-- <u-image width="100px" height="100px" src="/static/img/erweima/banner6.jpg"></u-image> -->
 				<!-- <view class="textContent">创建桥梁</view> -->
 			<!-- </view> -->
-			<view class="applicationItem" @click="jump('qrCodeInfo')">
+			<!-- <view class="applicationItem" @click="jump('qrCodeInfo')">
 				<u-image width="100px" height="100px" src="/static/img/erweima/scanner.jpg"></u-image>
 				<view class="textContent">扫一扫</view>
-			</view>
+			</view> -->
 		</view>
 	</view>
 </template>
@@ -155,22 +155,21 @@
 				}
 				if(val == 'qrCodeInfo'){
 					uni.scanCode({
-							scanType:['qrCode'],
-							// onlyFromCamera: true,
+						scanType:['qrCode'],
 					    success: function (res) {
 					        console.log('条码内容：' + res.result);
-									uni.navigateTo({
-										url: '/pages/bridgeAssets/index',
-										success: (val) => {
-											// 通过eventChannel向被打开页面传送数据
-											val.eventChannel.emit('qrCode', res.result )
-										}
-									})
+							uni.navigateTo({
+								url: '/pages/bridgeAssets/index',
+								success: (val) => {
+									// 通过eventChannel向被打开页面传送数据
+									val.eventChannel.emit('qrCode', res.result )
+								}
+							})
 					    },
-							fail: (res) => {
-								alert(res)
-								console.log(res)
-							}
+						fail: (res) => {
+							alert(res)
+							console.log(res)
+						}
 					});
 
 				}

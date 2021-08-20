@@ -20,7 +20,8 @@
             "portrait-primary",
             "landscape-primary",
             "portrait-secondary",
-            "landscape-secondary"
+            "landscape-secondary",
+			"default"
         ],
         "modules" : {
             "Maps" : {},

@@ -77,17 +77,18 @@
 							<u-td><u-input v-model="item.number5" type="number" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
 							<u-td><u-input v-model="item.number6" type="number" height="50" placeholder="请输入" input-align="center" :clearable="false" /></u-td>
 						</u-tr>
-						<!-- <u-tr>
-							<u-td style="height: 35px;">平均值计算结果</u-td>
+						<u-tr>
+							<u-td style="height: 35px;">
+								<u-radio-group style="margin: 0 auto;" v-model="chooseVal" @change="chooseValChange">
+									<u-radio name="沥青路面">沥青路面</u-radio>
+									<u-radio name="水泥路面">水泥路面</u-radio>
+								</u-radio-group>
+							</u-td>
 						</u-tr>
 						<u-tr>
-							<u-td style="height: 35px;">{{getMeanIlluminance.mean1}}</u-td>
-							<u-td style="height: 35px;">{{getMeanIlluminance.mean2}}</u-td>
-							<u-td style="height: 35px;">{{getMeanIlluminance.mean3}}</u-td>
-							<u-td style="height: 35px;">{{getMeanIlluminance.mean4}}</u-td>
-							<u-td style="height: 35px;">{{getMeanIlluminance.mean5}}</u-td>
-							<u-td style="height: 35px;">{{getMeanIlluminance.mean6}}</u-td>
-						</u-tr> -->
+							<u-td style="height: 35px;">平均值计算结果</u-td>
+							<u-td style="height: 35px;">{{getMeanIlluminance.mean}}</u-td>
+						</u-tr>
 					</u-table>
 					<view class="warningText">※照度测试新增数据保存之后需刷新页面才可修改※</view>
 				</view>
@@ -261,6 +262,7 @@
 						number5:null,
 						number6:null
 				}],
+				chooseVal:'',//选择的路面
 				// 隧道灯具照度参数
 				fileList:[],//病害图片预置
 				updateForm:{},//更新接口的参数
@@ -304,44 +306,40 @@
 	    },
 		computed: {
 			...mapGetters(['getCustInfo','getVirusList']),
-			// getMeanIlluminance(){
-			// 	let [sum1,sum2,sum3,sum4,sum5,sum6] = [0,0,0,0,0,0]
-			// 	let [count1,count2,count3,count4,count5,count6] = [0,0,0,0,0,0]
-			// 	let [mean1,mean2,mean3,mean4,mean5,mean6] = [0,0,0,0,0,0]
-			// 	this.num.forEach((val)=>{
-			// 		if(val.number1){
-			// 			count1++ 
-			// 			sum1 += Number(val.number1)
-			// 		}
-			// 		if(val.number2){
-			// 			count2++
-			// 			sum2 += Number(val.number2)
-			// 		}
-			// 		if(val.number3){
-			// 			count3++
-			// 			sum3 += Number(val.number3)
-			// 		}
-			// 		if(val.number4){
-			// 			count4++
-			// 			sum4 += Number(val.number4)
-			// 		}
-			// 		if(val.number5){
-			// 			count5++
-			// 			sum5 += Number(val.number5)
-			// 		}
-			// 		if(val.number6){
-			// 			count6++
-			// 			sum6 += Number(val.number6)
-			// 		}
-			// 	})
-			// 	count1 == 0?mean1=null:mean1=Math.ceil(sum1/count1)
-			// 	count2 == 0?mean2=null:mean2=Math.ceil(sum2/count2)
-			// 	count3 == 0?mean3=null:mean3=Math.ceil(sum3/count3)
-			// 	count4 == 0?mean4=null:mean4=Math.ceil(sum4/count4)
-			// 	count5 == 0?mean5=null:mean5=Math.ceil(sum5/count5)
-			// 	count6 == 0?mean6=null:mean6=Math.ceil(sum6/count6)
-			// 	return {mean1,mean2,mean3,mean4,mean5,mean6}
-			// }
+			getMeanIlluminance(){
+				this.chooseVal = ''
+				let sum = 0
+				let count = 0
+				let mean = 0
+				this.num.forEach((val)=>{
+					if(val.number1){
+						count++
+						sum += Number(val.number1)
+					}
+					if(val.number2){
+						count++
+						sum += Number(val.number2)
+					}
+					if(val.number3){
+						count++
+						sum += Number(val.number3)
+					}
+					if(val.number4){
+						count++
+						sum += Number(val.number4)
+					}
+					if(val.number5){
+						count++
+						sum += Number(val.number5)
+					}
+					if(val.number6){
+						count++
+						sum += Number(val.number6)
+					}
+				})
+				count == 0?mean=null:mean=Math.ceil(sum/count)
+				return {sum,count,mean}
+			}
 		},
 		// 必须要在onReady生命周期设置验证规则
 		onReady() {
@@ -505,14 +503,17 @@
 			},
 			// 删除图片
 			removeImg(index, lists, name){
+				console.log(this.fileList)
 				console.log(this.fileList[index])
-				this.$http.deletVirusImg({imageUrl:this.fileList[index].index}).then(res => {
-					console.log(res)
-					if(res.code == 200){
-						this.uploadImgUrl = []
-						this.form.imageUrl = ''
-					}
-				})
+				if(this.fileList[index]){
+					this.$http.deletVirusImg({imageUrl:this.fileList[index].index}).then(res => {
+						console.log(res)
+						if(res.code == 200){
+							this.uploadImgUrl = []
+							this.form.imageUrl = ''
+						}
+					})
+				}
 			},
 			// 是否故障
 			radioGroupChange(e){
@@ -548,8 +549,6 @@
 				const eventChannel = this.getOpenerEventChannel()
 				this.$refs.uForm.validate(valid=>{
 					if (valid) {
-						console.log(this.form)
-						console.log(this.uploadImgUrl[0])
 						uni.uploadFile({
 							url: 'http://47.114.76.25:9505/guns-cloud-config/gunscheckRecords/updateAndUpload',//你上传接口
 							filePath:this.uploadImgUrl[0]?this.uploadImgUrl[0].url:'',//上传的文件
@@ -558,7 +557,6 @@
 								'gunsCheckRecordsParam':encodeURIComponent(JSON.stringify(this.form))
 							}, 
 							success: (res) => {
-								console.log(res)
 								if (res.statusCode == '200') {
 									this.isBack = true
 									// 触发父级页面定义的方法
@@ -597,6 +595,13 @@
 						})
 					}
 				})
+			},
+			chooseValChange(e){
+				if(e == '沥青路面'){
+					this.getMeanIlluminance.mean = Math.ceil((this.getMeanIlluminance.sum/this.getMeanIlluminance.count)/15)
+				}else{
+					this.getMeanIlluminance.mean = Math.ceil((this.getMeanIlluminance.sum/this.getMeanIlluminance.count)/10)
+				}
 			},
 			toBack(){
 				this.isBack = true
