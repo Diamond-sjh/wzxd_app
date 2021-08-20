@@ -143,11 +143,13 @@
 			// #endif
 			uni.getSystemInfo({
 				success:  (res)=> {
+					console.log(res)
 					const wid = res.windowWidth
 					const hei = res.windowHeight
 					// 140是除了可滚动区域外的其它部分占的rpx高度
 					this.downMenuHeight = wid > hei?140*(hei/750):140*(wid/750)
-					this.scrollHeight=(hei/(wid/750))*(wid/750) - this.downMenuHeight - barHeight +'px'
+					this.scrollHeight= wid > hei?hei - this.downMenuHeight - barHeight +'px':wid - this.downMenuHeight - barHeight +'px'
+					console.log(this.scrollHeight)
 				}
 			});
 			// 获取eventChannel事件
