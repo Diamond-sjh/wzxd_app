@@ -6,12 +6,13 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
 	state: {
-		token:'',
-		custInfo: {},
-		virusList: new Map(),
-		virusListLength:0,
-		currentTimestamp: '',
-		statueList: new Map()
+		token:'',//用户token
+		custInfo: {},//客户信息
+		virusList: new Map(),//待上传病害信息
+		virusListLength:0,//待上传病害信息长度
+		currentTimestamp: '',//当前上传时间戳
+		statueList: new Map(),//检测状态列表
+		
 	},
 	mutations: {
 		// 设置登录的token

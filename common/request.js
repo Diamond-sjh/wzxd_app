@@ -1,12 +1,10 @@
 import store from '../store/index.js'
 // 全局请求封装
 const baseUrl1 = 'http://47.114.76.25:9505'
-const baseUrl2 = 'http://47.114.76.25:9516'
-// const baseUrl2 = 'http://localhost:9516'
 let baseUrl
 // 不需要token的请求
-const httpRequest = (url, method, params, port) => {
-	baseUrl = port?baseUrl2:baseUrl1
+const httpRequest = (url, method, params, urlParam) => {
+	baseUrl = urlParam?urlParam:baseUrl1
 	uni.showLoading({
 		title: "加载中"
 	});
@@ -38,8 +36,8 @@ const httpRequest = (url, method, params, port) => {
 	})
 };
 //带Token请求
-const httpTokenRequest = (url, method, params, port) => {
-	baseUrl = port?baseUrl2:baseUrl1
+const httpTokenRequest = (url, method, params, urlParam) => {
+	baseUrl = urlParam?urlParam:baseUrl1
 	uni.showLoading({
 		title: "加载中"
 	});

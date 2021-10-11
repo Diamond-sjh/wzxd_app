@@ -2,6 +2,7 @@
 	<view class="homeContainer">
 		<u-navbar back-text="返回" title="病害信息" back-icon-color="white" title-color="white" :back-text-style="letVal">
 			<view slot="right" class="iconfont icon-shangchuan navUpdateIcon" @click="jumpToPage('updateList')">
+				<u-icon  name="shangchuan" custom-prefix="custom-icon"></u-icon>
 				<u-badge size="mini" type="success" :count='count' :offset="offset"></u-badge>
 			</view>
 		</u-navbar>
@@ -15,7 +16,7 @@
 					:scroll-top="scrollTop" 
 					@scroll="scroll" 
 					scroll-y 
-					:lower-threshold="200" 
+					:lower-threshold="420" 
 					style="height: calc(100% - 40px);width: 100%;" 
 					@scrolltolower="onreachBottom">
 					<uni-row class="demo-uni-row">
@@ -26,14 +27,11 @@
 									<view class="floatRight">{{item.checkNo}}</view>
 								</view>
 								<view class="cardBody" slot="body">
-									<!-- <view>设施分项: {{item.branchName}}</view> -->
-									<!-- <view>设备名称: {{item.facilitiesName}}</view> -->
 									<view>检测项目: {{item.checkItem?item.checkItem:'———'}}</view>
 									<view>是否故障: {{item.isfault==1?'故障':'正常'}}</view>
 								</view>
 								<view class="footBtns" slot="foot">
 									<button type="primary" size="mini" class="footerBtn" @click="jumpToPage('editAndAdd',item)">添加/修改</button>
-									<!-- <button type="primary" size="mini" class="footerBtn" @click="jumpToPage('detail',item)">详情</button> -->
 									<button type="primary" size="mini" class="footerBtn" :style="{backgroundColor:(item.ischecked==1?'#19be6b':'#f90')}" @click="updateChecked(item,index)">{{item.ischecked==1?'已检测':'未检测'}}</button>
 								</view>
 							</u-card>
@@ -46,7 +44,6 @@
 			</swiper-item>
 		</swiper>
 		<u-back-top :scroll-top="scrollTop" top="2000"></u-back-top>
-		<!-- <u-tabbar v-model="current" :list="list" active-color="#ffffff" @change="checkTabItem"></u-tabbar> -->
 	</view>
 </template>
 
@@ -124,7 +121,7 @@
 					contentnomore: '没有更多'
 				},
 				pageNo:1,
-				scrollTop:0,
+				scrollTop:-1,
 				old: {
 					scrollTop:0
 				},
@@ -166,18 +163,6 @@
 			plus.screen.lockOrientation('default')
 			// #endif
 		},
-		onNavigationBarButtonTap(e) {
-			this.getData()
-			uni.pageScrollTo({
-			    scrollTop: 0,
-			    duration: 300
-			})
-		},
-		// 页面滚动
-		onPageScroll(e) {
-			console.log(e)
-			this.scrollTop = e.scrollTop;
-		},
 		// 监听页面返回
 		onBackPress(e){
 			let that = this
@@ -212,6 +197,9 @@
 			...mapMutations(['SET_STATUElIST']),
 			// 获取全部的待检数据
 			getData(){
+				let compare = (val1,val2)=>{
+					return (val1.checkNo.toLowerCase() > val2.checkNo.toLowerCase()?-1:val1.checkNo.toLowerCase() < val2.checkNo.toLowerCase()?1:0)
+				}
 				this.pageNo = 1
 				let params = {
 					testYear:new Date().getFullYear(),
@@ -226,8 +214,9 @@
 						this.branchNameList = [{name:'全部',data:[{name:'全部'}]}]
 						// 还原数据--结束
 						// 默认展示10条数据
-						this.dataList = res.data.slice(0,9) //需要展示的数据
-						this.dataListCopy = res.data //备份的查询总数据
+						let arr = res.data.sort(compare)
+						this.dataList = arr.slice(0,18) //需要展示的数据
+						this.dataListCopy = arr //备份的查询总数据
 						if(this.dataList.length >= this.dataListCopy.length){
 							this.status = 'noMore'
 						}else{
@@ -294,7 +283,7 @@
 				let data
 				if(this.branchNameList[this.current].name == '全部'){
 					data = this.dataListCopy
-					this.dataList = data.slice(0,9)
+					this.dataList = data.slice(0,18)
 					this.deviceNameDataListCopy = data
 					if(this.dataList.length >= data.length){
 						this.status = 'noMore'
@@ -306,13 +295,8 @@
 				data = this.dataListCopy.filter((val)=>{
 					return val.branchName == this.branchNameList[this.current].name
 				})
-				this.dataList = data.slice(0,9)
+				this.dataList = data.slice(0,18)
 				this.branchNameDataListCopy = data
-				// if(this.dataList.length >= data.length){
-				// 	this.status = 'noMore'
-				// }else{
-				// 	this.status = 'more'
-				// }
 				this.deviceNameChange()
 				data = []
 			},
@@ -326,7 +310,7 @@
 						return val.facilitiesName.slice(0,9) == this.branchNameList[this.current].data[this.tabCurrent].name
 					}
 				})
-				this.dataList = data.slice(0,9)
+				this.dataList = data.slice(0,18)
 				this.deviceNameDataListCopy = data
 				if(this.dataList.length >= data.length){
 					this.status = 'noMore'
@@ -536,6 +520,7 @@
 			// 由于swiper的内部机制问题，快速切换swiper不会触发dx的连续变化，需要在结束时重置状态
 			// swiper滑动结束，分别设置tabs和swiper的状态
 			animationfinish(e) {
+				this.dataList = []
 				this.scrollTop = 0
 				this.old.scrollTop = 0
 				this.tabCurrent = 0
@@ -547,27 +532,58 @@
 			},
 			// 二级菜单切换
 			tabChange(index){
+				this.dataList = []
 				this.tabCurrent = index;
 				this.scrollTop = 0
 				this.old.scrollTop = 0
 				this.deviceNameChange()
 			},
 			scroll(e){
+				console.log(e)
 				this.old.scrollTop = e.detail.scrollTop
+				// if(e.target.scrollTop > 450){
+				// 	if (this.status == 'noMore'){
+				// 		return;
+				// 	}
+				// 	this.scrollTop = this.old.scrollTop
+				// 	this.$nextTick(() => {
+				// 		this.scrollTop = 0
+				// 	});
+				// 	this.status = 'loading'
+				// 	let num1 = this.pageNo*18
+				// 	this.pageNo++;
+				// 	let num = this.pageNo*18
+				// 	this.dataList = this.deviceNameDataListCopy.slice(num1,num)
+				// 	if(this.dataList.length >= this.deviceNameDataListCopy.length){
+				// 		this.status = 'noMore'
+				// 	}else{
+				// 		this.status = 'more'
+				// 	}
+				// }
 			},
 			// scroll-view到底部加载更多
 			onreachBottom() {
+				// return
 				if (this.status == 'noMore'){
 					return;
 				}
+				this.scrollTop = this.old.scrollTop
+				this.$nextTick(() => {
+					// this.scrollTop = 0
+					this.scrollTop=Math.random();
+				});
+				return
+				this.status = 'loading'
+				let num1 = this.pageNo*18
 				this.pageNo++;
-				let num = this.pageNo*9
-				this.dataList = this.deviceNameDataListCopy.slice(0,num)
+				let num = this.pageNo*18
+				this.dataList = this.deviceNameDataListCopy.slice(num1,num)
 				if(this.dataList.length >= this.deviceNameDataListCopy.length){
 					this.status = 'noMore'
 				}else{
 					this.status = 'more'
 				}
+				
 			}
 		}
 	}

@@ -16,64 +16,7 @@
 				"navigationBarTitleText": "首页"
 			}
 		},
-		//桥梁资产信息项目-------------------------开始
-		{
-			"path":"pages/bridgeAssets/index",
-			"style": {
-				"navigationBarTitleText":"桥梁资产信息",
-				// "enablePullDownRefresh":true,
-				"navigationStyle": "custom" ,// 隐藏系统导航栏
-				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
-			}
-		},
-		{
-			"path":"pages/bridgeAssets/pdf",
-			"style": {
-				"navigationBarTitleText":"pdf预览",
-				// "enablePullDownRefresh":true,
-				"navigationStyle": "custom" ,// 隐藏系统导航栏
-				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
-			}
-		},
-		//桥梁资产信息项目-------------------------结束
-			// 桥梁二维码项目-----------------------------开始
-		{
-			"path": "pages/bridgeInfo/previewPicture",
-			"style": {
-				"navigationBarTitleText": "桥梁二维码轮播图",
-				"enablePullDownRefresh":false
-			}
-		},
-		{
-			"path": "pages/bridgeInfo/QRCode",
-			"style": {
-				"navigationBarTitleText": "生成二维码",
-				"enablePullDownRefresh":false
-			}
-		},
-		{
-			"path": "pages/bridgeInfo/createBridgeInfo",
-			"style": {
-				"navigationBarTitleText": "创建桥梁信息",
-				"enablePullDownRefresh":false
-			}
-		},
-		{
-			"path": "pages/bridgeInfo/queryBridgeInfo",
-			"style": {
-				"navigationBarTitleText": "查询桥梁信息",
-				"enablePullDownRefresh":false
-			}
-		},
-		{
-			"path": "pages/bridgeInfo/previewOujiang",
-			"style": {
-				"navigationBarTitleText": "瓯江大桥",
-				"enablePullDownRefresh":false
-			}
-		},
-		// 桥梁二维码项目-----------------------------结束
-		// 隧道检测项目-----------------------------开始
+		// 隧道---检测项目-----------------------------开始
 		{
 			"path": "pages/home/index",
 			"style": {
@@ -110,7 +53,6 @@
 			"path": "pages/home/viruseInfo/index",
 			"style": {
 				"navigationBarTitleText": "病害信息",
-				"enablePullDownRefresh":true,
 				"navigationStyle": "custom" ,// 隐藏系统导航栏
 				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
 			}
@@ -148,6 +90,17 @@
 			}
 		},
 		// 待检测项目------------------------------结束
+		
+		// 桥梁-----------------------------------------开始
+		{
+			"path": "pages/bridge/index",
+			"style": {
+				"navigationBarTitleText": "桥梁列表",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},
+		// 桥梁-----------------------------------------结束
 		// 个人中心---------------------------------开始
 		{
 			"path": "pages/personalCenter/index",

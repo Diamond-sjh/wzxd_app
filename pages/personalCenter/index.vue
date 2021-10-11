@@ -10,25 +10,29 @@
 			<view class="userinfo-item" @click="clickItem('info')">
 				<view class="iconfont icon-gerenxinxi">
 					<text>个人信息</text>
-					<text class="iconfont icon-113fangxiang_xiangyou icon-right"></text>
+					<u-icon class="iconfont icon-113fangxiang_xiangyou icon-right" name="gerenxinxi" custom-prefix="custom-icon"></u-icon>
+					<!-- <text class="iconfont icon-113fangxiang_xiangyou icon-right"></text> -->
 				</view>
 			</view>
 			<view class="userinfo-item" @click="clickItem('pwd')">
 				<view class="iconfont icon-xiugaimima">
 					<text>修改密码</text>
-					<text class="iconfont icon-113fangxiang_xiangyou icon-right"></text>
+					<u-icon class="iconfont icon-113fangxiang_xiangyou icon-right" name="xiugaimima" custom-prefix="custom-icon"></u-icon>
+					<!-- <text class="iconfont icon-113fangxiang_xiangyou icon-right"></text> -->
 				</view>
 			</view>	
 			<view class="userinfo-item" @click="clickItem('share')">
 				<view class="iconfont icon-fenxiang">
 					<text>分享</text>
-					<text class="iconfont icon-113fangxiang_xiangyou icon-right"></text>
+					<u-icon class="iconfont icon-113fangxiang_xiangyou icon-right" name="fenxiang" custom-prefix="custom-icon"></u-icon>
+					<!-- <text class="iconfont icon-113fangxiang_xiangyou icon-right"></text> -->
 				</view>
 			</view>	
 			<view class="userinfo-item" @click="clickItem('update')">
 				<view class="iconfont icon-icon_gengxin">
 					<text>系统更新</text>
-					<text class="iconfont icon-113fangxiang_xiangyou icon-right"></text>
+					<u-icon class="iconfont icon-113fangxiang_xiangyou icon-right" name="icon_gengxin" custom-prefix="custom-icon"></u-icon>
+					<!-- <text class="iconfont icon-113fangxiang_xiangyou icon-right"></text> -->
 				</view>
 			</view>	
 		</view>		

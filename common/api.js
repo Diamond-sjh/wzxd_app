@@ -80,11 +80,97 @@ export default {
 	VirusDetailInfo(params) {
 		return request.httpRequest("/guns-cloud-config/gunscheckRecords/queryDetail", "POST", params)
 	},
-	// --------------------------------桥梁资产信息--------------------------------
-	// 查询检测数据列表
-	queryStructureTestData(params) {
-		return request.httpTokenRequest("/guns-cloud-assets/structureTestData/queryList", "POST", params, 9516)
+	// ------------------------------病害信息----------------------------------
+	// -------------------------------桥梁信息----------------------------
+	// 获取所有桥梁信息
+	getBridgeName(params) {
+		return request.httpRequest("/bridgeDatabase/getBridgeName", "GET", params,'http://47.98.199.60:8001')
 	},
-
+	// 获取指定桥梁信息
+	getBridgeInfoForName(params) {
+		return request.httpRequest("/bridgeDatabase/queryListPage", "GET", params,'http://47.98.199.60:8001')
+	},
+	// 获取菜单列表
+	getAppLeftMenuList(params) {
+		return request.httpRequest("/menu/getAppLeftMenuList", "GET", params,'http://47.98.199.60:8001')
+	},
+	// 获取当前监测项目对应的截面列表
+	getBridgeMonitorSections(params) {
+		return request.httpRequest("/bridgeMonitorSection/getBridgeMonitorSections", "GET", params,'http://47.98.199.60:8001')
+	},
+	// 获取当前截面对应的测点
+	queryListSections(params) {
+		return request.httpRequest("/bridgeMonitorInfo/queryList", "POST", params,'http://47.98.199.60:8001')
+	},
+	// 环境温湿度
+	humitureInfo(params) {
+		return request.httpRequest("/stbEnvTempHum/selectHour", "POST", params,'http://47.98.199.60:8004')
+	},
+	// 风速风向
+	windLoad(params) {
+		return request.httpRequest("/StbWindSpeedDirect/selectHour", "POST", params,'http://47.98.199.60:8004')
+	},
+	// 地震监测
+	earthquake(params) {
+		return request.httpRequest("/earthquake/getHourData", "POST", params,'http://47.98.199.60:8004')
+	},
+	// 钢箱梁监测
+	stbBoxgirderTempHum(params) {
+		return request.httpRequest("/stbBoxgirderTempHum/selectHour", "POST", params,'http://47.98.199.60:8004')
+	},
+	// 索力检测
+	CableForce(params) {
+		return request.httpRequest("/stbCableForce/selectHour", "POST", params,'http://47.98.199.60:8004')
+	},
+	// 结构应变 ---
+	structuralStrain(params) {
+		return request.httpRequest("/StbSectionStrain/selectHour", "POST", params,'http://47.98.199.60:8004')
+	},
+	// 主梁伸缩缝
+	expansionJoint(params) {
+		return request.httpRequest("/StbExpansionJoint/selectHour", "POST", params,'http://47.98.199.60:8004')
+	},
+	// 裂缝宽度 ---
+	StbCrack(params) {
+		return request.httpRequest("/StbCrack/selectHour", "POST", params,'http://47.98.199.60:8004')
+	},
+	// 结构温度 ---
+	structuralTemperature(params) {
+		return request.httpRequest("/StbSectionTemp/selectHour", "POST", params,'http://47.98.199.60:8004')
+	},
+	// 主梁挠度
+	girder(params) {
+		return request.httpRequest("/StbGirderDeflection/selectHour", "POST", params,'http://47.98.199.60:8004')
+	},
+	// 结构振动 ---
+	structuralVibration(params) {
+		return request.httpRequest("/StbAcceleration/getHourData", "POST", params,'http://47.98.199.60:8004')
+	},
+	// 主梁位移
+	girderOffset(params) {
+		return request.httpRequest("/StbGirderDisplacement/selectHour", "POST", params,'http://47.98.199.60:8004')
+	},
+	// 空间变位
+	StbGnss(params) {
+		return request.httpRequest("/StbGnss/selectHour", "POST", params,'http://47.98.199.60:8004')
+	},
+	// 空间变位（倾斜）
+	StbSpaceLean(params) {
+		return request.httpRequest("/StbSpaceLean/selectHour", "POST", params,'http://47.98.199.60:8004')
+	},
+	// 车速
+	StbVehicleSpeed(params) {
+		return request.httpRequest("/StbVehicleSpeed/selectHour", "POST", params,'http://47.98.199.60:8004')
+	},
+	// 轴数
+	stbAxleQuantity(params) {
+		return request.httpRequest("/stbAxleQuantity/selectHour", "POST", params,'http://47.98.199.60:8004')
+	},
+	// 总重
+	StbTotalWeight(params) {
+		return request.httpRequest("/StbTotalWeight/selectHour", "POST", params,'http://47.98.199.60:8004')
+	},
+	// -------------------------------桥梁信息----------------------------
+	
 	
 }

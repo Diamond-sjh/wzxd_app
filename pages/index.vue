@@ -6,16 +6,12 @@
 		<view class="applicationList">
 			<view class="applicationItem" @click="jump('project')">
 				<u-image width="100px" height="100px" src="/static/project.png"></u-image>
-				<view class="textContent">隧道检测项目</view>
+				<view class="textContent">隧道检测</view>
 			</view>
-			<!-- <view class="applicationItem" @click="jump('bridgeInfo')"> -->
-				<!-- <u-image width="100px" height="100px" src="/static/img/erweima/banner6.jpg"></u-image> -->
-				<!-- <view class="textContent">创建桥梁</view> -->
-			<!-- </view> -->
-			<!-- <view class="applicationItem" @click="jump('qrCodeInfo')">
-				<u-image width="100px" height="100px" src="/static/img/erweima/scanner.jpg"></u-image>
-				<view class="textContent">扫一扫</view>
-			</view> -->
+			<view class="applicationItem" @click="jump('bridge')">
+				<u-image width="100px" height="100px" src="/static/project.png"></u-image>
+				<view class="textContent">桥梁监测</view>
+			</view>
 		</view>
 	</view>
 </template>
@@ -35,7 +31,7 @@
 		},
 		onLoad() {
 			uni.onNetworkStatusChange(res => {
-				// console.log(res)
+				// console.log(res)s's
 				// console.log(this.getStatueList.size)
 				this.isConnected = res.isConnected
 				if(res.isConnected && this.timer != null){
@@ -142,9 +138,9 @@
 				})
 			},
 			jump(val){
-				if(val == 'addProject'){
+				if(val == 'bridge'){
 					uni.navigateTo({
-					    url: '/pages/addProject/index'
+					    url: '/pages/bridge/index'
 					});
 					return
 				}
@@ -153,31 +149,6 @@
 					    url: '/pages/home/index'
 					});
 				}
-				if(val == 'qrCodeInfo'){
-					uni.scanCode({
-						scanType:['qrCode'],
-					    success: function (res) {
-					        console.log('条码内容：' + res.result);
-							uni.navigateTo({
-								url: '/pages/bridgeAssets/index',
-								success: (val) => {
-									// 通过eventChannel向被打开页面传送数据
-									val.eventChannel.emit('qrCode', res.result )
-								}
-							})
-					    },
-						fail: (res) => {
-							alert(res)
-							console.log(res)
-						}
-					});
-
-				}
-				// if(val == 'bridgeInfo'){
-				// 	uni.navigateTo({
-				// 	    url: '/pages/bridgeInfo/createBridgeInfo'
-				// 	});
-				// }
 			}
 	    }
 	}
