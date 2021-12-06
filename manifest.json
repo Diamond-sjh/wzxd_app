@@ -24,8 +24,7 @@
             "default"
         ],
         "modules" : {
-            "Maps" : {},
-            "Push" : {}
+            "Maps" : {}
         },
         /* 模块配置 */
         "distribute" : {
@@ -67,9 +66,7 @@
                         "appkey_android" : "e620882b7b3e1416a862ce9eba40d91c"
                     }
                 },
-                "push" : {
-                    "unipush" : {}
-                },
+                "push" : {},
                 "share" : {},
                 "speech" : {
                     "ifly" : {}
