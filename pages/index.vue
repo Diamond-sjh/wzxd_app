@@ -12,10 +12,10 @@
 				<u-image width="100px" height="100px" src="/static/project.png"></u-image>
 				<view class="textContent">桥梁监测</view>
 			</view>
-			<view class="applicationItem" @click="jump('text')">
+		<!-- 	<view class="applicationItem" @click="jump('text')">
 				<u-image width="100px" height="100px" src="/static/project.png"></u-image>
 				<view class="textContent">桥梁监测</view>
-			</view>
+			</view> -->
 		</view>
 		<view class="applicationList" v-else>
 			<view class="applicationItem" @click="jump('monitor')">

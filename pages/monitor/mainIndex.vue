@@ -46,7 +46,7 @@
 			
 		},
 	    methods: {
-			...mapMutations(['DELET_INFO','SET_BASIS']),
+			...mapMutations(['DELET_INFO','SET_BASIS','SET_PROJECTLIST']),
 			// 查询规范依据
 			getParams(){
 				this.$httpMonitor.queryBasisNoPagelist().then(res => {
@@ -72,6 +72,20 @@
 							})
 						})
 						this.$store.commit('SET_INSTRUMENT',instrumentList)
+					}
+				})
+				// 查询工程列表
+				this.$httpMonitor.queryProjectList({}).then(res => {
+					if(res.code == 200){
+						let projectList = []
+						res.data.forEach(val => {
+							projectList.push({
+								value:val.id,
+								label:val.projectName
+							})
+						})
+						this.SET_PROJECTLIST(projectList)
+						// this.$store.commit('SET_PROJECTLIST',projectList)
 					}
 				})
 			},

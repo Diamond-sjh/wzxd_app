@@ -14,7 +14,8 @@ const store = new Vuex.Store({
 		statueList: new Map(),//检测状态列表
 		bluetooth:{},//连接的蓝牙设备信息
 		basisList:[],// 规范依据
-		instrumentList:[]// 设备列表
+		instrumentList:[],// 设备列表
+		projectList:[],//项目列表
 	},
 	mutations: {
 		// 设置登录的token
@@ -53,6 +54,7 @@ const store = new Vuex.Store({
 			state.custInfo = {}
 			state.basisList = []
 			state.instrumentList = []
+			state.projectList = []
 		},
 		// 设置蓝牙连接数据
 		SET_BLUETOOTH(state,info){
@@ -65,6 +67,10 @@ const store = new Vuex.Store({
 		// 设置设备列表
 		SET_INSTRUMENT(state,info){
 			state.instrumentList = info
+		},
+		// 设置项目列表
+		SET_PROJECTLIST(state,info){
+			state.projectList = info
 		}
 	},
 	actions: {
@@ -111,7 +117,9 @@ const store = new Vuex.Store({
 		// 获取规范依据
 		getBasisList: state => state.basisList,
 		// 获取设备列表
-		getInstrumentList: state => state.instrumentList
+		getInstrumentList: state => state.instrumentList,
+		// 获取项目列表
+		getProjectList: state => state.projectList
 	}
 })
 

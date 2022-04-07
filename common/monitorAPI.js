@@ -11,7 +11,9 @@ export default {
 		return request.httpRequest("/captchaImage", "GET", params,url)
 	},
 	// 查询工程项目
-	
+	queryProjectList(params){
+		return request.httpTokenRequest("/project/project/noPagelist", "GET", params,url)
+	},
 	// 查询全站仪录入数据
 	query(params){
 		return request.httpTokenRequest("/project/station/list", "GET", params,url)

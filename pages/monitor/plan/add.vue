@@ -7,6 +7,9 @@
 		</u-navbar>
 		<view class="form containerCommon">
 			<u-form :model="form" ref="uForm" label-width="250" label-align="left">
+				<u-form-item prop="projectId" label="工程名称：">
+					<u-input v-model="projectName" placeholder="请选择" type="select" @click="openSelect('projectId')" />
+				</u-form-item>
 				<u-form-item prop="testItems" label="监测参数：">
 					<u-input v-model="form.testItems" placeholder="请选择" type="select" @click="openSelect('testItems')" />
 				</u-form-item>
@@ -83,6 +86,7 @@
 		data() {
 			return {
 				form: {},
+				projectName:'',//工程名称
 				defaultValue:[],//多选列表的默认选中数据
 				isShowDate: false, //日期选择器是否显示
 				isShowSelectList: false, //选择器是否显示
@@ -102,7 +106,7 @@
 			this.form.burialDate = this.$utils.getDate(new Date(), 'yyyy-MM-dd')
 		},
 		computed: {
-			...mapGetters(['getBasisList','getInstrumentList']),
+			...mapGetters(['getBasisList','getInstrumentList','getProjectList']),
 		},
 		methods: {
 			// 选择日期
@@ -114,6 +118,9 @@
 				this.data = []
 				this.clickType = type
 				switch (type){
+					case 'projectId':
+						this.data = this.getProjectList
+						break;
 					case 'testItems': //监测参数
 						this.data.push({label:'洞内外观察',value:'洞内外观察'},...configData.parameterNameKeyList,...configData.parameterNameList)
 						break;
@@ -206,6 +213,10 @@
 						}
 						this.form.testItems = res[0].value
 						break;
+					case 'projectId':
+						this.form.projectId = res[0].value
+						this.projectName = res[0].label
+						break;
 					default:
 						this.form[this.clickType] = res[0].value 
 						break;
@@ -221,6 +232,8 @@
 			},
 			// 点击保存按钮
 			submit() {
+				console.log(this.form)
+				return
 				let that = this
 				this.form.initialMonitoringDate = this.form.burialDate
 				console.log(this.form)
