@@ -16,6 +16,16 @@
 				"navigationBarTitleText": "首页"
 			}
 		},
+		// 测试蓝牙
+		{
+			"path": "pages/text/index",
+			"style": {
+				"navigationBarTitleText": "蓝牙"
+				// "navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},
+		
+		
 		// 隧道---检测项目-----------------------------开始
 		{
 			"path": "pages/home/index",
@@ -140,7 +150,158 @@
 			"style": {
 				"navigationBarTitleText": "修改密码"
 			}
-		}],
+		},
+		// 个人中心---------------------------------结束
+		
+		
+		// 监控量测系统---------------------------------开始
+		// 全站仪-------------------------------开始
+		{
+			"path": "pages/monitor/mainIndex",
+			"style": {
+				"navigationBarTitleText": "首页",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},
+		{
+			"path": "pages/monitor/index",
+			"style": {
+				"enablePullDownRefresh":true,
+				"navigationBarTitleText": "测量列表",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},
+		{
+			"path": "pages/monitor/add",
+			"style": {
+				"navigationBarTitleText": "全站仪数据录入",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},
+		{
+			"path": "pages/monitor/bluetooth",
+			"style": {
+				"navigationBarTitleText": "蓝牙列表"
+			}
+		},
+		{
+			"path": "pages/monitor/updateMsgList/index",
+			"style": {
+				"navigationBarTitleText": "未上传数据列表",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},
+		{
+			"path": "pages/monitor/updateMsgList/msgDetail",
+			"style": {
+				"navigationBarTitleText": "未上传数据详情",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},
+		// 全站仪--------------------------结束
+		// 洞内外观察----------------------开始
+		{
+			"path": "pages/monitor/inOutCave/index",
+			"style": {
+				"enablePullDownRefresh":true,
+				"navigationBarTitleText": "测量列表",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},
+		{
+			"path": "pages/monitor/inOutCave/add",
+			"style": {
+				"navigationBarTitleText": "洞内外数据录入",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},{
+			"path": "pages/monitor/inOutCave/updateMsgList/index",
+			"style": {
+				"navigationBarTitleText": "未上传数据列表",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},{
+			"path": "pages/monitor/inOutCave/updateMsgList/msgDetail",
+			"style": {
+				"navigationBarTitleText": "未上传数据详情",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},
+		// 洞内外观察----------------------结束
+		// 围岩监测------------------------开始
+		{
+			"path": "pages/monitor/surface/index",
+			"style": {
+				"enablePullDownRefresh":true,
+				"navigationBarTitleText": "测量列表",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},{
+			"path": "pages/monitor/surface/add",
+			"style": {
+				"navigationBarTitleText": "围岩数据录入",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},{
+			"path": "pages/monitor/surface/updateMsgList/index",
+			"style": {
+				"navigationBarTitleText": "未上传数据列表",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},{
+			"path": "pages/monitor/surface/updateMsgList/msgDetail",
+			"style": {
+				"navigationBarTitleText": "未上传数据详情",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},
+		// 围岩监测------------------------结束
+		// 围岩监测------------------------开始
+		{
+			"path": "pages/monitor/plan/index",
+			"style": {
+				"enablePullDownRefresh":true,
+				"navigationBarTitleText": "监测计划",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},{
+			"path": "pages/monitor/plan/add",
+			"style": {
+				"navigationBarTitleText": "新增监测计划",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},{
+			"path": "pages/monitor/plan/updateMsgList/index",
+			"style": {
+				"navigationBarTitleText": "未上传数据列表",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		},{
+			"path": "pages/monitor/plan/updateMsgList/msgDetail",
+			"style": {
+				"navigationBarTitleText": "未上传数据详情",
+				"navigationStyle": "custom" ,// 隐藏系统导航栏
+				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
+			}
+		}
+		// 围岩监测------------------------结束
+	],
 	"tabBar": {
 		"list":[{
 			"pagePath": "pages/index",

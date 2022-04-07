@@ -1,0 +1,215 @@
+<template>
+	<view class="wrap">
+		<u-cell-group>
+			<u-cell-item 
+			v-for="(item,index) in bluetoothList" 
+			:key="index"
+			:arrow="false"
+			:title="item.name">
+				<u-button slot="right-icon" type="warning" @click="connetBlue(item)">{{item.connect?'断开连接':'连接'}}</u-button>
+			</u-cell-item>
+		</u-cell-group>
+		<!-- 消息提示 -->
+		<u-toast ref="uToast" />
+	</view>
+</template>
+
+<script>
+	import { mapActions,mapGetters } from 'vuex'
+	var that
+	export default{
+		data() {
+			return {
+				connectBluetooth:{},
+				bluetoothList: [], // 蓝牙设备列表
+				deviceId: "", // 要连接蓝牙设备id
+				bluetoothName:'',// 要连接蓝牙设备name
+				serverList: [], // 连接蓝牙设备的服务数据
+				serviceId: "", // 连接蓝牙设备的服务id
+				characteristics: [], // 连接蓝牙设备的特征值数据
+				notifyUUid:'',
+				writeUUid:'',
+			};
+		},
+		onLoad(){
+			// 获取eventChannel事件
+			const eventChannel = this.getOpenerEventChannel()
+			eventChannel.on('toBluetooth', (val) => {
+				this.connectBluetooth = Object.assign(this.connectBluetooth,val)
+				this.getBluetoot()
+			})
+			that = this
+		},
+		computed: {
+			...mapGetters(['getBluetoothInfo']),
+		},
+		methods:{
+			...mapActions(['setBluetoothInfo']),
+			// 蓝牙初始化
+			getBluetoot(){
+				plus.bluetooth.openBluetoothAdapter({
+					success:(e) => {
+						console.log('初始化成功');
+						this.bluetooth_list()
+					},
+					fail:(e) => {
+						console.log('open failed: '+JSON.stringify(e));
+					}
+				});
+			},
+			// 获取已配对蓝牙列表
+			bluetooth_list() {  
+			    var main = plus.android.runtimeMainActivity();  
+			    var BluetoothAdapter = plus.android.importClass("android.bluetooth.BluetoothAdapter");  
+			    var BAdapter = BluetoothAdapter.getDefaultAdapter();  
+			    var Context = plus.android.importClass("android.content.Context");  
+			    var lists = BAdapter.getBondedDevices();  
+			    plus.android.importClass(lists);  
+			    var len = lists.size();  
+			    var iterator = lists.iterator();  
+			    plus.android.importClass(iterator);  
+				let bluetoothList = []
+			    while (iterator.hasNext()) {  
+			        var d = iterator.next();  
+			        plus.android.importClass(d);
+					bluetoothList.push({name:d.getName(),deviceId:d.getAddress(),connect:false})
+			    }  
+				bluetoothList.forEach((val) => {
+					if(val.name == that.connectBluetooth.blueName && val.deviceId == that.connectBluetooth.deviceId){
+						val.connect = true
+					}
+				})
+				that.bluetoothList = bluetoothList
+			},
+			// 点击蓝牙连接
+			connetBlue(item) {
+				this.deviceId = item.deviceId
+				this.bluetoothName = item.name
+				if(this.connectBluetooth && this.connectBluetooth.deviceId){
+					if(!item.connect){
+						that.$refs.uToast.show({
+							title: '请先断开连接',
+							type: 'error',
+							duration: 800
+						})
+					}else{
+						this.stop(this.connectBluetooth.deviceId,item)
+					}
+				}else{
+					createBLEConnection(item.deviceId)
+				}
+				function createBLEConnection(deviceId){
+					uni.createBLEConnection({
+						// 这里的 deviceId 需要已经通过 createBLEConnection 与对应设备建立链接
+						deviceId: deviceId, //设备id
+						success: (res) => {
+							uni.onBLEConnectionStateChange(function (res) {
+							  // 该方法回调中可以用于处理连接意外断开等异常情况
+							  console.log(res)
+							})
+							item.connect = true
+							//获取蓝牙服务
+							setTimeout(()=>{
+								that.getBLEDeviceServices(that.deviceId);
+							},1500)
+						},
+						fail: (res) => {
+							console.log(res)
+						},
+					})
+				}
+			},
+			// 获取服务列表
+			getBLEDeviceServices(deviceId) {
+				uni.getBLEDeviceServices({
+					// 这里的 deviceId 需要已经通过 createBLEConnection 与对应设备建立链接
+					deviceId: deviceId,
+					success: (res) => {
+						if(res.services && res.services.length > 0){
+							this.serverList = res.services
+							this.serviceId = res.services[3].uuid
+							this.getBLEDeviceCharacteristics() //6.0
+						}
+						
+					},
+					fail: function(res) {
+						console.log(res)
+					},
+				})
+			},
+			// 获取特征值
+			getBLEDeviceCharacteristics() {
+				uni.getBLEDeviceCharacteristics({
+					// 这里的 deviceId 需要已经通过 createBLEConnection 与对应设备建立链接
+					deviceId: this.deviceId,
+					// 这里的 serviceId 需要在上面的 getBLEDeviceServices 接口中获取
+					serviceId: this.serviceId,
+					success: (res) => {
+						console.log(res)
+						if(res.characteristics && res.characteristics.length > 0){
+							this.characteristics = res.characteristics
+							this.notifyUUid = res.characteristics[2].uuid
+							this.writeUUid = res.characteristics[3].uuid
+							this.setBluetoothInfo({
+								data:{
+									deviceId: this.deviceId,
+									bluetoothName: this.bluetoothName,
+									serviceId: this.serviceId,
+									characteristicId: this.characteristics,
+									notifyUUid:this.notifyUUid,
+									writeUUid:this.writeUUid
+								},
+								callback:this.backFunction
+							})
+						}
+						
+					},
+					fail: function(res) {
+						console.log(res)
+					},
+				})
+			},
+			// 蓝牙数据保存成功的回调
+			backFunction(){
+				let a = this.getBluetoothInfo
+				console.log(a)
+				const eventChannel = this.getOpenerEventChannel();
+				eventChannel.emit('bluetoothToIndex');
+				this.$refs.uToast.show({
+					title: '蓝牙连接成功',
+					type: 'success',
+					back: true,
+					duration: 800
+				})
+			},
+			// 断开连接
+			stop(deviceId,connectDevice){
+				uni.closeBLEConnection({
+				  deviceId:deviceId,
+				  success(res) {
+				    that.$refs.uToast.show({
+				    	title: '断开连接成功',
+				    	type: 'success',
+				    	duration: 800
+				    })
+					that.setBluetoothInfo({
+						data:{
+							deviceId: '',
+							bluetoothName: '',
+							serviceId: '',
+							characteristicId: '',
+							notifyUUid:'',
+							writeUUid:''
+						},
+					})
+					connectDevice.connect = false
+					that.connectBluetooth = {}
+				  }
+				})
+			}
+		}
+	}
+</script>
+
+<style>
+</style>

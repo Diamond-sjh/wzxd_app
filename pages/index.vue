@@ -3,7 +3,7 @@
 		<view class="title">
 			我的应用
 		</view>
-		<view class="applicationList">
+		<view class="applicationList" v-if="current == 0">
 			<view class="applicationItem" @click="jump('project')">
 				<u-image width="100px" height="100px" src="/static/project.png"></u-image>
 				<view class="textContent">隧道检测</view>
@@ -11,6 +11,16 @@
 			<view class="applicationItem" @click="jump('bridge')">
 				<u-image width="100px" height="100px" src="/static/project.png"></u-image>
 				<view class="textContent">桥梁监测</view>
+			</view>
+			<view class="applicationItem" @click="jump('text')">
+				<u-image width="100px" height="100px" src="/static/project.png"></u-image>
+				<view class="textContent">桥梁监测</view>
+			</view>
+		</view>
+		<view class="applicationList" v-else>
+			<view class="applicationItem" @click="jump('monitor')">
+				<u-image width="100px" height="100px" src="/static/project.png"></u-image>
+				<view class="textContent">全站仪数据</view>
 			</view>
 		</view>
 	</view>
@@ -23,35 +33,36 @@
 	        return {
 				timer:null,
 				isConnected:true,
-				updateStatusTimestamp:''
+				updateStatusTimestamp:'',
+				current:'0'
 			}
 	    },
 		computed: {
 			...mapGetters(['getVirusList','getVirusListLen','getVirusTimestamp','getCurrentTimestamp','getStatueList']),
 		},
-		onLoad() {
-			uni.onNetworkStatusChange(res => {
-				// console.log(res)s's
-				// console.log(this.getStatueList.size)
-				this.isConnected = res.isConnected
-				if(res.isConnected && this.timer != null){
-					clearInterval(this.timer)
-					this.timer = null
-					this.sendMsg()
-				}
-				if(res.isConnected && this.getStatueList.size > 0){
-					this.updateStatus()
-				}
-			})
-			this.$http.getCurrentUser().then(res=>{
-				if(res.code == '200'){
-					this.SET_CUSTINFO(res.data)
-				}
-			})
-		},
-		// 右上角按钮的点击方法
-		onNavigationBarButtonTap() {
-			
+		onLoad(option) {
+			console.log(option)
+			if(option && option.current){
+				this.current = option.current
+			}
+			if(this.current == 0){
+				uni.onNetworkStatusChange(res => {
+					this.isConnected = res.isConnected
+					if(res.isConnected && this.timer != null){
+						clearInterval(this.timer)
+						this.timer = null
+						this.sendMsg()
+					}
+					if(res.isConnected && this.getStatueList.size > 0){
+						this.updateStatus()
+					}
+				})
+				this.$http.getCurrentUser().then(res=>{
+					if(res.code == '200'){
+						this.SET_CUSTINFO(res.data)
+					}
+				})
+			}
 		},
 		watch:{
 			getVirusListLen(curVal,oldVal){
@@ -116,10 +127,8 @@
 				})
 			},
 			updateStatus(){
-				console.log([...this.getStatueList.keys()])
 				this.updateStatusTimestamp = [...this.getStatueList.keys()][0]
 				let data = [...this.getStatueList.values()][0]
-				console.log(data)
 				this.$http.updateChecked(data).then(res => {
 					if(res.code == 200){
 						this.DELET_STATUElIST(this.updateStatusTimestamp)
@@ -147,6 +156,16 @@
 				if(val == 'project'){
 					uni.navigateTo({
 					    url: '/pages/home/index'
+					});
+				}
+				if(val == 'text'){
+					uni.navigateTo({
+					    url: '/pages/text/index'
+					});
+				}
+				if(val == 'monitor'){
+					uni.navigateTo({
+					    url: '/pages/monitor/index'
 					});
 				}
 			}

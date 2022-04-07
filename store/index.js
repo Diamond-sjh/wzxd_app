@@ -12,7 +12,9 @@ const store = new Vuex.Store({
 		virusListLength:0,//待上传病害信息长度
 		currentTimestamp: '',//当前上传时间戳
 		statueList: new Map(),//检测状态列表
-		
+		bluetooth:{},//连接的蓝牙设备信息
+		basisList:[],// 规范依据
+		instrumentList:[]// 设备列表
 	},
 	mutations: {
 		// 设置登录的token
@@ -49,6 +51,20 @@ const store = new Vuex.Store({
 		DELET_INFO(state,info){
 			state.token = ''
 			state.custInfo = {}
+			state.basisList = []
+			state.instrumentList = []
+		},
+		// 设置蓝牙连接数据
+		SET_BLUETOOTH(state,info){
+			state.bluetooth = Object.assign(state.bluetooth,info)
+		},
+		// 设置规范依据
+		SET_BASIS(state,info){
+			state.basisList = info
+		},
+		// 设置设备列表
+		SET_INSTRUMENT(state,info){
+			state.instrumentList = info
 		}
 	},
 	actions: {
@@ -66,6 +82,11 @@ const store = new Vuex.Store({
 					if(callback){callback()}
 				}
 			})
+		},
+		// 设置蓝牙信息
+		setBluetoothInfo({commit,state},{data,callback}){
+			commit('SET_BLUETOOTH',data)
+			if(callback){callback()}
 		}
 	},
 	getters: {
@@ -85,6 +106,12 @@ const store = new Vuex.Store({
 		},
 		// 获取检测状态上传列表
 		getStatueList:state => state.statueList,
+		// 获取蓝牙设备信息
+		getBluetoothInfo: state => state.bluetooth,
+		// 获取规范依据
+		getBasisList: state => state.basisList,
+		// 获取设备列表
+		getInstrumentList: state => state.instrumentList
 	}
 })
 
