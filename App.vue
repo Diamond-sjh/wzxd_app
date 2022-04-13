@@ -8,8 +8,8 @@
 		onLaunch: function() {
 			// console.log('App Launch')
 			//#ifdef APP-PLUS
-			this.checkUpdate();
-			this.sendMessage()
+			// this.checkUpdate();
+			// this.sendMessage()
 			// #endif
 		},
 		onShow: function() {

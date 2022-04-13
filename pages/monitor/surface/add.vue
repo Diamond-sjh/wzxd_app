@@ -1,6 +1,6 @@
 <template>
 	<view class="navbar monitorAdd">
-		<u-navbar title="监测数据录入" title-color="white" back-icon-color="white">
+		<u-navbar title="振弦式读数仪" title-color="white" back-icon-color="white">
 			<view class="slot-wrap">
 				<u-button class="content" size="mini" type="success" @click="submit">保存</u-button>
 			</view>
@@ -142,11 +142,11 @@
 						console.log(this.form)
 						// return
 						this.$httpMonitor.addGwzmRecordSon(this.form).then(res => {
-							if (res.code == 201) {
+							if (res.code == 200) {
 								this.$refs.uToast.show({
 									title: '信息上传成功',
 									type: 'success',
-									back: true,
+									back: false,
 									duration: 500
 								})
 								const eventChannel = this.getOpenerEventChannel();

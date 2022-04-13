@@ -1,6 +1,6 @@
 <template>
 	<view class="navbar monitorAdd">
-		<u-navbar title="全站仪数据录入" title-color="white" back-icon-color="white">
+		<u-navbar title="全站仪" title-color="white" back-icon-color="white">
 			<view class="slot-wrap">
 				<u-button class="content" size="mini" type="success" @click="submit">保存</u-button>
 			</view>

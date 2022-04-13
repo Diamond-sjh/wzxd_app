@@ -1,6 +1,6 @@
 import request from "./request.js" 
-// const url = 'http://47.114.76.25:9530/prod-api'
-const url = 'http://localhost:9530/dev-api'
+const url = 'http://47.114.76.25:9530/prod-api'
+// const url = 'http://localhost:9530/dev-api'
 export default {
 	// 登录接口
 	login(params){
@@ -24,7 +24,7 @@ export default {
 	},
 	// 查询钢架内力及外力、围岩压力、支护、衬砌内应力、锚杆轴力检测记录数据
 	queryGwzmRecordSon(params){
-		return request.httpTokenRequest("/project/GwzmRecordSon/list", "GET", params,url)
+		return request.httpTokenRequest("/project/GwzmRecordSon/pagelist", "GET", params,url)
 	},
 	// 新增围岩数据
 	addGwzmRecordSon(params){

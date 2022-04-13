@@ -9,21 +9,21 @@
 			我的应用
 		</view>
 		<view class="applicationList">
+			<view class="applicationItem" @click="jump('plan')">
+				<u-image width="100px" height="100px" src="/static/project.png"></u-image>
+				<view class="textContent">监控计划</view>
+			</view>
 			<view class="applicationItem" @click="jump('monitor')">
 				<u-image width="100px" height="100px" src="/static/project.png"></u-image>
-				<view class="textContent">全站仪数据</view>
+				<view class="textContent">全站仪</view>
+			</view>
+			<view class="applicationItem" @click="jump('surface')">
+				<u-image width="100px" height="100px" src="/static/project.png"></u-image>
+				<view class="textContent">振弦式读数仪</view>
 			</view>
 			<view class="applicationItem" @click="jump('inOutCave')">
 				<u-image width="100px" height="100px" src="/static/project.png"></u-image>
 				<view class="textContent">洞内外观察</view>
-			</view>
-			<view class="applicationItem" @click="jump('surface')">
-				<u-image width="100px" height="100px" src="/static/project.png"></u-image>
-				<view class="textContent">围岩检测</view>
-			</view>
-			<view class="applicationItem" @click="jump('plan')">
-				<u-image width="100px" height="100px" src="/static/project.png"></u-image>
-				<view class="textContent">监测计划</view>
 			</view>
 		</view>
 		<u-modal v-model="islogout" content="确认退出当前登录？" :show-cancel-button="true" @confirm="toLogin"></u-modal>

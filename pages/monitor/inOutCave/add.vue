@@ -1,6 +1,6 @@
 <template>
 	<view class="navbar inOutCaveAdd">
-		<u-navbar title="洞内外观察数据" title-color="white" back-icon-color="white">
+		<u-navbar title="洞内外观察" title-color="white" back-icon-color="white">
 			<view class="slot-wrap">
 				<u-button class="content" size="mini" type="success" @click="submit">保存</u-button>
 			</view>
@@ -22,7 +22,7 @@
 						</view>
 						<view class="groupItem mb10">
 							<view class="groupItemTop">
-								<view class="groupItemLabel">岩石岩性及走向</view>
+								<view class="groupItemLabel">岩石类型</view>
 								<view class="groupItemContent">
 									<u-form-item prop="rockType">
 										<u-input :clearable="false" @click="openSelect('rockType')" v-model="form.rockType" placeholder="请选择" />
@@ -415,7 +415,30 @@
 	export default {
 		data() {
 			return {
-				form: {},//表单数据
+				form: {
+					faceMileage:'',
+					rockType:'',
+					rockLithologyOccurrence:'微风化',
+					jfissureDevTrend:'节理裂痕较发育',
+					ffractWidthFeatures:'无',
+					groundwaterStatus:'基岩裂缝水较发育',
+					faceSteadyState:'较稳定',
+					leakageCondition:'支护表面有潮斑,支护表面有点状出水',
+					crackCondition:'未见明显裂缝',
+					sprcontactCondition:'未见喷层剥落',
+					steelarchExtrusionCondition:'未见挤压变形',
+					boltFailureCondition:'未见锚杆破坏',
+					secondCrackCondition:'未见明显裂缝',
+					floorDrumPhenomenon:'未见明显底鼓',
+					surfacsubCondition:'未见明显开裂',
+					swaterLeakageCondition:'较稳定',
+					surfaceWaterCondition:'未见地表积水现象',
+					surfaceVegetationChanges:'未见植被破坏滑移',
+					originalRockGrade:'',
+					nowRockGrade:'',
+				},//表单数据
+				formCopy: {},//表单数据备份
+				submitForm: {},//表单数据
 				formRemake: {},//备注数据
 				isShowSelectList: false, //选择器是否显示
 				data: [], //选择器展示数据
@@ -425,6 +448,39 @@
 		},
 		onLoad() {
 			this.leakageConditionList = configData.leakageConditionList
+		},
+		watch:{
+			form:{
+				handler(newVal,oldVal){
+					console.log("单个属性监听", newVal, oldVal);
+					this.formCopy = Object.assign({},newVal)
+					this.submitForm = Object.assign({},newVal)
+					for (let item in this.formRemake) {
+						if(this.formCopy[item] && this.formCopy[item] != '无'){
+							this.submitForm[item] = `${this.formCopy[item]},${this.formRemake[item]}`
+						}else{
+							this.submitForm[item] = this.formRemake[item]
+						}
+					}
+				},
+				deep:true,
+				immediate: true
+			},
+			formRemake:{
+				handler(newVal,oldVal){
+					console.log("单个属性监听", newVal, oldVal);
+					for (let item in newVal) {
+						let str = ''
+						if(this.formCopy[item] && this.formCopy[item] != '无'){
+							this.submitForm[item] = `${this.formCopy[item]},${newVal[item]}`
+						}else{
+							this.submitForm[item] = newVal[item]
+						}
+					}
+				},
+				deep:true,
+				immediate: true
+			}
 		},
 		methods: {
 			// 打开列选择器
@@ -450,18 +506,12 @@
 			submit() {
 				let that = this
 				// 获取默认时间
-				this.form.testDate = this.$utils.getDate(new Date())
-				for (let item in this.formRemake) {
-					if(this.form[item]){
-						this.form[item] = `${this.form[item]},${this.formRemake[item]}`
-					}else{
-						this.form[item] = this.formRemake[item]
-					}
-				}
-				console.log(this.form)
+				// this.form.testDate = this.$utils.getDate(new Date())
+				this.submitForm.testDate = this.$utils.getDate(new Date())
+				console.log(this.submitForm)
 				// return
-				this.$httpMonitor.addInoutcaveObservationRecord(this.form).then(res => {
-					if (res.code == 201) {
+				this.$httpMonitor.addInoutcaveObservationRecord(this.submitForm).then(res => {
+					if (res.code == 200) {
 						this.$refs.uToast.show({
 							title: '信息上传成功',
 							type: 'success',
@@ -475,7 +525,7 @@
 							key: 'inoutcave_key',
 							success: (res) => {
 								let dataArr = res.data
-								let obj = JSON.parse(JSON.stringify(that.form))
+								let obj = JSON.parse(JSON.stringify(that.submitForm))
 								dataArr.push(obj)
 								uni.setStorage({
 									key: 'inoutcave_key',
@@ -491,7 +541,7 @@
 								});
 							},
 							fail: (err) => {
-								let obj = JSON.parse(JSON.stringify(that.form))
+								let obj = JSON.parse(JSON.stringify(that.submitForm))
 								let dataArr = [obj]
 								uni.setStorage({
 									key: 'inoutcave_key',

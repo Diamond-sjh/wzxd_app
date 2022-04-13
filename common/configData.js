@@ -126,7 +126,7 @@ const jfissureDevTrendList = [
 // 断层破碎带宽度及特征  数据列表
 const ffractWidthFeaturesList = [
 	{
-		value: '',
+		value: '无',
 		label: '无'
 	}
 ]
@@ -158,11 +158,11 @@ const leakageConditionList = [
 	{
 		value: '支护表面有潮斑',
 		label: '支护表面有潮斑',
-		checked: false
+		checked: true
 	},{
 		value: '支护表面有点状出水',
 		label: '支护表面有点状出水',
-		checked: false
+		checked: true
 	},{
 		value: '支护表面有淋雨状出水',
 		label: '支护表面有淋雨状出水',
@@ -399,8 +399,8 @@ const parameterNameList = [
 		value: '围岩压力',
 		label: '围岩压力'
 	},{
-		value: '两侧支护间压力',
-		label: '两侧支护间压力'
+		value: '两层支护间压力',
+		label: '两层支护间压力'
 	},{
 		value: '支护内应力',
 		label: '支护内应力'

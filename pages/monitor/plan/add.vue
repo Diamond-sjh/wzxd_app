@@ -1,6 +1,6 @@
 <template>
 	<view class="navbar monitorAdd">
-		<u-navbar title="监测数据录入" title-color="white" back-icon-color="white">
+		<u-navbar title="监控计划" title-color="white" back-icon-color="white">
 			<view class="slot-wrap">
 				<u-button class="content" size="mini" type="success" @click="submit">保存</u-button>
 			</view>
@@ -19,13 +19,13 @@
 				<u-form-item v-show="isShowInoutcave" prop="distanceEntrance" label="距洞口距离(m)：">
 					<u-input v-model="form.distanceEntrance" placeholder="请输入"/>
 				</u-form-item>
-				<u-form-item v-show="isShowInoutcave" prop="linePosition" label="测线位置：">
+				<u-form-item v-show="isShowInoutcave && isShowLinePosition" prop="linePosition" label="测线位置：">
 					<u-input v-model="form.linePosition" placeholder="请输入"/>
 				</u-form-item>
 				<u-form-item prop="excavationMethod" label="开挖方法：">
 					<u-input v-model="form.excavationMethod" placeholder="请选择" type="select" @click="openSelect('excavationMethod')" />
 				</u-form-item>
-				<u-form-item prop="pointPosition" label="测点位置：">
+				<u-form-item prop="pointPosition" label="测点编号：">
 					<u-input v-if="isShowInoutcave" v-model="form.pointPosition" placeholder="请选择" type="select" @click="openSelect('pointPosition')" />
 					<u-input v-else v-model="form.pointPosition" placeholder="请输入"/>
 				</u-form-item>
@@ -45,7 +45,7 @@
 					<u-input v-model="form.testBasis" placeholder="请选择" type="select" @click="openSelect('testBasis')" />
 				</u-form-item>
 				<u-form-item prop="burialDate" label="埋设日期：">
-					<u-input v-model="form.burialDate" @click="isShowDate = true" placeholder="请选择" />
+					<u-input v-model="form.burialDate" :disabled="true" @click="isShowDate = true" placeholder="请选择" />
 				</u-form-item>
 				<u-form-item prop="wallRockGrade" label="围岩级别：">
 					<u-input v-model="form.wallRockGrade" placeholder="请选择" type="select" @click="openSelect('wallRockGrade')" />
@@ -87,14 +87,16 @@
 			return {
 				form: {},
 				projectName:'',//工程名称
+				projectId:'',//工程Id
 				defaultValue:[],//多选列表的默认选中数据
 				isShowDate: false, //日期选择器是否显示
 				isShowSelectList: false, //选择器是否显示
 				isShowSelect:false,//多选器是否显示
 				isShowInoutcave:true,//洞内外观察部分数据输入显示
 				isShowKeyParams:true,//关键监测参数输入显示
+				isShowLinePosition:true,//拱顶下沉/周边位移的时候需要隐藏
 				isShowDepth:true,//埋深显示
-				paramsList:[],//测点位置列表
+				paramsList:[],//测点编号列表
 				data: [], //选择器展示数据
 				clickType: '', //点击的输入框
 				label:'标定系数(MPa/Hz2)：',//标定系数的标签
@@ -124,7 +126,7 @@
 					case 'testItems': //监测参数
 						this.data.push({label:'洞内外观察',value:'洞内外观察'},...configData.parameterNameKeyList,...configData.parameterNameList)
 						break;
-					case 'pointPosition': //测点位置
+					case 'pointPosition': //测点编号
 						this.data = this.paramsList
 						break;
 					case 'equipments': //仪器设备
@@ -158,9 +160,10 @@
 						}
 						this.isShowInoutcave = true
 						this.isShowKeyParams = true
+						this.isShowLinePosition = true
 						this.isShowDepth = true
 						this.form = {}
-						// this.form.pointPosition = ''//清空测点位置
+						this.form.projectId = this.projectId
 						this.defaultValue = [] //清空多选器的数据列表
 						this.label = '标定系数(MPa/Hz2)：'
 						this.placeholder = "请输入"
@@ -171,6 +174,7 @@
 							case '拱顶下沉':
 								this.paramsList = configData.testName0List
 								this.isShowKeyParams = false
+								this.isShowLinePosition = false
 								break;
 							case '拱脚下沉':
 								this.paramsList = configData.testName1List
@@ -183,6 +187,7 @@
 							case '周边位移':
 								this.paramsList = configData.testName3List
 								this.isShowKeyParams = false
+								this.isShowLinePosition = false
 								break;
 							case '钢支撑内力':
 								this.paramsList = configData.installationPositionList
@@ -214,8 +219,9 @@
 						this.form.testItems = res[0].value
 						break;
 					case 'projectId':
-						this.form.projectId = res[0].value
+						this.projectId = res[0].value
 						this.projectName = res[0].label
+						this.form.projectId = this.projectId
 						break;
 					default:
 						this.form[this.clickType] = res[0].value 
@@ -224,7 +230,7 @@
 			},
 			// 点击多选的确定按钮
 			clickSelectConfirm(value){
-				if(this.clickType == 'pointPosition'){ //测点位置
+				if(this.clickType == 'pointPosition'){ //测点编号
 					this.form.pointPosition = value
 				}else{ // 试验依据
 					this.form.testBasis = value
@@ -232,17 +238,16 @@
 			},
 			// 点击保存按钮
 			submit() {
-				console.log(this.form)
-				return
 				let that = this
 				this.form.initialMonitoringDate = this.form.burialDate
 				console.log(this.form)
+				return
 				this.$httpMonitor.addStatistics(this.form).then(res => {
 					if (res.code == 200) {
 						this.$refs.uToast.show({
 							title: '信息上传成功',
 							type: 'success',
-							back: true,
+							back: false,
 							duration: 500
 						})
 						const eventChannel = this.getOpenerEventChannel();

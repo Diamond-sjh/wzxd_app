@@ -1,13 +1,13 @@
 <template>
 	<view class="navbar inOutCave">
-		<u-navbar back-icon-color="white" title="测量列表" title-color="white">
+		<u-navbar back-icon-color="white" title="洞内外观察" title-color="white">
 			<view slot="right" class="slot-wrap iconfont icon-shangchuan navUpdateIcon">
 				<u-icon @click="jumpToPage('updateList')" name="shangchuan" custom-prefix="custom-icon"></u-icon>
 				<u-badge size="mini" type="success" :count='count' :offset="offset"></u-badge>
 			</view>
 		</u-navbar>
 		<view class="search">
-			<u-search class="searchContent" placeholder="请输入监测桩号关键字" v-model="queryParams.detectionStation" :show-action="false" @custom="clickQuery" @search="clickQuery"></u-search>
+			<u-search class="searchContent" placeholder="请输入监测桩号关键字" v-model="queryParams.faceMileage" :show-action="false" @custom="clickQuery" @search="clickQuery"></u-search>
 			<view class="sea" @click="clickQuery()"><u-icon name="search" size="40"></u-icon></view>
 			<view class="add" @click="addInformation"><u-icon name="plus-circle" size="40"></u-icon></view>
 		</view>
@@ -41,7 +41,7 @@
 				// 查询参数
 				queryParams: {
 					pageNum: 1,
-					pageSize: 10,
+					pageSize: 15,
 				},
 				status: 'more',
 				contentText: {
@@ -73,7 +73,7 @@
 			uni.stopPullDownRefresh();
 			this.status = 'loading'
 			this.queryParams.pageNum = 1
-			this.queryParams.pageSize = 10
+			this.queryParams.pageSize = 15
 			this.inoutcaveData = []
 			this.getData()
 		},
@@ -96,7 +96,7 @@
 			// 点击搜索
 			clickQuery(){
 				this.queryParams.pageNum = 1
-				this.queryParams.pageSize = 10
+				this.queryParams.pageSize = 15
 				this.inoutcaveData = []
 				this.getData()
 			},
@@ -129,7 +129,7 @@
 					    // 为指定事件添加一个监听器，获取被打开页面传送到当前页面的数据
 					    toInOutCaveIndex: (data) => {
 							this.queryParams.pageNum = 1
-							this.queryParams.pageSize = 10
+							this.queryParams.pageSize = 15
 							this.inoutcaveData = []
 							this.getData()
 					    }
@@ -179,7 +179,7 @@ page {
 		}
 	}
 	.scroll-list {
-		height: calc(100vh - var(--window-top) - var(--window-bottom) - 190rpx); // 105rpx 为 .search 的高度
+		height: calc(100vh - var(--window-top) - var(--window-bottom) - 250rpx); // 105rpx 为 .search 的高度
 		width: 100%;
 		.loadmore {
 			padding: 30rpx;

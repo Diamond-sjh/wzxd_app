@@ -1,6 +1,6 @@
 <template>
 	<view class="navbar monitor">
-		<u-navbar back-icon-color="white" title="测量列表" title-color="white">
+		<u-navbar back-icon-color="white" title="全站仪" title-color="white">
 			<view slot="right" class="slot-wrap iconfont icon-shangchuan navUpdateIcon">
 				<u-icon @click="jumpToPage('updateList')" name="shangchuan" custom-prefix="custom-icon"></u-icon>
 				<u-badge size="mini" type="success" :count='count' :offset="offset"></u-badge>
@@ -94,7 +94,9 @@
 	    },
 		onLoad() {
 			this.getData()
+			// #ifdef APP-PLUS
 			this.player()
+			// #endif
 		},
 		onShow() {
 			uni.getStorage({
@@ -293,7 +295,7 @@ page {
 		}
 	}
 	.scroll-list {
-		height: calc(100vh - var(--window-top) - var(--window-bottom) - 190rpx); // 105rpx 为 .search 的高度
+		height: calc(100vh - var(--window-top) - var(--window-bottom) - 250rpx); // 105rpx 为 .search 的高度
 		width: 100%;
 		.loadmore {
 			padding: 30rpx;
