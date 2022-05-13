@@ -10,6 +10,10 @@ export default {
 	captchaImage(params){
 		return request.httpRequest("/captchaImage", "GET", params,url)
 	},
+	// 获取客户信息
+	getInfo(params){
+		return request.httpTokenRequest("/getInfo", "GET", params,url)
+	},
 	// 查询工程项目
 	queryProjectList(params){
 		return request.httpTokenRequest("/project/project/noPagelist", "GET", params,url)
@@ -17,6 +21,10 @@ export default {
 	// 查询全站仪录入数据
 	query(params){
 		return request.httpTokenRequest("/project/station/list", "GET", params,url)
+	},
+	// 查询全量全站仪录入数据
+	queryAllData(params){
+		return request.httpTokenRequest("/project/station/noPageList", "GET", params,url)
 	},
 	// 新增全站仪数据
 	add(params){
@@ -53,5 +61,17 @@ export default {
 	// 新增 监控计划 数据
 	addStatistics(params){
 		return request.httpTokenRequest("/project/statistics", "POST", params,url)
-	}
+	},
+	// 查询开挖方法图例
+	selectExcavation(params){
+		return request.httpTokenRequest("/project/excavation/list", "GET", params,url)
+	},
+	// 新增原始记录父表
+	addGwzmRecord(params){
+		return request.httpTokenRequest("/project/GwzmRecord", "POST", params,url)
+	},
+	// 查询参数
+	selectProjectPlan(params){
+		return request.httpTokenRequest("/project/statistics/selectProjectPlan", "GET", params,url)
+	},
 }

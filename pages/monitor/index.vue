@@ -1,71 +1,66 @@
 <template>
 	<view class="navbar monitor">
-		<u-navbar back-icon-color="white" title="全站仪" title-color="white">
+		<u-navbar :isBack="false" back-icon-color="white" :title="title" title-color="white">
 			<view slot="right" class="slot-wrap iconfont icon-shangchuan navUpdateIcon">
 				<u-icon @click="jumpToPage('updateList')" name="shangchuan" custom-prefix="custom-icon"></u-icon>
 				<u-badge size="mini" type="success" :count='count' :offset="offset"></u-badge>
 				<u-icon v-show="!isConnect" @click="jumpToPage('bluetooth')" style="margin-right: 5px;" name="lanya" custom-prefix="custom-icon" label="未连接" label-pos="left" margin-right ="2"></u-icon>
 				<u-icon v-show="isConnect" @click="jumpToPage('bluetooth')" style="margin-right: 5px;color: #007AFF;" name="lanya" custom-prefix="custom-icon" :label="blueName" label-pos="left" margin-right ="2"></u-icon>
 			</view>
+			<view class="navbarRight">
+				<u-button type="success" size="mini" @click="logout()">注销</u-button>
+			</view>
 		</u-navbar>
 		<view class="search">
-			<u-search class="searchContent" placeholder="请输入监测桩号关键字" v-model="queryParams.detectionStation" :show-action="false" @custom="clickQuery" @search="clickQuery"></u-search>
+			<u-search class="searchContent" placeholder="请输入监测桩号关键字" v-model="detectionStation" :show-action="false" @custom="clickQuery" @search="clickQuery"></u-search>
 			<view class="sea" @click="clickQuery()"><u-icon name="search" size="40"></u-icon></view>
 			<view class="add" @click="addInformation"><u-icon name="plus-circle" size="40"></u-icon></view>
 		</view>
 		<view class="cardContent">
 			<scroll-view class="scroll-list msg-list-item" scroll-y="true" @scrolltolower="getScrollData">
-				<u-card v-for="(item,index) in monitorList" :key="index" class="task-list-item" :border="true" padding="20" margin="10rpx 20rpx">
-					<view slot="head" style="display: flex;align-items: center;justify-content: space-between;">
-						<view style="font-size: 30rpx;">{{item.parameterName}}</view>
-						<view style="color: #999999;font-size: 22rpx;">{{item.recordNumber}}</view>
-					</view>
-					<view class="" slot="body">
-						<u-row gutter="16">
-							<u-col span="12">
-								<view class="apply-text"><span>监测时间：</span>{{item.testDate}}</view>
-							</u-col>
-							<u-col span="12">
-								<view class="apply-text"><span>监测桩号：</span>{{item.detectionStation}}</view>
-							</u-col>
-							<u-col span="12">
-								<view class="apply-text"><span>测点名称：</span>{{item.testName}}</view>
-							</u-col>
-							<u-col span="12">
-								<view class="apply-text"><span>观测值：</span>{{item.calculatZ}}</view>
-							</u-col>
-						</u-row>
-					</view>
-					<!-- <view class="apply-list-foot" slot="foot">
-						<u-row gutter="16" v-if="">
-							<u-col span="3" text-align="center">
-								<view class="view-text" @click="jumpPage('preview',item)">查看</view>
-							</u-col>
-							<u-col span="3" text-align="center">
-								<view class="confirm-text" v-if="promoterId!=item.writtenBy||item.noteStatus!=0" style="color:#cccccc">提交</view>
-								<view class="confirm-text" v-else @click="handleSubmit(item)" style="color:#43b67e">提交</view>
-							</u-col>
-							<u-col span="3" text-align="center">
-								<view class="amend-text" v-if="promoterId!=item.writtenBy || (item.noteStatus != 0 && item.noteStatus!= 3)" style="color:#cccccc">修改</view>
-								<view class="amend-text" v-else @click="jumpPage('update',item)" style="#ff4400">修改</view>
-							</u-col>
-							<u-col span="3" text-align="center">
-								<view class="delet-text" v-if="promoterId!=item.writtenBy||item.noteStatus!=0" style="color:#cccccc">删除</view>
-								<view class="delet-text" v-else @click="handleDelete(item)" style="#ff0000">删除</view>
-							</u-col>
-						</u-row>
-					</view> -->
-				</u-card>
+				<u-collapse ref="collapse" event-type="close" :item-style="itemStyle" :head-style="headStyle" hover-class="none">
+					<u-collapse-item :title="item.testDate" :index="index" v-for="(item, index) in showMonitorList" :key="item.testDate">
+						<view class="collapse-item" v-for="(val, index) in item.data" :key="item.id" @longpress="start(val)">
+							<u-row gutter="16">
+								<u-col span="12">
+									<view class="apply-text"><span>监测桩号：</span>{{val.detectionStation}}</view>
+								</u-col>
+								<u-col span="12">
+									<view class="apply-text"><span>测点名称：</span>{{val.testName}}</view>
+								</u-col>
+								<u-col span="12">
+									<view class="apply-text"><span>观测值：</span>{{val.calculatZ}}</view>
+								</u-col>
+								<u-col span="12">
+									<view class="apply-text"><span>本次变形：</span>{{val.lastTimeChange}}</view>
+								</u-col>
+								<u-col span="12">
+									<view class="apply-text"><span>累计变形：</span>{{val.firstTimeChange}}</view>
+								</u-col>
+							</u-row>
+							<hr>
+						</view>
+					</u-collapse-item>
+				</u-collapse>
 				<view class="example-body">
 					<uni-load-more :status="status" :content-text="contentText"/>
 				</view>
 			</scroll-view>
 		</view>
+		<u-popup v-model="showPopup" mode="center">
+			<view class="popupBox">
+				<view class="title">操作</view>
+				<view class="measureBtn" @click="addInformation('measure')">测量</view>
+				<view class="cancleBtn" @click="showPopup = false">取消</view>
+			</view>
+		</u-popup>
 		<u-modal v-model="show" :show-cancel-button="true" :content="content" @confirm="openBluetooth"></u-modal>
+		<u-modal v-model="islogout" content="确认退出当前登录？" :show-cancel-button="true" @confirm="toLogin"></u-modal>
 	</view>
 </template>
 
 <script>
+	import { mapMutations } from 'vuex'
 	export default {
 	    data() {
 	        return {
@@ -74,59 +69,76 @@
 				isConnect:false,
 				offset:[15,20],//上传图标
 				count:0,//待上传数量
+				title:'全站仪',
 				islogout:false,//是否退出登录
-				monitorList:[],//查询数据列表
+				projectId:'',//项目id
+				recordNumber:'',//记录编号
+				monitorListCopy:[],//查询全量数据列表--备份
+				monitorList:[],//查询全量数据列表--根据日期分类展示
+				searchMonitorList:[],//根据桩号
+				showMonitorList:[],//分页展示的数据
 				// 查询参数
-				queryParams: {
-					pageNum: 1,
-					pageSize: 10,
-					// detectionStation:''
-				},
-				status: 'more',
+				pageNum:1,
+				pageSize:20,
+				detectionStation:'',//查询关键字
+				status: 'more',//数据状态
 				contentText: {
 					contentdown: '查看更多',
 					contentrefresh: '加载中',
 					contentnomore: '没有更多'
 				},	
-				show:false,
-				content:''
+				show:false,//蓝牙连接提示框
+				content:'',//蓝牙状态提示文字
+				showPopup:false,//popup框是否显示
+				longPressItem:{},//长按的数据
+				itemStyle:{
+					padding: '0 10px',
+					border: '1px solid #cccccc'
+				},
+				headStyle:{
+					fontSize: '16px'
+				}
 			}
 	    },
-		onLoad() {
+		onLoad(option) {
+			let projectInfo = uni.getStorageSync('projectInfo') ? uni.getStorageSync('projectInfo') : {};
+			this.projectId = projectInfo.value?projectInfo.value:''
+			this.recordNumber = projectInfo.recordNumber?projectInfo.recordNumber:''
+			this.title = projectInfo.label?projectInfo.label:'全站仪'
 			this.getData()
 			// #ifdef APP-PLUS
 			this.player()
 			// #endif
 		},
 		onShow() {
+			getApp().globalData.reviseTabbarByUserType();
 			uni.getStorage({
 			    key: 'monitor_key',
 			    success: (res) => {
-			        console.log(res.data);
 					this.count = res.data.length
 			    },
 				fail: (err) => {
 					this.count = 0
 				}
 			});
+			// this.getData()
 		},
 		//下拉刷新
 		onPullDownRefresh(){
 			uni.stopPullDownRefresh();
 			this.status = 'loading'
-			this.queryParams.pageNum = 1
-			this.queryParams.pageSize = 10
-			this.monitorList = []
+			this.pageNum = 1
+			this.showMonitorList = []
 			this.getData()
 		},
 	    methods: {
+			...mapMutations(['DELET_INFO']),
 			// 判断时候连接蓝牙
 			player(){
 				uni.openBluetoothAdapter({
 					success:(res)=> { //蓝牙已打开
 						uni.getConnectedBluetoothDevices({
 							success:(res1)=>{
-								console.log(res1)
 								if(res1.devices.length == 0){
 									uni.getBluetoothAdapterState({//蓝牙的匹配状态
 										success:(res1)=>{
@@ -174,51 +186,131 @@
 			},
 			// 查询数据
 			getData(){
-				this.$httpMonitor.query(this.queryParams).then(res => {
-					if(res.code == 200){
-						this.monitorList.push(...res.rows)
-						if(this.queryParams.pageNum * this.queryParams.pageSize < res.total){
+				this.monitorListCopy = []
+				this.monitorList = []
+				this.showMonitorList = []
+				uni.getStorage({
+					key: 'allMonitor_key',
+					success: (res) => {
+						res.data.forEach(val => {
+							// 筛选对应项目id的
+							if(val.projectId == this.projectId){
+								this.monitorListCopy.push(val)
+							}
+						})
+						this.monitorList = this.tranListToTreeData(this.monitorListCopy,'testDate')
+						this.showMonitorList = this.monitorList.slice(0,this.pageSize)
+						if(this.showMonitorList.length < this.monitorList.length){
 							this.status = 'more'
 						}else{
 							this.status = 'noMore'
 						}
+					},
+					fail: (err) => {
+						this.monitorListCopy = []
+						this.monitorList = []
+						this.showMonitorList = []
+						this.status = 'noMore'
+					}
+				});
+				// 更新视图内部高度
+				this.$nextTick(()=>{
+					this.$refs.collapse.init()
+				})
+			},
+			// 数据处理
+			tranListToTreeData(list,str) {
+				// 1. 定义两个中间变量
+				let treeList = [],  // 最终要产出的树状数据的数组
+					map = {}      // 存储映射关系
+				// 2. 建立一个映射关系，并给每个元素补充children属性.
+				// 映射关系: 目的是让我们能通过id快速找到对应的元素
+				list.forEach(item => {
+					if(item[str] && !map[item[str]]){
+						let obj = {
+							data:[item]
+						}
+						obj[str] = item[str];
+						treeList.push(obj)
+						map[item[str]] = item;
 					}else{
-						this.$u.toast(res.msg)
+						treeList.some(val => {
+							if(val[str] == item[str]){
+								val.data.push(item)
+								return
+							}
+						})
 					}
 				})
+				// 4. 返回出去
+				return treeList
 			},
 			// 点击搜索
 			clickQuery(){
-				this.queryParams.pageNum = 1
-				this.queryParams.pageSize = 10
-				this.monitorList = []
-				this.getData()
+				this.pageNum = 1
+				if(this.detectionStation){
+					let list = []
+					this.monitorListCopy.forEach(val => {
+						if(val.detectionStation.includes(this.detectionStation)){
+							list.push(val)
+						}
+					})
+					this.monitorList = this.tranListToTreeData(list,'testDate')
+				}else{
+					this.monitorList = this.tranListToTreeData(this.monitorListCopy,'testDate')
+				}
+				this.showMonitorList = this.monitorList.slice(0,this.pageSize)
+				if(this.showMonitorList.length < this.monitorList.length){
+					this.status = 'more'
+				}else{
+					this.status = 'noMore'
+				}
+				// 更新视图内部高度
+				this.$nextTick(()=>{
+					this.$refs.collapse.init()
+				})
+			},
+			// 长按触发
+			start(item) {
+				this.longPressItem = Object.assign({},item)
+				this.showPopup = true
 			},
 			// 滚动加载
 			getScrollData(){
 				if(this.status == 'noMore'){
 					return
 				}
-				this.queryParams.pageNum++
-				this.getData()
+				this.pageNum++;
+				let num = this.pageNum*20
+				this.showMonitorList = this.monitorList.slice(0,num)
+				if(this.showMonitorList.length < this.monitorList.length){
+					this.status = 'more'
+				}else{
+					this.status = 'noMore'
+				}
 			},
 			// 点击新增
-			addInformation(){
+			addInformation(val){
 				uni.navigateTo({
 					url:'/pages/monitor/add',
 					events: {
 					    // 为指定事件添加一个监听器，获取被打开页面传送到当前页面的数据
 					    toMonitorIndex: (data) => {
-							this.queryParams.pageNum = 1
-							this.queryParams.pageSize = 10
-							this.monitorList = []
-							this.getData()
+							this.pageNum = 1
+							this.pageSize = 20
+							// this.getData()
 					    }
 					},
-					success: function(res) {
+					success: (res) => {
+						if(val && val == 'measure'){
+							this.showPopup = false
+							res.eventChannel.emit('toAddPage', {projectId:this.projectId,recordNumber:this.recordNumber,longPressItem:this.longPressItem,dataList:this.monitorListCopy})
+						}else{
+							res.eventChannel.emit('toAddPage', {projectId:this.projectId,recordNumber:this.recordNumber,longPressItem:null,dataList:this.monitorListCopy})
+						}
 					    // 通过eventChannel向被打开页面传送数据
 					},
-					fail:function(res){
+					fail:(res) => {
 						console.log(res)
 					}
 				})
@@ -244,7 +336,6 @@
 						    bluetoothToIndex: (data) => {
 								uni.getConnectedBluetoothDevices({
 									success:(res1)=>{
-										console.log(res1)
 										if(res1.devices.length == 0){
 											
 										}else{
@@ -271,6 +362,16 @@
 						}
 					})
 				}
+			},
+			// 退出登录
+			logout() {
+				this.islogout = true
+			},
+			toLogin(){
+				this.DELET_INFO()
+				uni.reLaunch({
+				    url: '/pages/login/login',
+				});
 			}
 	    }
 	}
@@ -295,14 +396,19 @@ page {
 		}
 	}
 	.scroll-list {
-		height: calc(100vh - var(--window-top) - var(--window-bottom) - 250rpx); // 105rpx 为 .search 的高度
+		height: calc(100vh - var(--window-top) - var(--window-bottom) - 180rpx); // 105rpx 为 .search 的高度
 		width: 100%;
 		.loadmore {
 			padding: 30rpx;
 		}
 	}
 }
-
+.monitor .cardContent .collapse-item {
+	margin-top: 5px;
+	hr {
+		margin-top: 5px;
+	}
+}
 .monitor .cardContent .msg-list-item .task-list-item {
 	margin: 10px!important
 }
@@ -313,31 +419,28 @@ page {
 	text-overflow:ellipsis;
 	white-space: nowrap;
 	span{
+		display: inline-block;
+		width: 70px;
 		color: #999999;
+		text-align-last: justify;
+		text-align: justify;
 	}
 }
-.monitor .user-images{
-	width: 28px;
-	height:28px;
-	margin-right: 8px;
-}
-.monitor .apply-list-foot{
-	font-size: 28rpx;
-	justify-content: space-around;
-	.view-text {
-		color: #4094ff;
-		border-right: 1px solid #cccccc;
+.monitor .popupBox {
+	text-align: center;
+	font-size: 20px;
+	width: 240px;
+	.title {
+		padding: 6px;
+		background-color: #269a5a;
+		color: #f5f5f5;
 	}
-	.confirm-text {
-		color: #43b67e;
-		border-right: 1px solid #cccccc;
+	.measureBtn {
+		padding: 10px;
+		border-bottom: 1px solid #cccccc;
 	}
-	.amend-text {
-		border-right: 1px solid #cccccc;
-		color: #ff4400;
-	}
-	.delet-text {
-		color: #ff0000;
+	.cancleBtn {
+		padding: 10px;
 	}
 }
 </style>

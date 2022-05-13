@@ -15,7 +15,6 @@
 </template>
 
 <script>
-	import { mapActions,mapGetters } from 'vuex'
 	var that
 	export default{
 		data() {
@@ -40,11 +39,7 @@
 			})
 			that = this
 		},
-		computed: {
-			...mapGetters(['getBluetoothInfo']),
-		},
 		methods:{
-			...mapActions(['setBluetoothInfo']),
 			// 蓝牙初始化
 			getBluetoot(){
 				plus.bluetooth.openBluetoothAdapter({
@@ -150,8 +145,9 @@
 							this.characteristics = res.characteristics
 							this.notifyUUid = res.characteristics[2].uuid
 							this.writeUUid = res.characteristics[3].uuid
-							this.setBluetoothInfo({
-								data:{
+							uni.setStorage({
+								key: 'storage_bluetooth',
+								data: {
 									deviceId: this.deviceId,
 									bluetoothName: this.bluetoothName,
 									serviceId: this.serviceId,
@@ -159,10 +155,22 @@
 									notifyUUid:this.notifyUUid,
 									writeUUid:this.writeUUid
 								},
-								callback:this.backFunction
+								success: () => {
+									that.backFunction()
+								}
 							})
+							// this.setBluetoothInfo({
+							// 	data:{
+							// 		deviceId: this.deviceId,
+							// 		bluetoothName: this.bluetoothName,
+							// 		serviceId: this.serviceId,
+							// 		characteristicId: this.characteristics,
+							// 		notifyUUid:this.notifyUUid,
+							// 		writeUUid:this.writeUUid
+							// 	},
+							// 	callback:this.backFunction
+							// })
 						}
-						
 					},
 					fail: function(res) {
 						console.log(res)
@@ -171,7 +179,7 @@
 			},
 			// 蓝牙数据保存成功的回调
 			backFunction(){
-				let a = this.getBluetoothInfo
+				let a = uni.getStorageSync('storage_bluetooth') ? uni.getStorageSync('storage_bluetooth') : null
 				console.log(a)
 				const eventChannel = this.getOpenerEventChannel();
 				eventChannel.emit('bluetoothToIndex');
@@ -192,16 +200,27 @@
 				    	type: 'success',
 				    	duration: 800
 				    })
-					that.setBluetoothInfo({
-						data:{
+					uni.setStorage({
+						key: 'storage_bluetooth',
+						data: {
 							deviceId: '',
 							bluetoothName: '',
 							serviceId: '',
 							characteristicId: '',
 							notifyUUid:'',
 							writeUUid:''
-						},
+						}
 					})
+					// that.setBluetoothInfo({
+					// 	data:{
+					// 		deviceId: '',
+					// 		bluetoothName: '',
+					// 		serviceId: '',
+					// 		characteristicId: '',
+					// 		notifyUUid:'',
+					// 		writeUUid:''
+					// 	},
+					// })
 					connectDevice.connect = false
 					that.connectBluetooth = {}
 				  }

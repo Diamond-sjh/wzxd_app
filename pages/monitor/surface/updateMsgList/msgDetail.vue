@@ -42,6 +42,7 @@
 			eventChannel.on('toMsgDetail', (data) => {
 				Object.assign(this.form,data.item)
 				this.currentIndex = data.index
+				this.$forceUpdate()
 				console.log(this.form)
 				console.log(this.currentIndex)
 			})

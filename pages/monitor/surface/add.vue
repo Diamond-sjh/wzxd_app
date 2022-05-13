@@ -7,11 +7,14 @@
 		</u-navbar>
 		<view class="form containerCommon">
 			<u-form :model="form" ref="uForm" label-width="220" label-align="left">
-				<u-form-item :required="true" prop="testDate" label="监测日期：">
-					<u-input v-model="form.testDate" placeholder="请选择监测日期" @click="isShowDate = true" />
+				<u-form-item :required="true" prop="testDate" label="检测日期：">
+					<u-input v-model="form.testDate" placeholder="请选择检测日期" @click="isShowDate = true" />
 				</u-form-item>
-				<u-form-item :required="true" prop="parameterName" label="监测参数：">
-					<u-input v-model="form.parameterName" placeholder="请选择监测参数" type="select" @click="openSelect('parameterName')" />
+				<u-form-item :required="true" prop="parameterName" label="检测参数：">
+					<u-input v-model="form.parameterName" placeholder="请选择检测参数" type="select" @click="openSelect('parameterName')" />
+				</u-form-item>
+				<u-form-item :required="true" prop="detectionStation" label="检测桩号：">
+					<u-input v-model="form.detectionStation" placeholder="请输入检测桩号" />
 				</u-form-item>
 				<u-form-item :required="true" prop="installationPosition" label="测点编号：">
 					<u-input v-model="form.installationPosition" placeholder="请选择测点编号" type="select" @click="openSelect('installationPosition')" />
@@ -25,12 +28,6 @@
 				<u-form-item :required="true" prop="measurementFrequency" label="量测频率：">
 					<u-input v-model="form.measurementFrequency" placeholder="请输入量测频率" />
 				</u-form-item>
-				<!-- <u-form-item :required="true" prop="testName" label="创建人：">
-					<u-input v-model="form.testName" placeholder="请输入断面名称" />
-				</u-form-item>
-				<u-form-item :required="true" prop="testName" label="创建时间：">
-					<u-input v-model="form.testName" placeholder="请输入断面名称" />
-				</u-form-item> -->
 			</u-form>
 			<!-- 监测参数选择 -->
 			<u-select v-model="isShowSelectList" :list="data" @confirm="clickConfirm"></u-select>
@@ -49,14 +46,19 @@
 			return {
 				form: {
 					testDate: '', //监测日期
+					detectionStation: '',//检测桩号
 					parameterName: '', //监测参数
 					installationPosition: '', //测点编号（安装位置）
 					componentNumber: '', //元件编号
 					measurementFrequency: '', //量测频率
+					creator:'',
+					projectId: null,
+					recordNumber: ''
 				},
 				installationPositionRemark:'',//埋深尺寸
 				isShowDate: false, //日期选择器是否显示
 				isShowSelectList: false, //选择器是否显示
+				paramsList:[],//桩号参数测点集合
 				data: [], //选择器展示数据
 				clickType: '', //点击的输入框
 				rules: {
@@ -67,7 +69,12 @@
 					}],
 					parameterName: [{
 						required: true,
-						message: '请选择监测参数',
+						message: '请选择检测参数',
+						trigger: ['change', 'blur']
+					}],
+					detectionStation: [{
+						required: true,
+						message: '请选择检测桩号',
 						trigger: ['change', 'blur']
 					}],
 					installationPosition: [{
@@ -93,6 +100,28 @@
 			this.form.testDate = this.$utils.getDate(new Date(), 'yyyy-MM-dd')
 			// 设置表单校验规则
 			this.$refs.uForm.setRules(this.rules)
+			this.form.creator = uni.getStorageSync('storage_userInfo') ? uni.getStorageSync('storage_userInfo').userId : null
+		},
+		onLoad() {
+			const eventChannel = this.getOpenerEventChannel()
+			eventChannel.on('toAddPage', (data) => {
+				this.form.projectId = data.projectId
+				this.form.recordNumber = data.recordNumber
+				uni.getStorage({
+					key: 'storage_projectPlan',
+					success: (res) => {
+						res.data.some(item => {
+							if(item.projectId == data.projectId){
+								this.paramsList = JSON.parse(item.projectPlan).monitor
+								return true
+							}
+						})
+						console.log(this.paramsList)
+					},
+					fail: (err) => {
+					}
+				});
+			})
 		},
 		methods: {
 			// 选择日期
@@ -139,8 +168,6 @@
 						if(this.installationPositionRemark){
 							this.form.installationPosition = `${this.form.installationPosition}埋深${this.installationPositionRemark}m`
 						}
-						console.log(this.form)
-						// return
 						this.$httpMonitor.addGwzmRecordSon(this.form).then(res => {
 							if (res.code == 200) {
 								this.$refs.uToast.show({

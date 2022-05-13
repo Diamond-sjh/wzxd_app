@@ -55,14 +55,15 @@
 				this.isShowBtn = true
 				Object.assign(this.form,data.item)
 				this.currentIndex = data.index
+				this.$forceUpdate()
 				console.log(this.form)
 				console.log(this.currentIndex)
 			})
 			eventChannel.on('IndexToMsgDetail', (data) => {
 				this.isShowBtn = false
 				Object.assign(this.form,data)
+				this.$forceUpdate()
 				console.log(this.form)
-				console.log(this.currentIndex)
 			})
 		},
 	    methods: {

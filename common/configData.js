@@ -1,101 +1,101 @@
 // 常量数据
 // 洞内外观察 ----------------------------------
 // 岩石类型  数据列表
-const rockTypeList = [
-	{
-		value: '凝灰岩',
-		label: '凝灰岩',
-		children: [
-			{
-				value: '坚硬岩',
-				label: '坚硬岩',
-			},{
-				value: '较坚硬岩',
-				label: '较坚硬岩'
-			},{
-				value: '较软岩',
-				label: '较软岩'
-			},{
-				value: '软岩',
-				label: '软岩'
-			},{
-				value: '极软岩',
-				label: '极软岩'
-			}
-		]
-	},{
-		value: '花岗岩',
-		label: '花岗岩',
-		children: [
-			{
-				value: '坚硬岩',
-				label: '坚硬岩',
-			},{
-				value: '较坚硬岩',
-				label: '较坚硬岩'
-			},{
-				value: '较软岩',
-				label: '较软岩'
-			},{
-				value: '软岩',
-				label: '软岩'
-			},{
-				value: '极软岩',
-				label: '极软岩'
-			}
-		]
-	},{
-		value: '黏质土',
-		label: '黏质土',
-		children: [
-			{
-				value: '坚硬',
-				label: '坚硬',
-			},{
-				value: '坚硬~硬塑',
-				label: '坚硬~硬塑'
-			},{
-				value: '硬塑~可塑',
-				label: '硬塑~可塑'
-			},{
-				value: '软塑~流塑',
-				label: '软塑~流塑'
-			}
-		]
-	},{
-		value: '沙质土',
-		label: '沙质土',
-		children: [
-			{
-				value: '密实',
-				label: '密实',
-			},{
-				value: '密实~中密',
-				label: '密实~中密'
-			},{
-				value: '松散',
-				label: '松散'
-			}
-		]
-	},{
-		value: '碎石土',
-		label: '碎石土',
-		children: [
-			{
-				value: '密实',
-				label: '密实',
-			},{
-				value: '密实~中密',
-				label: '密实~中密'
-			},{
-				value: '中密~稍密',
-				label: '中密~稍密'
-			}
-		]
-	}
-]
+// const rockTypeList = [
+// 	{
+// 		value: '凝灰岩',
+// 		label: '凝灰岩',
+// 		children: [
+// 			{
+// 				value: '坚硬岩',
+// 				label: '坚硬岩',
+// 			},{
+// 				value: '较坚硬岩',
+// 				label: '较坚硬岩'
+// 			},{
+// 				value: '较软岩',
+// 				label: '较软岩'
+// 			},{
+// 				value: '软岩',
+// 				label: '软岩'
+// 			},{
+// 				value: '极软岩',
+// 				label: '极软岩'
+// 			}
+// 		]
+// 	},{
+// 		value: '花岗岩',
+// 		label: '花岗岩',
+// 		children: [
+// 			{
+// 				value: '坚硬岩',
+// 				label: '坚硬岩',
+// 			},{
+// 				value: '较坚硬岩',
+// 				label: '较坚硬岩'
+// 			},{
+// 				value: '较软岩',
+// 				label: '较软岩'
+// 			},{
+// 				value: '软岩',
+// 				label: '软岩'
+// 			},{
+// 				value: '极软岩',
+// 				label: '极软岩'
+// 			}
+// 		]
+// 	},{
+// 		value: '黏质土',
+// 		label: '黏质土',
+// 		children: [
+// 			{
+// 				value: '坚硬',
+// 				label: '坚硬',
+// 			},{
+// 				value: '坚硬~硬塑',
+// 				label: '坚硬~硬塑'
+// 			},{
+// 				value: '硬塑~可塑',
+// 				label: '硬塑~可塑'
+// 			},{
+// 				value: '软塑~流塑',
+// 				label: '软塑~流塑'
+// 			}
+// 		]
+// 	},{
+// 		value: '沙质土',
+// 		label: '沙质土',
+// 		children: [
+// 			{
+// 				value: '密实',
+// 				label: '密实',
+// 			},{
+// 				value: '密实~中密',
+// 				label: '密实~中密'
+// 			},{
+// 				value: '松散',
+// 				label: '松散'
+// 			}
+// 		]
+// 	},{
+// 		value: '碎石土',
+// 		label: '碎石土',
+// 		children: [
+// 			{
+// 				value: '密实',
+// 				label: '密实',
+// 			},{
+// 				value: '密实~中密',
+// 				label: '密实~中密'
+// 			},{
+// 				value: '中密~稍密',
+// 				label: '中密~稍密'
+// 			}
+// 		]
+// 	}
+// ]
 // 风化程度及走向  数据列表
-const rockLithologyOccurrenceList = [
+const boltFailureConditionList = [
 	{
 		value: '未风化',
 		label: '未风化'
@@ -103,8 +103,8 @@ const rockLithologyOccurrenceList = [
 		value: '微风化',
 		label: '微风化'
 	},{
-		value: '弱风化',
-		label: '弱风化'
+		value: '中风化',
+		label: '中风化'
 	},{
 		value: '强风化',
 		label: '强风化'
@@ -113,31 +113,42 @@ const rockLithologyOccurrenceList = [
 		label: '全风化'
 	}
 ]
-// 节理裂隙发育程度及走向  数据列表
-const jfissureDevTrendList = [
+// 岩石类型  数据列表
+const rockTypeList = [
 	{
-		value: '节理裂隙较发育',
-		label: '节理裂隙较发育'
+		value: '坚硬岩',
+		label: '坚硬岩',
 	},{
-		value: '节理裂隙稍发育',
-		label: '节理裂隙稍发育'
+		value: '较坚硬岩',
+		label: '较坚硬岩'
+	},{
+		value: '较软岩',
+		label: '较软岩'
+	},{
+		value: '软岩',
+		label: '软岩'
+	},{
+		value: '极软岩',
+		label: '极软岩'
 	}
 ]
-// 断层破碎带宽度及特征  数据列表
+// 完整程度  数据列表
 const ffractWidthFeaturesList = [
 	{
-		value: '无',
-		label: '无'
-	}
-]
-// 地下水状况  数据列表
-const groundwaterStatusList = [
-	{
-		value: '基岩裂缝水较发育',
-		label: '基岩裂缝水较发育'
+		value: '完整',
+		label: '完整'
 	},{
-		value: '基岩裂缝水稍发育',
-		label: '基岩裂缝水稍发育'
+		value: '较完整',
+		label: '较完整'
+	},{
+		value: '较破碎',
+		label: '较破碎'
+	},{
+		value: '破碎',
+		label: '破碎'
+	},{
+		value: '极破碎',
+		label: '极破碎'
 	}
 ]
 // 掌子面稳定状态  数据列表
@@ -146,152 +157,59 @@ const faceSteadyStateList = [
 		value: '稳定',
 		label: '稳定'
 	},{
-		value: '较稳定',
-		label: '较稳定'
+		value: '随时间松弛、掉块',
+		label: '随时间松弛、掉块'
 	},{
-		value: '不稳定',
-		label: '不稳定'
+		value: '挤出、自稳困难，需及时支护',
+		label: '挤出、自稳困难，需及时支护'
+	},{
+		value: '不能自稳，需超前支护',
+		label: '不能自稳，需超前支护'
 	}
 ]
-// 渗漏水状况  数据列表
-const leakageConditionList = [
+// 地下水状况  数据列表
+const groundwaterStatusList = [
 	{
-		value: '支护表面有潮斑',
-		label: '支护表面有潮斑',
-		checked: true
+		value: '潮湿',
+		label: '潮湿'
 	},{
-		value: '支护表面有点状出水',
-		label: '支护表面有点状出水',
-		checked: true
+		value: '点滴状',
+		label: '点滴状'
 	},{
-		value: '支护表面有淋雨状出水',
-		label: '支护表面有淋雨状出水',
-		checked: false
+		value: '淋雨状',
+		label: '淋雨状'
 	},{
-		value: '支护表面有涌流状出水',
-		label: '支护表面有涌流状出水',
-		checked: false
+		value: '涌流状',
+		label: '涌流状'
 	}
 ]
-// 喷层裂缝状况  数据列表
+// 岩体初始应力  数据列表
 const crackConditionList = [
 	{
-		value: '未见明显裂缝',
-		label: '未见明显裂缝'
+		value: '低',
+		label: '低'
 	},{
-		value: '有明显裂缝',
-		label: '有明显裂缝'
+		value: '中',
+		label: '中'
+	},{
+		value: '高',
+		label: '高'
+	},{
+		value: '极高',
+		label: '极高'
 	}
 ]
-// 喷层与围岩接触状况  数据列表
-const sprcontactConditionList = [
+// 节理裂隙发育程度及走向  数据列表
+const jfissureDevTrendList = [
 	{
-		value: '喷层剥落',
-		label: '喷层剥落'
+		value: '结构面走向与洞轴线夹角<30°,结构面倾角30°~75°',
+		label: '结构面走向与洞轴线夹角<30°,结构面倾角30°~75°'
 	},{
-		value: '未见喷层剥落',
-		label: '未见喷层剥落'
+		value: '结构面走向与洞轴线夹角>60°,结构面倾角>75°',
+		label: '结构面走向与洞轴线夹角>60°,结构面倾角>75°'
 	},{
-		value: '掉块',
-		label: '掉块'
-	}
-]
-// 钢拱架挤压状况  数据列表
-const steelarchExtrusionConditionList = [
-	{
-		value: '未见挤压变形',
-		label: '未见挤压变形'
-	},{
-		value: '存在挤压变形',
-		label: '存在挤压变形'
-	}
-]
-// 锚杆破坏状况  数据列表
-const boltFailureConditionList = [
-	{
-		value: '未见锚杆破坏',
-		label: '未见锚杆破坏'
-	},{
-		value: '存在锚杆破坏',
-		label: '存在锚杆破坏'
-	}
-]
-// 二衬表面裂缝状况  数据列表
-const secondCrackConditionList = [
-	{
-		value: '未施工',
-		label: '未施工'
-	},{
-		value: '未见明显裂缝',
-		label: '未见明显裂缝'
-	}
-]
-// 是否有底鼓现象  数据列表
-const floorDrumPhenomenonList = [
-	{
-		value: '存在底鼓',
-		label: '存在底鼓'
-	},{
-		value: '未见明显底鼓',
-		label: '未见明显底鼓'
-	},{
-		value: '未施工',
-		label: '未施工'
-	},{
-		value: '否',
-		label: '否'
-	}
-]
-// 地表开裂沉陷、状况  数据列表
-const surfacsubConditionList = [
-	{
-		value: '未见明显开裂',
-		label: '未见明显开裂'
-	},{
-		value: '明显开裂',
-		label: '明显开裂'
-	}
-]
-// 边坡、仰坡稳定状态  数据列表
-const swaterLeakageConditionList = [
-	{
-		value: '稳定',
-		label: '稳定'
-	},{
-		value: '较稳定',
-		label: '较稳定'
-	},{
-		value: '坍塌',
-		label: '坍塌'
-	},{
-		value: '滑塌',
-		label: '滑塌'
-	},{
-		value: '滑坡',
-		label: '滑坡'
-	}
-]
-// 地表水渗漏状况  数据列表
-const surfaceWaterConditionList = [
-	{
-		value: '有',
-		label: '有'
-	},{
-		value: '无',
-		label: '无'
-	},{
-		value: '未见地表积水现象',
-		label: '未见地表积水现象'
-	}
-]
-// 地表植被变化状况  数据列表
-const surfaceVegetationChangesList = [
-	{
-		value: '无变化',
-		label: '无变化'
-	},{
-		value: '未见植被破坏滑移',
-		label: '未见植被破坏滑移'
+		value: '其它组合',
+		label: '其它组合'
 	}
 ]
 // 原设计围岩级别  数据列表
@@ -338,6 +256,7 @@ const nowRockGradeList = [
 		label: 'Ⅵ'
 	}
 ]
+
 // 洞内外观察 ------------------------------------
 // 关键必测项目---------------------------------------
 const parameterNameKeyList = [
@@ -500,24 +419,14 @@ const excavationMethodList = [
 // 监测计划参数 ------------------------------------
 export default {
 	rockTypeList,
-	rockLithologyOccurrenceList,
-	jfissureDevTrendList,
-	ffractWidthFeaturesList,
-	groundwaterStatusList,
-	faceSteadyStateList,
-	leakageConditionList,
-	crackConditionList,
-	sprcontactConditionList,
-	steelarchExtrusionConditionList,
-	boltFailureConditionList,
-	secondCrackConditionList,
-	floorDrumPhenomenonList,
-	surfacsubConditionList,
-	swaterLeakageConditionList,
-	surfaceWaterConditionList,
-	surfaceVegetationChangesList,
-	originalRockGradeList,
-	nowRockGradeList,
+	boltFailureConditionList,//风化程度
+	ffractWidthFeaturesList,//完整程度	
+	faceSteadyStateList,//稳定状态
+	groundwaterStatusList,//地下水状态
+	crackConditionList,//岩体初始应力
+	jfissureDevTrendList,//结构面产状与洞轴线的关系
+	originalRockGradeList,//原设计围岩级别(Ⅰ、Ⅱ、Ⅲ、Ⅳ、Ⅴ、Ⅵ)
+	nowRockGradeList,//现判断围岩级别(Ⅰ、Ⅱ、Ⅲ、Ⅳ、Ⅴ、Ⅵ)
 	
 	parameterNameKeyList,
 	testName0List,

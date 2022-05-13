@@ -305,7 +305,7 @@
 			}
 	    },
 		computed: {
-			...mapGetters(['getCustInfo','getVirusList']),
+			...mapGetters(['getVirusList']),
 			getMeanIlluminance(){
 				this.chooseVal = ''
 				let sum = 0
@@ -348,6 +348,7 @@
 		// 页面加载
 		onLoad() {
 			let that = this
+			let userInfo = uni.getStorageSync('storage_userInfo') ? uni.getStorageSync('storage_userInfo') : {}
 			this.timestamp = new Date().getTime()
 			// 获取eventChannel事件
 			const eventChannel = this.getOpenerEventChannel()
@@ -367,8 +368,8 @@
 					this.isShowLightTable = true
 				}
 				// 检测人
-				if(this.getCustInfo&&(this.getCustInfo.lastName||this.getCustInfo.firstName)){
-					this.form.checker = this.getCustInfo.lastName + this.getCustInfo.firstName
+				if(userInfo&&(userInfo.lastName||userInfo.firstName)){
+					this.form.checker = userInfo.lastName + userInfo.firstName
 				}
 				//检测时间
 				this.form.checkDate = this.$utils.getDate(new Date())

@@ -1,52 +1,53 @@
 <template>
-	<view class="navbar home">
-		<u-navbar :is-back="false" title="首页" title-color="white" back-icon-color="white">
-			<view class="slot-wrap">
-				<text @click="logout()" style="color: #ffffff;">注销</text>
-			</view>
+	<view class="navbar project">
+		<u-navbar :isBack="false" back-icon-color="white" title="工程列表" title-color="white">
 		</u-navbar>
-		<view class="title">
-			我的应用
+		<view class="search">
+			<u-search class="searchContent" v-model="projectName" placeholder="请输入工程名称关键字" :show-action="false" @custom="clickQuery" @search="clickQuery"></u-search>
+			<view class="sea" @click="clickQuery()"><u-icon name="search" size="40"></u-icon></view>
 		</view>
-		<view class="applicationList">
-			<view class="applicationItem" @click="jump('plan')">
-				<u-image width="100px" height="100px" src="/static/index/plan.png"></u-image>
-				<view class="textContent">监控计划</view>
-			</view>
-			<view class="applicationItem" @click="jump('monitor')">
-				<u-image width="100px" height="100px" src="/static/index/monitor.png"></u-image>
-				<view class="textContent">全站仪</view>
-			</view>
-			<view class="applicationItem" @click="jump('surface')">
-				<u-image width="100px" height="100px" src="/static/index/surface.png"></u-image>
-				<view class="textContent">振弦式读数仪</view>
-			</view>
-			<view class="applicationItem" @click="jump('inOutCave')">
-				<u-image width="100px" height="100px" src="/static/index/inOutCave.png"></u-image>
-				<view class="textContent">洞内外观察</view>
-			</view>
+		<view class="cardContent">
+			<scroll-view class="scroll-list msg-list-item" scroll-y="true" @scrolltolower="getScrollData">
+				<u-cell-group>
+					<u-cell-item 
+						:title="item.label"
+						:label="item.projectPosition" 
+						v-for="(item,index) in projectList"
+						@click="loolDetail(item)"
+						>
+					</u-cell-item>
+				</u-cell-group>
+				<view class="example-body">
+					<uni-load-more :status="status" :content-text="contentText"/>
+				</view>
+			</scroll-view>
 		</view>
-		<u-modal v-model="islogout" content="确认退出当前登录？" :show-cancel-button="true" @confirm="toLogin"></u-modal>
-		
 	</view>
 </template>
 
 <script>
-	import { mapMutations } from 'vuex'
 	export default {
 	    data() {
 	        return {
-				islogout:false
+				projectList:[],// 工程项目列表
+				projectName:'',// 工程名称
+				name:'monitor',// 跳转的页面标识
+				status: 'nomore',
+				contentText: {
+					contentdown: '查看更多',
+					contentrefresh: '加载中',
+					contentnomore: '没有更多'
+				},	
 			}
 	    },
-		onLoad() {
+		onLoad(option) {
+			this.name = option.name
 			this.getParams()
 		},
-		// 右上角按钮的点击方法
-		onNavigationBarButtonTap() {
+		onShow() {
+			getApp().globalData.reviseTabbarByUserType();
 		},
 	    methods: {
-			...mapMutations(['DELET_INFO']),
 			// 查询规范依据
 			getParams(){
 				this.$httpMonitor.selectProjectPlan().then(res => {
@@ -54,13 +55,7 @@
 						let dataArr = res.data
 						uni.setStorage({
 							key: 'storage_projectPlan',
-							data: dataArr,
-							success(res) {
-								console.log('监测参数本地保存成功');
-							},
-							fail(err) {
-								console.log('监测参数本地保存成功');
-							}
+							data: dataArr
 						});
 					}else{
 						this.$u.toast(res.msg)
@@ -123,9 +118,9 @@
 				// 查询工程列表
 				this.$httpMonitor.queryProjectList({}).then(res => {
 					if(res.code == 200){
-						let projectList = []
+						this.projectList = []
 						res.data.forEach(val => {
-							projectList.push({
+							this.projectList.push({
 								value:val.id,
 								recordNumber:val.recordNumber,
 								label:val.projectName,
@@ -141,40 +136,51 @@
 				})
 				// 查询全量的全站仪数据
 				this.$httpMonitor.queryAllData().then(res => {
-					console.log(res)
 					if(res.code == 200){
 						let dataArr = res.data
 						uni.setStorage({
 							key: 'allMonitor_key',
-							data: dataArr,
-							success(res) {
-								console.log('全站仪数据本地保存成功');
-							},
-							fail(err) {
-								console.log('全站仪数据本地保存成功');
-							}
+							data: dataArr
 						});
 					}else{
 						this.$u.toast(res.msg)
 					}
 				})
 			},
-			jump(val){
+			// 点击搜索
+			clickQuery(){
+				
+			},
+			// 滚动加载
+			getScrollData(){
+				if(this.status == 'noMore'){
+					return
+				}
+			},
+			// 查看详情
+			loolDetail(item){
+				// uni.setStorageSync("projectInfo", item)
+				// uni.switchTab({
+				// 	url: '/pages/monitor/plan/index'
+				// })
+				// return
+				
+				let val = this.name
 				if(val == 'monitor'){
 					uni.navigateTo({
-					    url: `/pages/monitor/transitionPage?name=${val}`
+					    url: `/pages/monitor/index?projectId=${item.value}&recordNumber=${item.recordNumber}`
 					});
 					return
 				}
 				if(val == 'inOutCave'){
 					uni.navigateTo({
-					    url: `/pages/monitor/transitionPage?name=${val}`
+					    url: `/pages/monitor/inOutCave/index?projectId=${item.value}&recordNumber=${item.recordNumber}`
 					});
 					return
 				}
 				if(val == 'surface'){
 					uni.navigateTo({
-					    url: `/pages/monitor/transitionPage?name=${val}`
+					    url: `/pages/monitor/surface/index??projectId=${item.value}&recordNumber=${item.recordNumber}`
 					});
 					return
 				}
@@ -184,50 +190,35 @@
 					});
 					return
 				}
-			},
-			// 退出登录
-			logout() {
-				console.log(12)
-				this.islogout = true
-			},
-			toLogin(){
-				this.DELET_INFO()
-				uni.reLaunch({
-				    url: '/pages/login/login',
-				});
 			}
 	    }
 	}
 </script>
 
-<style scoped>
-.home {
-		padding: 10px;
+<style lang="scss" scoped>
+page {
+	background-color: #f5f5f5;
+}
+.project .navUpdateIcon {
+		padding-right: 20px;
+		line-height: 44px;
+		font-size: 20px;
 	}
-	.home .title{
-		margin: 10px 0 20px;
-		padding-left: 10px;
-		font-size: 22px;
-		font-weight: 700;
-		border-left: 3px solid #cccccc;
-	}
-	.home .applicationList{
+.project {
+	.search {
 		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		justify-content: flex-start;
-		align-items: flex-start;
+		margin: 0 10px;
+		.sea {
+			padding: 0 5px;
+			line-height: 90rpx;
+		}
 	}
-	.home .applicationList .applicationItem{
-		width: 110px;
-		margin: 0 3px;
-	}
-	.home .applicationList .u-image{
-		margin: 0 5px;
-	}
-	.home .applicationList .applicationItem .textContent{
-		text-align: center;
+	.scroll-list {
+		height: calc(100vh - var(--window-top) - var(--window-bottom) - 250rpx); // 105rpx 为 .search 的高度
 		width: 100%;
-		font-size: 18px;
+		.loadmore {
+			padding: 30rpx;
+		}
 	}
+}
 </style>

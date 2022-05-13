@@ -1,13 +1,16 @@
 <template>
-	<view class="navbar surface">
-		<u-navbar back-icon-color="white" title="监控计划" title-color="white">
+	<view class="navbar plan">
+		<u-navbar :isBack="false" back-icon-color="white" :title="title" title-color="white" :titleTap="toProjectPage">
 			<view slot="right" class="slot-wrap iconfont icon-shangchuan navUpdateIcon">
 				<u-icon @click="jumpToPage('updateList')" name="shangchuan" custom-prefix="custom-icon"></u-icon>
 				<u-badge size="mini" type="success" :count='count' :offset="offset"></u-badge>
 			</view>
+			<view class="navbarRight">
+				<u-button type="success" size="mini" @click="logout()">注销</u-button>
+			</view>
 		</u-navbar>
 		<view class="search">
-			<u-search class="searchContent" v-model="queryParams.testItems" placeholder="请输入检测项目" :show-action="false" @custom="clickQuery" @search="clickQuery"></u-search>
+			<u-search class="searchContent" v-model="queryParams.testItems" placeholder="请输入检测参数关键字" :show-action="false" @custom="clickQuery" @search="clickQuery"></u-search>
 			<view class="sea" @click="clickQuery()"><u-icon name="search" size="40"></u-icon></view>
 			<view class="add" @click="addInformation"><u-icon name="plus-circle" size="40"></u-icon></view>
 		</view>
@@ -28,10 +31,12 @@
 				</view>
 			</scroll-view>
 		</view>
+		<u-modal v-model="islogout" content="确认退出当前登录？" :show-cancel-button="true" @confirm="toLogin"></u-modal>
 	</view>
 </template>
 
 <script>
+	import { mapMutations } from 'vuex'
 	export default {
 	    data() {
 	        return {
@@ -50,12 +55,18 @@
 					contentrefresh: '加载中',
 					contentnomore: '没有更多'
 				},	
+				islogout:false,
+				title:'监控计划'
 			}
 	    },
 		onLoad() {
+			let projectInfo = uni.getStorageSync('projectInfo') ? uni.getStorageSync('projectInfo') : {};
+			this.title = projectInfo.label?projectInfo.label:'监控计划'
+			this.queryParams.projectId = projectInfo.value?projectInfo.value:null
 			this.getData()
 		},
 		onShow() {
+			getApp().globalData.reviseTabbarByUserType();
 			uni.getStorage({
 			    key: 'plan_key',
 			    success: (res) => {
@@ -77,6 +88,7 @@
 			this.getData()
 		},
 	    methods: {
+			...mapMutations(['DELET_INFO']),
 			// 查询数据
 			getData(){
 				this.$httpMonitor.queryStatistics(this.queryParams).then(res => {
@@ -154,6 +166,23 @@
 						}
 					})
 				}
+			},
+			// 退出登录
+			logout() {
+				this.islogout = true
+			},
+			toLogin(){
+				this.DELET_INFO()
+				uni.reLaunch({
+				    url: '/pages/login/login',
+				});
+			},
+			// 点击标题返回项目选择页面
+			toProjectPage(){
+				console.log(123)
+				uni.reLaunch({
+					url: '/pages/monitor/transitionPage'
+				})
 			}
 	    }
 	}
@@ -163,12 +192,12 @@
 page {
 	background-color: #f5f5f5;
 }
-.surface .navUpdateIcon {
+.plan .navUpdateIcon {
 		padding-right: 20px;
 		line-height: 44px;
 		font-size: 20px;
 	}
-.surface {
+.plan {
 	.search {
 		display: flex;
 		margin: 0 10px;
@@ -178,7 +207,7 @@ page {
 		}
 	}
 	.scroll-list {
-		height: calc(100vh - var(--window-top) - var(--window-bottom) - 250rpx); // 105rpx 为 .search 的高度
+		height: calc(100vh - var(--window-top) - var(--window-bottom) - 180rpx); // 105rpx 为 .search 的高度
 		width: 100%;
 		.loadmore {
 			padding: 30rpx;
@@ -186,10 +215,10 @@ page {
 	}
 }
 
-.surface .cardContent .msg-list-item .task-list-item {
+.plan .cardContent .msg-list-item .task-list-item {
 	margin: 10px!important
 }
-.surface .apply-text{
+.plan .apply-text{
 	font-size: 28rpx;
 	color: #333333;
 	overflow: hidden;
@@ -199,12 +228,12 @@ page {
 		color: #999999;
 	}
 }
-.surface .user-images{
+.plan .user-images{
 	width: 28px;
 	height:28px;
 	margin-right: 8px;
 }
-.surface .apply-list-foot{
+.plan .apply-list-foot{
 	font-size: 28rpx;
 	justify-content: space-around;
 	.view-text {

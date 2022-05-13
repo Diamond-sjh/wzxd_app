@@ -1,13 +1,16 @@
 <template>
 	<view class="navbar inOutCave">
-		<u-navbar back-icon-color="white" title="洞内外观察" title-color="white">
+		<u-navbar :isBack="false" back-icon-color="white" :title="title" title-color="white">
 			<view slot="right" class="slot-wrap iconfont icon-shangchuan navUpdateIcon">
 				<u-icon @click="jumpToPage('updateList')" name="shangchuan" custom-prefix="custom-icon"></u-icon>
 				<u-badge size="mini" type="success" :count='count' :offset="offset"></u-badge>
 			</view>
+			<view class="navbarRight">
+				<u-button type="success" size="mini" @click="logout()">注销</u-button>
+			</view>
 		</u-navbar>
 		<view class="search">
-			<u-search class="searchContent" placeholder="请输入监测桩号关键字" v-model="queryParams.faceMileage" :show-action="false" @custom="clickQuery" @search="clickQuery"></u-search>
+			<u-search class="searchContent" placeholder="请输入掌子面里程关键字" v-model="queryParams.faceMileage" :show-action="false" @custom="clickQuery" @search="clickQuery"></u-search>
 			<view class="sea" @click="clickQuery()"><u-icon name="search" size="40"></u-icon></view>
 			<view class="add" @click="addInformation"><u-icon name="plus-circle" size="40"></u-icon></view>
 		</view>
@@ -28,16 +31,20 @@
 				</view>
 			</scroll-view>
 		</view>
+		<u-modal v-model="islogout" content="确认退出当前登录？" :show-cancel-button="true" @confirm="toLogin"></u-modal>
 	</view>
 </template>
 
 <script>
+	import { mapMutations } from 'vuex'
 	export default {
 	    data() {
 	        return {
 				offset:[15,20],//上传图标
 				count:0,//待上传数量
 				inoutcaveData:[],//查询数据列表
+				projectId:'',//项目id
+				recordNumber:'',//记录编号
 				// 查询参数
 				queryParams: {
 					pageNum: 1,
@@ -50,13 +57,21 @@
 					contentnomore: '没有更多'
 				},	
 				show:false,
-				content:''
+				content:'',
+				islogout:false,
+				title:'洞内外观察'
 			}
 	    },
-		onLoad() {
+		onLoad(option) {
+			let projectInfo = uni.getStorageSync('projectInfo') ? uni.getStorageSync('projectInfo') : {};
+			this.projectId = projectInfo.value?projectInfo.value:''
+			this.recordNumber = projectInfo.recordNumber?projectInfo.recordNumber:''
+			this.title = projectInfo.label?projectInfo.label:'洞内外观察'
+			this.queryParams.projectId = this.projectId
 			this.getData()
 		},
 		onShow() {
+			getApp().globalData.reviseTabbarByUserType();
 			uni.getStorage({
 			    key: 'inoutcave_key',
 			    success: (res) => {
@@ -78,6 +93,7 @@
 			this.getData()
 		},
 	    methods: {
+			...mapMutations(['DELET_INFO']),
 			// 查询数据
 			getData(){
 				this.$httpMonitor.queryInoutcaveObservationRecord(this.queryParams).then(res => {
@@ -134,10 +150,11 @@
 							this.getData()
 					    }
 					},
-					success: function(res) {
+					success: (res) => {
 					    // 通过eventChannel向被打开页面传送数据
+						res.eventChannel.emit('toAddPage', {projectId:this.projectId,recordNumber:this.recordNumber})
 					},
-					fail:function(res){
+					fail:(res) => {
 						console.log(res)
 					}
 				})
@@ -155,6 +172,16 @@
 						}
 					})
 				}
+			},
+			// 退出登录
+			logout() {
+				this.islogout = true
+			},
+			toLogin(){
+				this.DELET_INFO()
+				uni.reLaunch({
+				    url: '/pages/login/login',
+				});
 			}
 	    }
 	}
@@ -179,7 +206,7 @@ page {
 		}
 	}
 	.scroll-list {
-		height: calc(100vh - var(--window-top) - var(--window-bottom) - 250rpx); // 105rpx 为 .search 的高度
+		height: calc(100vh - var(--window-top) - var(--window-bottom) - 180rpx); // 105rpx 为 .search 的高度
 		width: 100%;
 		.loadmore {
 			padding: 30rpx;

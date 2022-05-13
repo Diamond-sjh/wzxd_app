@@ -51,6 +51,9 @@
 				content:'确认退出当前登录？'
 			}
 		},
+		onShow() {
+			getApp().globalData.reviseTabbarByUserType();
+		},
 		methods: {
 			...mapMutations(['DELET_INFO']),
 			clickItem(val){

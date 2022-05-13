@@ -4,11 +4,10 @@ import store from './store/index.js'
 import http from './common/api.js'
 import httpMonitor from './common/monitorAPI.js'
 import utils from './common/utils.js'
-import uView from "uview-ui";
+import uView from "uview-ui"
 
 
 Vue.use(uView);
-
 Vue.prototype.$http = http
 Vue.prototype.$httpMonitor = httpMonitor
 Vue.config.productionTip = false

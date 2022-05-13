@@ -1,5 +1,40 @@
 <script>
 	export default {
+		globalData: {  
+			//修改动态tabbar
+			reviseTabbarByUserType: () => {
+				let userType = uni.getStorageSync('userType') ? uni.getStorageSync('userType') : 0;
+				console.log(userType)
+				//机电定检
+				if(userType == 1){
+					uni.setTabBarItem({
+						index: 0,
+						visible: false,
+					})
+					uni.setTabBarItem({
+						index: 1,
+						visible: false,
+					})
+				}else{
+					uni.setTabBarItem({
+						index: 2,
+						visible: false,
+					})
+					uni.setTabBarItem({
+						index: 3,
+						visible: false,
+					})
+					uni.setTabBarItem({
+						index: 4,
+						visible: false,
+					})
+					uni.setTabBarItem({
+						index: 5,
+						visible: false,
+					})
+				}
+			}
+		},
 		data(){
 			return {
 				curVersion:'1.0.0'
@@ -13,7 +48,8 @@
 			// #endif
 		},
 		onShow: function() {
-			// console.log('App Show')
+			console.log('App Show')
+			getApp().globalData.reviseTabbarByUserType();
 		},
 		onHide: function() {
 			// console.log('App Hide')

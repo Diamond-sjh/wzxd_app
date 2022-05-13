@@ -6,26 +6,13 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
 	state: {
-		token:'',//用户token
-		custInfo: {},//客户信息
+		token:'',
 		virusList: new Map(),//待上传病害信息
 		virusListLength:0,//待上传病害信息长度
 		currentTimestamp: '',//当前上传时间戳
 		statueList: new Map(),//检测状态列表
-		bluetooth:{},//连接的蓝牙设备信息
-		basisList:[],// 规范依据
-		instrumentList:[],// 设备列表
-		projectList:[],//项目列表
 	},
 	mutations: {
-		// 设置登录的token
-		SET_TOKEN(state,token){
-			state.token = token
-		},
-		// 存储客户信息
-		SET_CUSTINFO(state,info){
-			state.custInfo = Object.assign(state.custInfo,info)
-		},
 		// 没有网络的时候存储	添加病害的信息  以便后续提交请求
 		SET_VIRUSINFO(state,info){
 			state.virusList.set(info.timestamp,info.data) //待提交病害信息map对象
@@ -48,29 +35,22 @@ const store = new Vuex.Store({
 		DELET_STATUElIST(state,info){
 			state.statueList.delete(info)
 		},
+		SET_TOKEN(state,info){
+			state.token = info
+		},
 		// 退出登录，清空数据
 		DELET_INFO(state,info){
-			state.token = ''
-			state.custInfo = {}
-			state.basisList = []
-			state.instrumentList = []
-			state.projectList = []
-		},
-		// 设置蓝牙连接数据
-		SET_BLUETOOTH(state,info){
-			state.bluetooth = Object.assign(state.bluetooth,info)
-		},
-		// 设置规范依据
-		SET_BASIS(state,info){
-			state.basisList = info
-		},
-		// 设置设备列表
-		SET_INSTRUMENT(state,info){
-			state.instrumentList = info
-		},
-		// 设置项目列表
-		SET_PROJECTLIST(state,info){
-			state.projectList = info
+			console.log(13)
+			// 清除本地缓存
+			// uni.removeStorage({key: 'userToken'})//客户token
+			uni.removeStorage({key: 'storage_projectList'})//工程列表
+			uni.removeStorage({key: 'storage_projectPlan'})//项目-桩号-参数-测点
+			uni.removeStorage({key: 'storage_Instrument'})//设备列表
+			uni.removeStorage({key: 'storage_basisList'})//试验依据
+			uni.removeStorage({key: 'storage_judgeBasisList'})//检测依据
+			uni.removeStorage({key: 'storage_bluetooth'})//蓝牙信息
+			uni.removeStorage({key: 'storage_userInfo'})//用户信息
+			// console.log(uni.getStorageSync('userToken'))
 		}
 	},
 	actions: {
@@ -88,18 +68,9 @@ const store = new Vuex.Store({
 					if(callback){callback()}
 				}
 			})
-		},
-		// 设置蓝牙信息
-		setBluetoothInfo({commit,state},{data,callback}){
-			commit('SET_BLUETOOTH',data)
-			if(callback){callback()}
 		}
 	},
 	getters: {
-		// 获取存储的token值
-		getUserToken:state => state.token,
-		// 获取客户信息的值
-		getCustInfo:state => state.custInfo,
 		// 获取病害信息列表
 		getVirusList:state => state.virusList,
 		// 获取病害信息列表的长度
@@ -112,14 +83,9 @@ const store = new Vuex.Store({
 		},
 		// 获取检测状态上传列表
 		getStatueList:state => state.statueList,
-		// 获取蓝牙设备信息
-		getBluetoothInfo: state => state.bluetooth,
-		// 获取规范依据
-		getBasisList: state => state.basisList,
-		// 获取设备列表
-		getInstrumentList: state => state.instrumentList,
-		// 获取项目列表
-		getProjectList: state => state.projectList
+		// 获取存储的token值
+		getUserToken:state => state.userToken,
+		
 	}
 })
 

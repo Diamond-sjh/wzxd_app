@@ -9,7 +9,7 @@
 					</view>
 					<view class="u-icon-wrap u-back-text u-line-1" v-if="backText" :style="[backTextStyle]">{{ backText }}</view>
 				</view>
-				<view class="u-navbar-content-title" v-if="title" :style="[titleStyle]">
+				<view class="u-navbar-content-title" v-if="title" :style="[titleStyle]" @tap="goProject">
 					<view
 					    class="u-title u-line-1"
 					    :style="{
@@ -162,6 +162,11 @@
 			customBack: {
 				type: Function,
 				default: null
+			},
+			// 自定义点击标题的逻辑
+			titleTap: {
+				type: Function,
+				default: null
 			}
 		},
 		data() {
@@ -232,6 +237,17 @@
 					this.customBack.bind(this.$u.$parent.call(this))();
 				} else {
 					uni.navigateBack();
+				}
+			},
+			// 自定义的返回项目列表方法
+			goProject() {
+				// 如果自定义了点击返回按钮的函数，则执行，否则执行返回逻辑
+				if (typeof this.titleTap === 'function') {
+					// 在微信，支付宝等环境(H5正常)，会导致父组件定义的titleTap()函数体中的this变成子组件的this
+					// 通过bind()方法，绑定父组件的this，让this.titleTap()的this为父组件的上下文
+					this.titleTap.bind(this.$u.$parent.call(this))();
+				} else {
+					return
 				}
 			}
 		}

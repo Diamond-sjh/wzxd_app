@@ -38,9 +38,9 @@
 </template>
 
 <script>
-	import { mapActions } from 'vuex'
 	import JSEncrypt from '../../static/js/jsencrypt.js'
 	import { pathToBase64, base64ToPath } from '../../static/js/image-tools.js'
+	import { mapMutations,mapActions } from 'vuex'
 	export default {
 		data() {
 			return {
@@ -73,9 +73,9 @@
 		},
 		onLoad() {
 			this.screenHeight = uni.getSystemInfoSync().windowHeight;
-			console.log(this.screenHeight)
 		},
 		methods: {
+			...mapMutations(['SET_TOKEN']),
 			...mapActions(['setUserToken']),
 			// 切换登录系统
 			subsection(index){
@@ -121,14 +121,33 @@
 				this.params.password = encrypt.encrypt(this.password)
 				this.params.account = this.username
 				this.$http.login(this.params).then((res)=>{
-					// uni.hideLoading()
 					if(res.code == '200'){
-						console.log(res)
+						/**
+						 * 获取用户登录的token
+						 * 	clientId
+						 * 	code
+						 */
+						// this.$http.getToken({
+						// 	clientId:'20005',
+						// 	code:res.data.code
+						// }).then((response)=>{
+						// 	if(response && response.indexOf('?token=') != -1){
+						// 		let token = response.split('?token=')[1]
+						// 		// uni.setStorageSync("userToken", {token:token})
+						// 		this.SET_USERTOKEN(token)
+						// 		this.backFunction()
+						// 	}else{
+						// 		uni.showToast({
+						// 		    icon: 'none',
+						// 		    title: '用户token获取失败',
+						// 		});
+						// 	}
+						// })
 						this.setUserToken({
 							data:{
 								clientId:'20005',
 								code:res.data.code
-							},
+								},
 							callback:this.backFunction
 						})
 					}else{
@@ -147,8 +166,9 @@
 			},
 			// 登录成功的回调
 			backFunction(){
+				uni.setStorageSync("userType", 0)
 				uni.reLaunch({
-				    url: '/pages/index?current=0',
+					url: '/pages/index'
 				})
 			},
 			// 点击登录按钮(登录隧道监控测量模块)
@@ -169,6 +189,7 @@
 					this.params2.code = this.captcha
 					this.$httpMonitor.login(this.params2).then((res)=>{
 						if(res.code == '200'){
+							// uni.setStorageSync("userToken", {token:res.token})
 							this.$store.commit('SET_TOKEN', res.token);
 							this.backFunction2()
 						}else{
@@ -193,9 +214,9 @@
 			},
 			// 登录成功的回调
 			backFunction2(){
+				uni.setStorageSync("userType", 1)
 				uni.reLaunch({
-					// url: '/pages/index?current=1',
-					 url: '/pages/monitor/mainIndex'
+					url: '/pages/monitor/mainIndex'
 				})
 			},
 		}

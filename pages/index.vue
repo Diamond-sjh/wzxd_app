@@ -40,8 +40,11 @@
 		computed: {
 			...mapGetters(['getVirusList','getVirusListLen','getVirusTimestamp','getCurrentTimestamp','getStatueList']),
 		},
+		onShow() {
+			getApp().globalData.reviseTabbarByUserType();
+		},
 		onLoad(option) {
-			console.log(option)
+			console.log(location)
 			if(option && option.current){
 				this.current = option.current
 			}
@@ -59,7 +62,10 @@
 				})
 				this.$http.getCurrentUser().then(res=>{
 					if(res.code == '200'){
-						this.SET_CUSTINFO(res.data)
+						uni.setStorage({
+							key: 'storage_userInfo',
+							data: res.data
+						});
 					}
 				})
 			}
@@ -94,7 +100,7 @@
 			}
 		},
 	    methods: {
-			...mapMutations(['SET_CUSTINFO','SET_TIMESTAMP','DELET_VIRUS','DELET_STATUElIST']),
+			...mapMutations(['SET_TIMESTAMP','DELET_VIRUS','DELET_STATUElIST']),
 			sendMsg(){
 				this.SET_TIMESTAMP([...this.getVirusList.keys()][0])
 				let data = this.getVirusTimestamp([...this.getVirusList.keys()][0])

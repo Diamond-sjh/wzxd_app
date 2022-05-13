@@ -10,20 +10,20 @@
 				<u-form-item prop="projectId" label="工程名称：">
 					<u-input v-model="projectName" placeholder="请选择" type="select" @click="openSelect('projectId')" />
 				</u-form-item>
-				<u-form-item prop="testItems" label="监测参数：">
-					<u-input v-model="form.testItems" placeholder="请选择" type="select" @click="openSelect('testItems')" />
-				</u-form-item>
 				<u-form-item prop="monitorSectionNumber" label="监测断面桩号：">
-					<u-input v-model="form.monitorSectionNumber" placeholder="请输入"/>
+					<u-input v-model="form.monitorSectionNumber" @input="aaaa" placeholder="请输入"/>
 				</u-form-item>
-				<u-form-item v-show="isShowInoutcave" prop="distanceEntrance" label="距洞口距离(m)：">
+				<!-- <u-form-item v-show="isShowInoutcave" prop="distanceEntrance" label="距洞口距离(m)：">
 					<u-input v-model="form.distanceEntrance" placeholder="请输入"/>
 				</u-form-item>
 				<u-form-item v-show="isShowInoutcave && isShowLinePosition" prop="linePosition" label="测线位置：">
 					<u-input v-model="form.linePosition" placeholder="请输入"/>
-				</u-form-item>
+				</u-form-item> -->
 				<u-form-item prop="excavationMethod" label="开挖方法：">
 					<u-input v-model="form.excavationMethod" placeholder="请选择" type="select" @click="openSelect('excavationMethod')" />
+				</u-form-item>
+				<u-form-item prop="testItems" label="监测参数：">
+					<u-input v-model="form.testItems" placeholder="请选择" type="select" @click="openSelect('testItems')" />
 				</u-form-item>
 				<u-form-item prop="pointPosition" label="测点编号：">
 					<u-input v-if="isShowInoutcave" v-model="form.pointPosition" placeholder="请选择" type="select" @click="openSelect('pointPosition')" />
@@ -43,6 +43,9 @@
 				</u-form-item>
 				<u-form-item prop="testBasis" label="试验依据：">
 					<u-input v-model="form.testBasis" placeholder="请选择" type="select" @click="openSelect('testBasis')" />
+				</u-form-item>
+				<u-form-item prop="judgeBasisList" label="判断依据：">
+					<u-input v-model="form.judgeBasisList" placeholder="请选择" type="select" @click="openSelect('judgeBasisList')" />
 				</u-form-item>
 				<u-form-item prop="burialDate" label="埋设日期：">
 					<u-input v-model="form.burialDate" :disabled="true" @click="isShowDate = true" placeholder="请选择" />
@@ -81,7 +84,6 @@
 
 <script>
 	import configData from '@/common/configData'
-	import { mapGetters } from 'vuex'
 	export default {
 		data() {
 			return {
@@ -96,21 +98,42 @@
 				isShowKeyParams:true,//关键监测参数输入显示
 				isShowLinePosition:true,//拱顶下沉/周边位移的时候需要隐藏
 				isShowDepth:true,//埋深显示
+				isDefault:false,//开挖方式是否可选
 				paramsList:[],//测点编号列表
 				data: [], //选择器展示数据
 				clickType: '', //点击的输入框
 				label:'标定系数(MPa/Hz2)：',//标定系数的标签
 				placeholder:'请输入',//标定系数的placeholder
+				timer:null,
 			}
 		},
 		onReady() {
 			// 获取默认时间
 			this.form.burialDate = this.$utils.getDate(new Date(), 'yyyy-MM-dd')
 		},
-		computed: {
-			...mapGetters(['getBasisList','getInstrumentList','getProjectList']),
-		},
 		methods: {
+			aaaa(){
+				this.form.excavationMethod = ''
+				if (!this.form.monitorSectionNumber) return false
+				clearTimeout(this.timer)
+				this.timer = setTimeout(() => {
+					this.$httpMonitor.queryStatistics({monitorSectionNumber:this.form.monitorSectionNumber}).then(res => {
+						if(res.code == 200){
+							if(res.rows.length > 0){
+								this.isDefault = true
+								this.form.excavationMethod = res.rows[0].excavationMethod
+							}else{
+								this.isDefault = false
+							}
+						}else{
+							this.$u.toast(res.msg)
+						}
+						this.$forceUpdate()
+					})
+					clearTimeout(this.timer)
+					this.timer = null
+				},1000)
+			},
 			// 选择日期
 			dateChange(res) {
 				this.form.burialDate = res.result
@@ -121,7 +144,7 @@
 				this.clickType = type
 				switch (type){
 					case 'projectId':
-						this.data = this.getProjectList
+						this.data = uni.getStorageSync('storage_projectList') ? uni.getStorageSync('storage_projectList') : []
 						break;
 					case 'testItems': //监测参数
 						this.data.push({label:'洞内外观察',value:'洞内外观察'},...configData.parameterNameKeyList,...configData.parameterNameList)
@@ -130,10 +153,13 @@
 						this.data = this.paramsList
 						break;
 					case 'equipments': //仪器设备
-						this.data = this.getInstrumentList
+						this.data = uni.getStorageSync('storage_Instrument') ? uni.getStorageSync('storage_Instrument') : []
 						break;
 					case 'testBasis': //试验依据
-						this.data = this.getBasisList
+						this.data = uni.getStorageSync('storage_basisList') ? uni.getStorageSync('storage_basisList') : []
+						break;
+					case 'judgeBasisList': //试验依据
+						this.data = uni.getStorageSync('storage_judgeBasisList') ? uni.getStorageSync('storage_judgeBasisList') : []
 						break;
 					case 'wallRockGrade':
 						this.data = configData.originalRockGradeList
@@ -142,7 +168,10 @@
 						this.data = configData[`${type}List`]
 						break;
 				}
-				if(type == 'testBasis' || (type == "pointPosition" && (this.form.testItems=="拱顶下沉" || this.form.testItems=="拱脚下沉" || this.form.testItems=="地表下沉" || this.form.testItems=="周边位移")) ){
+				if(type == 'excavationMethod' && this.isDefault){
+					return false
+				}
+				if(type == 'testBasis' || type == 'judgeBasisList' || (type == "pointPosition" && (this.form.testItems=="拱顶下沉" || this.form.testItems=="拱脚下沉" || this.form.testItems=="地表下沉" || this.form.testItems=="周边位移")) ){
 					// 多选
 					this.defaultValue = this.form[type]?this.form[type].split(','):[]
 					this.isShowSelect = true
@@ -162,7 +191,7 @@
 						this.isShowKeyParams = true
 						this.isShowLinePosition = true
 						this.isShowDepth = true
-						this.form = {}
+						// this.form = {}
 						this.form.projectId = this.projectId
 						this.defaultValue = [] //清空多选器的数据列表
 						this.label = '标定系数(MPa/Hz2)：'
@@ -221,7 +250,8 @@
 					case 'projectId':
 						this.projectId = res[0].value
 						this.projectName = res[0].label
-						this.form.projectId = this.projectId
+						this.recordNumber = res[0].extra.recordNumber
+						this.testCompanyName = res[0].extra.company
 						break;
 					default:
 						this.form[this.clickType] = res[0].value 
@@ -232,16 +262,36 @@
 			clickSelectConfirm(value){
 				if(this.clickType == 'pointPosition'){ //测点编号
 					this.form.pointPosition = value
+				}else if(this.clickType == 'judgeBasisList'){
+					let regex = /\((.+?)\)/g
+					let list = value.match(regex).map(item => {
+						return item.replace(/\(|\)/g,'')
+					})
+					this.form.judgBasis = list.toString()
+					this.form.judgeBasisList = value
 				}else{ // 试验依据
+					let regex = /\((.+?)\)/g
+					let list = value.match(regex).map(item => {
+						return item.replace(/\(|\)/g,'')
+					})
+					this.form.testBasisNumber = list.toString()
 					this.form.testBasis = value
 				}
 			},
 			// 点击保存按钮
 			submit() {
+				if(this.isShowInoutcave && this.isShowKeyParams && !this.calibratFactor){
+					this.$refs.uToast.show({
+						title: '请输入标定系数',
+						type: 'error',
+						back: false,
+						duration: 500
+					})
+					return
+				}
 				let that = this
 				this.form.initialMonitoringDate = this.form.burialDate
-				console.log(this.form)
-				return
+				this.form.projectId = this.projectId
 				this.$httpMonitor.addStatistics(this.form).then(res => {
 					if (res.code == 200) {
 						this.$refs.uToast.show({
@@ -289,6 +339,41 @@
 								});
 							}
 						});
+					}
+				})
+				let paramForm = {
+					projectId:this.form.projectId,
+					testCompanyName:this.testCompanyName,
+					recordNumber:this.recordNumber,
+					parameterName:this.form.testItems,
+					testBasis:this.form.testBasis,
+					equipmentNumber:this.form.equipments,
+					detectionStation:this.form.monitorSectionNumber,
+					remark:this.form.remark,
+					creator:uni.getStorageSync('storage_userInfo').userId ? uni.getStorageSync('storage_userInfo').userId : null,
+					sampleInformation:'/',
+					testConditions:'/',
+					testLocationImage:'',
+					testBasis:this.form.testBasisNumber,
+					judgBasis:this.form.judgBasis
+				}
+				this.$httpMonitor.selectExcavation(
+					{
+						excavationMethod:this.form.excavationMethod,
+						monitorParam:this.form.testItems,
+					}
+				).then(res => {
+					if(res.code == 200){
+						if(res.rows.length > 0){
+							paramForm.testLocationImage = res.rows[0].measuringPointImage
+						}
+						this.$httpMonitor.addGwzmRecord(paramForm).then(res => {
+							if(res.code == 200){
+								console.log('父表数据成功')
+							}else{
+								console.log('父表数据上传失败')
+							}
+						})
 					}
 				})
 			}

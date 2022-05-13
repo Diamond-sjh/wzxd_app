@@ -1,6 +1,6 @@
 import store from '../store/index.js';
 let macValue;
-let bluetoothInfo = store.state.bluetooth;
+let bluetoothInfo = uni.getStorageSync('storage_bluetooth') ? uni.getStorageSync('storage_bluetooth') : {}
 let timer = null
 let timer1 = null
 export default {
