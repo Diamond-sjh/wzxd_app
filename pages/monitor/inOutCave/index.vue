@@ -1,6 +1,6 @@
 <template>
 	<view class="navbar inOutCave">
-		<u-navbar :isBack="false" back-icon-color="white" :title="title" title-color="white">
+		<u-navbar :isBack="false" back-icon-color="white" :title="title" title-color="white" :titleTap="toProjectPage">
 			<view slot="right" class="slot-wrap iconfont icon-shangchuan navUpdateIcon">
 				<u-icon @click="jumpToPage('updateList')" name="shangchuan" custom-prefix="custom-icon"></u-icon>
 				<u-badge size="mini" type="success" :count='count' :offset="offset"></u-badge>
@@ -32,6 +32,7 @@
 			</scroll-view>
 		</view>
 		<u-modal v-model="islogout" content="确认退出当前登录？" :show-cancel-button="true" @confirm="toLogin"></u-modal>
+		<my-tabbar></my-tabbar>
 	</view>
 </template>
 
@@ -71,7 +72,6 @@
 			this.getData()
 		},
 		onShow() {
-			getApp().globalData.reviseTabbarByUserType();
 			uni.getStorage({
 			    key: 'inoutcave_key',
 			    success: (res) => {
@@ -182,6 +182,13 @@
 				uni.reLaunch({
 				    url: '/pages/login/login',
 				});
+			},
+			// 点击标题返回项目选择页面
+			toProjectPage(){
+				console.log(123)
+				uni.reLaunch({
+					url: '/pages/monitor/transitionPage'
+				})
 			}
 	    }
 	}
@@ -206,7 +213,8 @@ page {
 		}
 	}
 	.scroll-list {
-		height: calc(100vh - var(--window-top) - var(--window-bottom) - 180rpx); // 105rpx 为 .search 的高度
+		// 45px 为 .search 的高度  50px为底部tabbar高度  44px为导航栏高度
+		height:calc(100vh - var(--window-top) - var(--window-bottom) - var(--status-bar-height) - 139px); 
 		width: 100%;
 		.loadmore {
 			padding: 30rpx;

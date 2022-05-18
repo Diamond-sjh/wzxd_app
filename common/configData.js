@@ -184,7 +184,7 @@ const groundwaterStatusList = [
 	}
 ]
 // 岩体初始应力  数据列表
-const crackConditionList = [
+const rockStressMassList = [
 	{
 		value: '低',
 		label: '低'
@@ -423,7 +423,7 @@ export default {
 	ffractWidthFeaturesList,//完整程度	
 	faceSteadyStateList,//稳定状态
 	groundwaterStatusList,//地下水状态
-	crackConditionList,//岩体初始应力
+	rockStressMassList,//岩体初始应力
 	jfissureDevTrendList,//结构面产状与洞轴线的关系
 	originalRockGradeList,//原设计围岩级别(Ⅰ、Ⅱ、Ⅲ、Ⅳ、Ⅴ、Ⅵ)
 	nowRockGradeList,//现判断围岩级别(Ⅰ、Ⅱ、Ⅲ、Ⅳ、Ⅴ、Ⅵ)

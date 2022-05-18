@@ -32,6 +32,7 @@
 			</scroll-view>
 		</view>
 		<u-modal v-model="islogout" content="确认退出当前登录？" :show-cancel-button="true" @confirm="toLogin"></u-modal>
+		<my-tabbar></my-tabbar>
 	</view>
 </template>
 
@@ -66,7 +67,6 @@
 			this.getData()
 		},
 		onShow() {
-			getApp().globalData.reviseTabbarByUserType();
 			uni.getStorage({
 			    key: 'plan_key',
 			    success: (res) => {
@@ -207,7 +207,8 @@ page {
 		}
 	}
 	.scroll-list {
-		height: calc(100vh - var(--window-top) - var(--window-bottom) - 180rpx); // 105rpx 为 .search 的高度
+		// 45px 为 .search 的高度  50px为底部tabbar高度  44px为导航栏高度
+		height:calc(100vh - var(--window-top) - var(--window-bottom) - var(--status-bar-height) - 139px); 
 		width: 100%;
 		.loadmore {
 			padding: 30rpx;

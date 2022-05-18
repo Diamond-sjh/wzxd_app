@@ -8,6 +8,21 @@
 		<view class="form">
 			<u-form :model="form" ref="uForm" label-width="220" label-align="left">
 				<view class="group">
+					<view class="groupList">
+						<view class="groupItem">
+							<view class="groupItemTop">
+								<view class="groupItemLabel">检测日期</view>
+								<view class="groupItemContent">
+									<u-form-item prop="testDate">
+										<u-input :disabled="true" :clearable="false"  @click="isShowDate = true" v-model="form.testDate" placeholder="请选择" />
+									</u-form-item>
+								</view>
+								<view class="groupItemIcon"><u-icon name="arrow-right"></u-icon></view>
+							</view>
+						</view>
+					</view>
+				</view>
+				<view class="group">
 					<view class="groupTitle">开挖面观察</view>
 					<view class="groupList">
 						<view class="groupItem mb10">
@@ -101,8 +116,8 @@
 							<view class="groupItemTop">
 								<view class="groupItemLabel">岩体初始应力</view>
 								<view class="groupItemContent">
-									<u-form-item prop="crackCondition">
-										<u-input :disabled="true" :clearable="false" @click="openSelect('crackCondition')" v-model="form.crackCondition" placeholder="请选择" />
+									<u-form-item prop="rockStressMass">
+										<u-input :disabled="true" :clearable="false" @click="openSelect('rockStressMass')" v-model="form.rockStressMass" placeholder="请选择" />
 									</u-form-item>
 								</view>
 								<view class="groupItemIcon"><u-icon name="arrow-right"></u-icon></view>
@@ -321,6 +336,8 @@
 			</u-form>
 			<!-- 监测参数选择 -->
 			<u-select v-model="isShowSelectList" :mode="clickType == 'rockType'?'mutil-column-auto':'single-column'" :list="data" @confirm="clickConfirm"></u-select>
+			<!-- 日期选择器 -->
+			<u-calendar v-model="isShowDate" mode="date" @change="dateChange"></u-calendar>
 			<!-- 消息提示 -->
 			<u-toast ref="uToast" />
 		</view>
@@ -333,6 +350,7 @@
 		data() {
 			return {
 				form: {
+					testDate:'',//检测日期
 					faceMileage:'',//掌子面里程
 					rockLithologyOccurrence:'',//岩石产状
 					rockType:'较软岩',//岩性和产状
@@ -340,7 +358,7 @@
 					ffractWidthFeatures:'较破碎',//完整程度
 					faceSteadyState:'随时间松弛、掉块',//稳定状态
 					groundwaterStatus:'潮湿',//地下水状态
-					crackCondition:'低',//岩体初始应力
+					rockStressMass:'低',//岩体初始应力
 					jfissureDevTrend:'其他组合',//结构面产状与洞轴线的关系
 					originalRockGrade:'',//原设计围岩级别
 					nowRockGrade:'',//现判断围岩级别
@@ -374,6 +392,7 @@
 					surfaceVegetationChanges:'无明显变化'//地表、边坡、仰坡植被、水流变化情况
 				},//备注数据备份
 				isShowSelectList: false, //选择器是否显示
+				isShowDate:false,//日期选择器是否显示
 				data: [], //选择器展示数据
 				clickType: '', //点击的输入框
 				faceMileageList:[],//掌子面里程列表
@@ -382,6 +401,8 @@
 		onLoad() {
 			const eventChannel = this.getOpenerEventChannel()
 			eventChannel.on('toAddPage', (data) => {
+				// 获取默认日期
+				this.form.testDate = this.$utils.getDate(new Date(),'yyyy-MM-dd')
 				this.form.projectId = data.projectId
 				this.form.recordNumber = data.recordNumber
 				let value = uni.getStorageSync('storage_projectPlan');
@@ -418,6 +439,10 @@
 			},
 		},
 		methods: {
+			// 选择日期
+			dateChange(res) {
+				this.form.testDate = res.result
+			},
 			// 打开列选择器
 			openSelect(type) {
 				this.data = []
@@ -439,8 +464,6 @@
 				// return
 				let that = this
 				// 获取默认时间
-				// this.form.testDate = this.$utils.getDate(new Date())
-				this.form.testDate = this.$utils.getDate(new Date())
 				this.$httpMonitor.addInoutcaveObservationRecord(this.form).then(res => {
 					if (res.code == 200) {
 						this.$refs.uToast.show({

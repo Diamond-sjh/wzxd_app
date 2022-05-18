@@ -319,40 +319,28 @@
 			// 机电检测系统所需要tabbar
 			{
 				"pagePath": "pages/index",
-				"iconPath": "/static/zhuye0.png",
-				"selectedIconPath": "/static/zhuye1.png",
 				"text": "首页"
 			},{
 				"pagePath": "pages/personalCenter/index",
-				"iconPath": "/static/mycenter0.png",
-				"selectedIconPath": "/static/mycenter1.png",
 				"text": "个人中心"
+			},
+			// 隧道监控量测需要tabbar
+			{
+				"pagePath": "pages/monitor/plan/index",
+				"text": "监控计划"
+			},
+			{
+				"pagePath": "pages/monitor/index",
+				"text": "全站仪"
+			},
+			{
+				"pagePath": "pages/monitor/inOutCave/index",
+				"text": "洞内外观察"
+			},
+			{
+				"pagePath": "pages/monitor/surface/index",
+				"text": "正弦式读数仪"
 			}
-			// // 隧道监控量测需要tabbar
-			// {
-			// 	"pagePath": "pages/monitor/plan/index",
-			// 	"iconPath": "/static/zhuye1.png",
-			// 	"selectedIconPath": "/static/index/plan.png",
-			// 	"text": "监控计划"
-			// },
-			// {
-			// 	"pagePath": "pages/monitor/index",
-			// 	"iconPath": "/static/index/monitor.png",
-			// 	"selectedIconPath": "/static/index/monitor.png",
-			// 	"text": "全站仪"
-			// },
-			// {
-			// 	"pagePath": "pages/monitor/inOutCave/index",
-			// 	"iconPath": "/static/index/inOutCave.png",
-			// 	"selectedIconPath": "/static/index/inOutCave.png",
-			// 	"text": "洞内外观察"
-			// },
-			// {
-			// 	"pagePath": "pages/monitor/surface/index",
-			// 	"iconPath": "/static/index/surface.png",
-			// 	"selectedIconPath": "/static/index/surface.png",
-			// 	"text": "正弦式读数仪"
-			// }
 		]
 	},
 	"globalStyle": {

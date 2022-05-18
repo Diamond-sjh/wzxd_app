@@ -38,6 +38,7 @@
 		</view>		
 		<u-modal v-model="islogout" :content="content" :show-cancel-button="true" @confirm="toLogin"></u-modal>
 		<button class="logout-btn" type="default" @click="logout">退出登录</button>
+		<my-tabbar></my-tabbar>
 	</view>
 	
 </template>
@@ -50,9 +51,6 @@
 				islogout:false,
 				content:'确认退出当前登录？'
 			}
-		},
-		onShow() {
-			getApp().globalData.reviseTabbarByUserType();
 		},
 		methods: {
 			...mapMutations(['DELET_INFO']),
@@ -141,7 +139,7 @@
 	}
 	.logout-btn {
 		position: absolute;
-		bottom: 10px;
+		bottom: 60px;
 		width: calc(100% - 20px);
 		background-color: #918e8e;
 		margin: 0 10px;

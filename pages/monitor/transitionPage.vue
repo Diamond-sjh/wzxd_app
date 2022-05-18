@@ -1,6 +1,9 @@
 <template>
 	<view class="navbar project">
 		<u-navbar :isBack="false" back-icon-color="white" title="工程列表" title-color="white">
+			<view class="navbarRight">
+				<u-button type="success" size="mini" @click="logout()">注销</u-button>
+			</view>
 		</u-navbar>
 		<view class="search">
 			<u-search class="searchContent" v-model="projectName" placeholder="请输入工程名称关键字" :show-action="false" @custom="clickQuery" @search="clickQuery"></u-search>
@@ -22,10 +25,12 @@
 				</view>
 			</scroll-view>
 		</view>
+		<u-modal v-model="islogout" content="确认退出当前登录？" :show-cancel-button="true" @confirm="toLogin"></u-modal>
 	</view>
 </template>
 
 <script>
+	import { mapMutations } from 'vuex'
 	export default {
 	    data() {
 	        return {
@@ -38,16 +43,21 @@
 					contentrefresh: '加载中',
 					contentnomore: '没有更多'
 				},	
+				islogout:false,
 			}
 	    },
 		onLoad(option) {
-			this.name = option.name
-			this.getParams()
-		},
-		onShow() {
-			getApp().globalData.reviseTabbarByUserType();
+			console.log('onLoad')
+			console.log(option)
+			if(option.type&&option.type == "login"){
+				this.getParams()
+			}else{
+				this.projectList = uni.getStorageSync('storage_projectList') ? uni.getStorageSync('storage_projectList') : []
+			}
+			
 		},
 	    methods: {
+			...mapMutations(['DELET_INFO']),
 			// 查询规范依据
 			getParams(){
 				this.$httpMonitor.selectProjectPlan().then(res => {
@@ -149,7 +159,21 @@
 			},
 			// 点击搜索
 			clickQuery(){
-				
+				// 查询工程列表
+				this.$httpMonitor.queryProjectList({projectName:this.projectName}).then(res => {
+					if(res.code == 200){
+						this.projectList = []
+						res.data.forEach(val => {
+							this.projectList.push({
+								value:val.id,
+								recordNumber:val.recordNumber,
+								label:val.projectName,
+								projectPosition:val.projectPosition,
+								extra:val
+							})
+						})
+					}
+				})
 			},
 			// 滚动加载
 			getScrollData(){
@@ -159,38 +183,48 @@
 			},
 			// 查看详情
 			loolDetail(item){
-				// uni.setStorageSync("projectInfo", item)
-				// uni.switchTab({
-				// 	url: '/pages/monitor/plan/index'
-				// })
-				// return
+				uni.setStorageSync("projectInfo", item)
+				uni.switchTab({
+					url: '/pages/monitor/plan/index'
+				})
+				return
 				
-				let val = this.name
-				if(val == 'monitor'){
-					uni.navigateTo({
-					    url: `/pages/monitor/index?projectId=${item.value}&recordNumber=${item.recordNumber}`
-					});
-					return
-				}
-				if(val == 'inOutCave'){
-					uni.navigateTo({
-					    url: `/pages/monitor/inOutCave/index?projectId=${item.value}&recordNumber=${item.recordNumber}`
-					});
-					return
-				}
-				if(val == 'surface'){
-					uni.navigateTo({
-					    url: `/pages/monitor/surface/index??projectId=${item.value}&recordNumber=${item.recordNumber}`
-					});
-					return
-				}
-				if(val == 'plan'){
-					uni.navigateTo({
-					    url: '/pages/monitor/plan/index'
-					});
-					return
-				}
-			}
+				// let val = this.name
+				// if(val == 'monitor'){
+				// 	uni.navigateTo({
+				// 	    url: `/pages/monitor/index?projectId=${item.value}&recordNumber=${item.recordNumber}`
+				// 	});
+				// 	return
+				// }
+				// if(val == 'inOutCave'){
+				// 	uni.navigateTo({
+				// 	    url: `/pages/monitor/inOutCave/index?projectId=${item.value}&recordNumber=${item.recordNumber}`
+				// 	});
+				// 	return
+				// }
+				// if(val == 'surface'){
+				// 	uni.navigateTo({
+				// 	    url: `/pages/monitor/surface/index??projectId=${item.value}&recordNumber=${item.recordNumber}`
+				// 	});
+				// 	return
+				// }
+				// if(val == 'plan'){
+				// 	uni.navigateTo({
+				// 	    url: '/pages/monitor/plan/index'
+				// 	});
+				// 	return
+				// }
+			},
+			// 退出登录
+			logout() {
+				this.islogout = true
+			},
+			toLogin(){
+				this.DELET_INFO()
+				uni.reLaunch({
+				    url: '/pages/login/login',
+				});
+			},
 	    }
 	}
 </script>

@@ -49,7 +49,6 @@
 		},
 		onShow: function() {
 			console.log('App Show')
-			getApp().globalData.reviseTabbarByUserType();
 		},
 		onHide: function() {
 			// console.log('App Hide')

@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
 	state: {
-		token:'',
+		token:'',//用户token
 		virusList: new Map(),//待上传病害信息
 		virusListLength:0,//待上传病害信息长度
 		currentTimestamp: '',//当前上传时间戳
@@ -35,13 +35,14 @@ const store = new Vuex.Store({
 		DELET_STATUElIST(state,info){
 			state.statueList.delete(info)
 		},
+		// 设置用户的token
 		SET_TOKEN(state,info){
 			state.token = info
 		},
 		// 退出登录，清空数据
 		DELET_INFO(state,info){
-			console.log(13)
 			// 清除本地缓存
+			state.token = ''
 			// uni.removeStorage({key: 'userToken'})//客户token
 			uni.removeStorage({key: 'storage_projectList'})//工程列表
 			uni.removeStorage({key: 'storage_projectPlan'})//项目-桩号-参数-测点
@@ -50,7 +51,6 @@ const store = new Vuex.Store({
 			uni.removeStorage({key: 'storage_judgeBasisList'})//检测依据
 			uni.removeStorage({key: 'storage_bluetooth'})//蓝牙信息
 			uni.removeStorage({key: 'storage_userInfo'})//用户信息
-			// console.log(uni.getStorageSync('userToken'))
 		}
 	},
 	actions: {

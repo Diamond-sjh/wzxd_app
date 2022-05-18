@@ -7,7 +7,14 @@
 		</u-navbar>
 		<view class="form containerCommon">
 			<u-form :model="form" ref="uForm" label-width="220" label-align="left">
-				<u-form-item :required="true" prop="detectionStation" label="断面桩号："><u-input v-model="form.detectionStation" placeholder="请输入断面桩号" type="select" @click="openSelect('detectionStation')" /></u-form-item>
+				<!-- <u-form-item :required="true" prop="detectionStation" label="断面桩号："><u-input v-model="form.detectionStation" placeholder="请输入断面桩号" type="select" @click="openSelect('detectionStation')" /></u-form-item> -->
+				<u-form-item :required="true" prop="detectionStation" label="断面桩号：" >
+				      <u-input v-model="form.detectionStation" type="input" placeholder="请选择断面桩号" @confirm="searchDetectionStation"/>
+				      <view slot="right">
+				        <u-icon size="40" name="search" color="#2979ff" @click="searchDetectionStation"/>
+				      </view>
+				      <!-- <u-select v-model="showSelect" :list="showList" @confirm="selectClick"/> -->
+				</u-form-item>
 				<u-form-item :required="true" prop="testDate" label="监测日期："><u-input type="select" v-model="form.testDate" placeholder="请选择监测日期" @click="dateShow = true" /></u-form-item>
 				<u-form-item :required="true" prop="parameterName" label="监测参数："><u-input v-model="form.parameterName" placeholder="请选择监测参数" type="select" @click="openSelect('parameterName')" /></u-form-item>
 				<u-form-item :required="true" prop="testName" label="测点名称："><u-input v-model="form.testName" placeholder="请选择断面名称" type="select" @click="openSelect('testName')" /></u-form-item>
@@ -230,6 +237,41 @@
 					})
 				}
 				this.dateShow = false
+			},
+			// 模糊搜索 断面桩号
+			searchDetectionStation(){
+				this.clickType = 'detectionStation'
+				//首先判断输入框是否为空
+				if(this.form.detectionStation == ''){
+					//this.data是下拉框显示的内容，如果为空就展示全部数据
+					this.paramsList.forEach(item => {
+						let obj = {
+							value:item.monitorName,
+							label:item.monitorName,
+							extra:item.testItem
+						}
+						this.data.push(obj)
+					})
+				//否则执行下面内容
+				}else{
+					console.log(this.form.detectionStation)
+					console.log(this.paramsList)
+					//先清空展示的数据
+					this.data = []
+					//1.前端匹配
+					this.paramsList.forEach((item)=>{
+						if(item.monitorName.indexOf(this.form.detectionStation) != -1){
+							let obj = {
+								value:item.monitorName,
+								label:item.monitorName,
+								extra:item.testItem
+							}
+							this.data.push(obj)
+						}
+					})
+				} 
+				console.log(this.data)
+				this.isShowSelectList = true
 			},
 			// 打开列选择器
 			openSelect(type){

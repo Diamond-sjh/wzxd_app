@@ -11,7 +11,7 @@
 					<u-input v-model="projectName" placeholder="请选择" type="select" @click="openSelect('projectId')" />
 				</u-form-item>
 				<u-form-item prop="monitorSectionNumber" label="监测断面桩号：">
-					<u-input v-model="form.monitorSectionNumber" @input="aaaa" placeholder="请输入"/>
+					<u-input v-model="form.monitorSectionNumber" @input="monitorSectionNumberChange" placeholder="请输入"/>
 				</u-form-item>
 				<!-- <u-form-item v-show="isShowInoutcave" prop="distanceEntrance" label="距洞口距离(m)：">
 					<u-input v-model="form.distanceEntrance" placeholder="请输入"/>
@@ -41,12 +41,12 @@
 				<u-form-item prop="equipments" label="主要仪器设备：">
 					<u-input v-model="form.equipments" placeholder="请选择" type="select" @click="openSelect('equipments')" />
 				</u-form-item>
-				<u-form-item prop="testBasis" label="试验依据：">
+				<!-- <u-form-item prop="testBasis" label="试验依据：">
 					<u-input v-model="form.testBasis" placeholder="请选择" type="select" @click="openSelect('testBasis')" />
 				</u-form-item>
 				<u-form-item prop="judgeBasisList" label="判断依据：">
 					<u-input v-model="form.judgeBasisList" placeholder="请选择" type="select" @click="openSelect('judgeBasisList')" />
-				</u-form-item>
+				</u-form-item> -->
 				<u-form-item prop="burialDate" label="埋设日期：">
 					<u-input v-model="form.burialDate" :disabled="true" @click="isShowDate = true" placeholder="请选择" />
 				</u-form-item>
@@ -98,7 +98,6 @@
 				isShowKeyParams:true,//关键监测参数输入显示
 				isShowLinePosition:true,//拱顶下沉/周边位移的时候需要隐藏
 				isShowDepth:true,//埋深显示
-				isDefault:false,//开挖方式是否可选
 				paramsList:[],//测点编号列表
 				data: [], //选择器展示数据
 				clickType: '', //点击的输入框
@@ -112,7 +111,8 @@
 			this.form.burialDate = this.$utils.getDate(new Date(), 'yyyy-MM-dd')
 		},
 		methods: {
-			aaaa(){
+			// 根据桩号获取开挖方法
+			monitorSectionNumberChange(){
 				this.form.excavationMethod = ''
 				if (!this.form.monitorSectionNumber) return false
 				clearTimeout(this.timer)
@@ -120,10 +120,7 @@
 					this.$httpMonitor.queryStatistics({monitorSectionNumber:this.form.monitorSectionNumber}).then(res => {
 						if(res.code == 200){
 							if(res.rows.length > 0){
-								this.isDefault = true
 								this.form.excavationMethod = res.rows[0].excavationMethod
-							}else{
-								this.isDefault = false
 							}
 						}else{
 							this.$u.toast(res.msg)
@@ -168,9 +165,6 @@
 						this.data = configData[`${type}List`]
 						break;
 				}
-				if(type == 'excavationMethod' && this.isDefault){
-					return false
-				}
 				if(type == 'testBasis' || type == 'judgeBasisList' || (type == "pointPosition" && (this.form.testItems=="拱顶下沉" || this.form.testItems=="拱脚下沉" || this.form.testItems=="地表下沉" || this.form.testItems=="周边位移")) ){
 					// 多选
 					this.defaultValue = this.form[type]?this.form[type].split(','):[]
@@ -208,10 +202,12 @@
 							case '拱脚下沉':
 								this.paramsList = configData.testName1List
 								this.isShowKeyParams = false
+								this.form.excavationMethod = '拱脚下沉'
 								break;
 							case '地表下沉':
 								this.paramsList = configData.testName2List
 								this.isShowKeyParams = false
+								this.form.excavationMethod = '地表下沉'
 								break;
 							case '周边位移':
 								this.paramsList = configData.testName3List

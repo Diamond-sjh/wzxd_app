@@ -23,6 +23,7 @@
 				<view class="textContent">全站仪数据</view>
 			</view>
 		</view>
+		<my-tabbar></my-tabbar>
 	</view>
 </template>
 
@@ -40,11 +41,7 @@
 		computed: {
 			...mapGetters(['getVirusList','getVirusListLen','getVirusTimestamp','getCurrentTimestamp','getStatueList']),
 		},
-		onShow() {
-			getApp().globalData.reviseTabbarByUserType();
-		},
 		onLoad(option) {
-			console.log(location)
 			if(option && option.current){
 				this.current = option.current
 			}
@@ -179,7 +176,7 @@
 	}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 	.home {
 		padding: 10px;
 	}

@@ -166,8 +166,8 @@
 			},
 			// 登录成功的回调
 			backFunction(){
-				uni.setStorageSync("userType", 0)
-				uni.reLaunch({
+				uni.setStorageSync('userType',0)
+				uni.switchTab({
 					url: '/pages/index'
 				})
 			},
@@ -189,7 +189,6 @@
 					this.params2.code = this.captcha
 					this.$httpMonitor.login(this.params2).then((res)=>{
 						if(res.code == '200'){
-							// uni.setStorageSync("userToken", {token:res.token})
 							this.$store.commit('SET_TOKEN', res.token);
 							this.backFunction2()
 						}else{
@@ -214,9 +213,9 @@
 			},
 			// 登录成功的回调
 			backFunction2(){
-				uni.setStorageSync("userType", 1)
+				uni.setStorageSync('userType',1)
 				uni.reLaunch({
-					url: '/pages/monitor/mainIndex'
+					url: '/pages/monitor/transitionPage?type=login'
 				})
 			},
 		}
