@@ -1,5 +1,5 @@
 <template>
-	<view class="msgDetail">
+	<view class="msgDetail navbar">
 		<u-navbar back-text="返回" title="任务详情" back-icon-color="white" title-color="white" :back-text-style="letVal"></u-navbar>
 		<u-cell-group>
 			<u-cell-item :arrow="false" title="检测人：">{{form.checker}}</u-cell-item>
@@ -93,7 +93,4 @@
 </script>
 
 <style scoped>
-	.msgDetail /deep/ .u-navbar {
-		background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
-	}
 </style>

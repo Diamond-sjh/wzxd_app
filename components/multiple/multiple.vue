@@ -144,6 +144,8 @@
 				this.hideModal()
 			},
 			confirmClick(){ // 点击确定
+				console.log(this._value)
+				// return
 				this.$emit('confirm', this._value)
 				this.hideModal()
 			},

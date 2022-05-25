@@ -1,18 +1,18 @@
 <template>
-	<view class="msgDetail">
+	<view class="msgDetail navbar">
 		<u-navbar back-text="返回" title="任务详情" back-icon-color="white" title-color="white" :back-text-style="letVal"></u-navbar>
 		<u-cell-group>
-			<u-cell-item :arrow="false" title="监测参数：">{{form.testItems}}</u-cell-item>
 			<u-cell-item :arrow="false" title="监测断面桩号：">{{form.monitorSectionNumber}}</u-cell-item>
-			<u-cell-item :arrow="false" v-show="isShowInoutcave" title="距洞口距离：">{{form.distanceEntrance}}</u-cell-item>
-			<u-cell-item :arrow="false" v-show="isShowInoutcave" title="测线位置：">{{form.linePosition}}</u-cell-item>
+			<!-- <u-cell-item :arrow="false" v-show="isShowInoutcave" title="距洞口距离：">{{form.distanceEntrance}}</u-cell-item>
+			<u-cell-item :arrow="false" v-show="isShowInoutcave" title="测线位置：">{{form.linePosition}}</u-cell-item> -->
 			<u-cell-item :arrow="false" title="开挖方法：">{{form.excavationMethod}}</u-cell-item>
+			<u-cell-item :arrow="false" title="监测参数：">{{form.testItems}}</u-cell-item>
 			<u-cell-item :arrow="false" title="测点位置：">{{form.pointPosition}}</u-cell-item>
 			<u-cell-item :arrow="false" v-show="isShowInoutcave && isShowKeyParams" title="传感器编号：">{{form.sensorNo}}</u-cell-item>
 			<u-cell-item :arrow="false" v-show="isShowInoutcave && isShowKeyParams" title="标定系数：">{{form.calibratFactor}}</u-cell-item>
 			<u-cell-item :arrow="false" v-show="isShowInoutcave && isShowKeyParams && isShowDepth" title="埋深：">{{form.depth}}</u-cell-item>
 			<u-cell-item :arrow="false" title="主要仪器设备：">{{form.equipments}}</u-cell-item>
-			<u-cell-item :arrow="false" title="试验依据：">{{form.testBasis}}</u-cell-item>
+			<!-- <u-cell-item :arrow="false" title="试验依据：">{{form.testBasis}}</u-cell-item> -->
 			<u-cell-item :arrow="false" title="埋设日期：">{{form.burialDate}}</u-cell-item>
 			<u-cell-item :arrow="false" title="围岩级别：">{{form.wallRockGrade}}</u-cell-item>
 			<u-cell-item :arrow="false" title="围岩级别限值：">{{form.wallRockGradeThreshold}}</u-cell-item>
@@ -20,7 +20,7 @@
 			<u-cell-item :arrow="false" title="备注：">{{form.remark}}</u-cell-item>
 		</u-cell-group>
 		<view class="containerCommon" v-if="isShowBtn">
-			<u-button type="success" @click="upload">上传数据</u-button>
+			<u-button type="primary" @click="upload">上传数据</u-button>
 		</view>
 		<!-- 消息提示 -->
 		<u-toast ref="uToast" />
@@ -139,7 +139,4 @@
 </script>
 
 <style scoped>
-	.msgDetail /deep/ .u-navbar {
-		background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
-	}
 </style>

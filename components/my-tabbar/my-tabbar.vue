@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<u-tabbar :height="100" :list="tabbar" v-model="current" :mid-button="false" @change="changeTabbar"></u-tabbar>
+		<u-tabbar :height="100" :list="tabbar" activeBgColor="#ffffff" v-model="current" :mid-button="false" @change="changeTabbar"></u-tabbar>
 	</view>
 </template>
 
@@ -42,7 +42,7 @@
 						"pagePath": "/pages/monitor/surface/index",
 						"iconPath": "/static/index/surface_icon.png",
 						"selectedIconPath": "/static/index/surface_icon1.png",
-						"text": "正弦式读数仪"
+						"text": "振弦式读数仪"
 					}
 				]
 			}else{

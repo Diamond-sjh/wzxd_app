@@ -1,5 +1,5 @@
 <template>
-	<view class="projectContent">
+	<view class="projectContent navbar">
 		<u-navbar back-text="返回" title="" back-icon-color="white" :back-text-style="letVal">
 			<view class="slot-wrap">
 				<view class="content" @click="search">搜索</view>
@@ -239,31 +239,12 @@
 		width: 100%;
 		height: 100%;
 	}
-	.projectContent /deep/ .u-navbar {
-		background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;;
-	}
 	.projectContent .slot-wrap {
 		width: 100%;
 		display: flex;
 		align-items: center;
 		padding: 0 12px;
 		flex-direction: row-reverse;
-	}
-	.projectContent .slot-wrap .search {
-		width: 80%;
-		border: 1px solid;
-		border-radius: 40px;
-		height: 26px;
-		background: white;
-		padding: 3px 15px;
-	}
-	.projectContent .slot-wrap .search /deep/ .u-input__input {
-		height: 18px;
-		line-height: 18px;
-	}
-	.projectContent .slot-wrap .content {
-		color: white;
-		margin: 0 5px 0 10px;
 	}
 	.projectContent .cardHearder {
 		font-size: 16px;

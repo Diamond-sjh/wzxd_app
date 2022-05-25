@@ -10,9 +10,14 @@
 				:disabled="disabled"
 				:x="moveX"
 				:style="{
-					width: movableViewWidth ? movableViewWidth : '100%'
+					width: movableAreaWidth ? movableViewWidth : '100%'
 				}"
 			>
+			<!-- 2022.5.20：解决宽度延迟问题修改组件 参考：https://toscode.gitee.com/umicro/uView/issues/I1Y50J
+				width: movableViewWidth ? movableViewWidth : '100%' 
+				修改为
+				width: movableAreaWidth ? movableViewWidth : '100%'
+			-->
 				<view
 					class="u-swipe-content"
 					@tap.stop="contentClick"

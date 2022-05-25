@@ -1,5 +1,5 @@
 <template>
-	<view class="updateMsg">
+	<view class="updateMsg navbar">
 		<u-navbar back-text="返回" title="自动上传任务" back-icon-color="white" title-color="white" :back-text-style="letVal"></u-navbar>
 		<u-empty mode="list" :show="isShow"></u-empty>
 		<u-cell-group>
@@ -85,7 +85,4 @@
 </script>
 
 <style scoped>
-	.updateMsg /deep/ .u-navbar {
-		background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
-	}
 </style>

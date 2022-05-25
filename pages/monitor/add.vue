@@ -9,7 +9,7 @@
 			<u-form :model="form" ref="uForm" label-width="220" label-align="left">
 				<!-- <u-form-item :required="true" prop="detectionStation" label="断面桩号："><u-input v-model="form.detectionStation" placeholder="请输入断面桩号" type="select" @click="openSelect('detectionStation')" /></u-form-item> -->
 				<u-form-item :required="true" prop="detectionStation" label="断面桩号：" >
-				      <u-input v-model="form.detectionStation" type="input" placeholder="请选择断面桩号" @confirm="searchDetectionStation"/>
+				      <u-input v-model="form.detectionStation" type="input" placeholder="请选择断面桩号" @confirm="searchDetectionStation" @blur="searchDetectionStation"/>
 				      <view slot="right">
 				        <u-icon size="40" name="search" color="#2979ff" @click="searchDetectionStation"/>
 				      </view>
@@ -72,10 +72,10 @@
 						<view class="apply-text"><span>观测值：</span>{{calculatZ?calculatZ+'mm':defaultItemData.calculatZ?defaultItemData.calculatZ +'mm':''}}</view>
 					</u-col>
 					<u-col span="12">
-						<view class="apply-text"><span>本次变形：</span>{{lastTime?lastTime+'mm':defaultItemData.lastTimeChange?defaultItemData.lastTimeChange +'mm':''}}</view>
+						<view class="apply-text"><span>本次变形：</span>{{lastTime?lastTime+'mm':'0mm'}}</view>
 					</u-col>
 					<u-col span="12">
-						<view class="apply-text"><span>累计变形：</span>{{firstTime?firstTime+'mm':defaultItemData.firstTimeChange?defaultItemData.firstTimeChange +'mm':''}}</view>
+						<view class="apply-text"><span>累计变形：</span>{{firstTime?firstTime+'mm':'0mm'}}</view>
 					</u-col>
 				</u-row>
 			</view>
@@ -203,23 +203,22 @@
 				m=Math.pow(10,Math.max(r1,r2));
 				//动态控制精度长度
 				n=(r1>=r2)?r1:r2;
-				return ((arg1*m-arg2*m)/m).toFixed(4);
+				return ((arg2*m-arg1*m)/m).toFixed(1);
 			}
 		},
 	    methods: {
 			// 选择日期
 			dateChange(res){
-				console.log(res)
 				this.form.testDate = res.result
 			},
 			// 日期选择改变
 			changeDate(value){
 				this.clearData()//清除展示数据
 				this.dateListValue = value
-				this.form.testDate = value
 				if(value == '新增'){
 					this.form.testDate = this.$utils.getDate(new Date(),'yyyy-MM-dd')
 				}else{
+					this.form.testDate = value
 					this.testDateDataList.some(item => {
 						// 根据日期找到对应的数据列表
 						if(item.testDate == value){
@@ -240,6 +239,9 @@
 			},
 			// 模糊搜索 断面桩号
 			searchDetectionStation(){
+				if(this.isShowSelectList){
+					return
+				}
 				this.clickType = 'detectionStation'
 				//首先判断输入框是否为空
 				if(this.form.detectionStation == ''){
@@ -254,8 +256,6 @@
 					})
 				//否则执行下面内容
 				}else{
-					console.log(this.form.detectionStation)
-					console.log(this.paramsList)
 					//先清空展示的数据
 					this.data = []
 					//1.前端匹配
@@ -288,6 +288,7 @@
 					})
 				}
 				if(type == 'parameterName'){
+					console.log(this.testItemParams)
 					this.testItemParams.forEach(item => {
 						if(item.name == '拱顶下沉' || item.name == '拱脚下沉' || item.name == '地表下沉' || item.name == '周边位移'){
 							let obj = {
@@ -357,7 +358,6 @@
 						})
 					}
 				}
-				
 			},
 			// 获取监测参数和测点名称
 			getParameterNameAndTestName(monitorName,parameterName){
@@ -379,6 +379,9 @@
 			},
 			// 点击测量按钮
 			autoMeasure(param){
+				// this.clickParam="num1"
+				// this.receiveData('0,0,0,7.12035')
+				// return
 				this.clickParam = param
 				this.$utils.notifyBLECharacteristicValueChange(this.receiveData)
 			},
@@ -388,37 +391,50 @@
 				let data = (res.replace(/[\r\n]/g,"")).split(',')
 				if(data.length > 3){
 					if(this.clickParam == 'num1'){
-						this.num1.X = data[data.length - 3]
-						this.num1.Y = data[data.length - 2]
-						this.num1.Z = data[data.length - 1]
+						this.num1.X = this.accMul(data[data.length - 3],1000) 
+						this.num1.Y = this.accMul(data[data.length - 2],1000)
+						this.num1.Z = this.accMul(data[data.length - 1],1000)
 					}else{
-						this.num.X = data[data.length - 3]
-						this.num.Y = data[data.length - 2]
-						this.num.Z = data[data.length - 1]
+						this.num.X = this.accMul(data[data.length - 3],1000)
+						this.num.Y = this.accMul(data[data.length - 2],1000)
+						this.num.Z = this.accMul(data[data.length - 1],1000)
 					}
 					this.computeTrans()
 				}
+			},
+			// 数据处理转换
+			accMul(arg1,arg2){
+			    var m=0,s1=arg1.toString(),s2=arg2.toString();
+			    try{m+=s1.split(".")[1].length}catch(e){}
+			    try{m+=s2.split(".")[1].length}catch(e){}
+			    return Number(s1.replace(".",""))*Number(s2.replace(".",""))/Math.pow(10,m)
 			},
 			// 获取最后一条数据计算变形值
 			computeTrans(){
 				if(this.detectionStationList.length > 0){
 					this.detectionStationList.some(item => {
 						if(item.detectionStation == this.form.detectionStation){
-							item.data.some(item2 => {
-								if(item2.parameterName == this.form.parameterName && item2.testName == this.form.testName){
-									let arg1 = item2.calculatZ
-									let arg2 = this.calculatZ
-									var r1,r2,m,n;
-									try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0}
-									try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0}
-									m=Math.pow(10,Math.max(r1,r2));
-									//动态控制精度长度
-									n=(r1>=r2)?r1:r2;
-									this.lastTime = ((arg1*m-arg2*m)/m).toFixed(1);
-									this.firstTime = ((item2.firstTimeChange*m+this.lastTime*m)/m).toFixed(1)
-									return true
-								}
+							let currentIndex = -1
+							let arr = item.data.filter((item2,index) => {
+								return item2.parameterName == this.form.parameterName && item2.testName == this.form.testName
 							})
+							currentIndex = arr.findIndex(item3 => item3.testDate == this.form.testDate)
+							if(arr.length > 0 && currentIndex < arr.length-1){
+								let arg1 = this.calculatZ//本次观测值
+								let arg2 = arr[currentIndex + 1].calculatZ//上一条数据
+								let arg3 = arr[arr.length - 1].calculatZ//第一条数据
+								var r1,r2,m,n;
+								try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0}
+								try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0}
+								m=Math.pow(10,Math.max(r1,r2));
+								//动态控制精度长度
+								n=(r1>=r2)?r1:r2;
+								this.lastTime = ((arg2*m-arg1*m)/m).toFixed(1);
+								this.firstTime = ((arg3*m-arg1*m)/m).toFixed(1)
+							}else{
+								this.lastTime = 0
+								this.firstTime = 0
+							}
 						}
 					})
 				}
@@ -513,6 +529,43 @@
 									}
 								});
 							}
+						}).catch(err => {
+							uni.getStorage({
+							    key: 'monitor_key',
+							    success:(res) => {
+									let dataArr = res.data
+									let obj = JSON.parse(JSON.stringify(that.form))
+									dataArr.push(obj)
+									uni.setStorage({
+									    key: 'monitor_key',
+									    data: dataArr,
+									    success(res) {
+									        console.log(res);
+											that.$u.toast('上传失败，信息本地保存成功')
+									    },
+										fail(err) {
+											console.log(err);
+											that.$u.toast('上传失败，信息本地保存失败')
+										}
+									});
+							    },
+								fail:(err) => {
+									let obj = JSON.parse(JSON.stringify(that.form))
+									let dataArr = [obj]
+									uni.setStorage({
+									    key: 'monitor_key',
+									    data: dataArr,
+									    success(res) {
+									        console.log(res);
+											that.$u.toast('上传失败，信息本地保存成功')
+									    },
+										fail(err) {
+											console.log(err);
+											that.$u.toast('上传失败，信息本地保存失败')
+										}
+									});
+								}
+							});
 						})
 					} else {
 						this.$refs.uToast.show({
@@ -559,7 +612,6 @@
 						this.testDateDataList = this.tranListToTreeData(item.data,'testDate')
 					}
 				})
-				console.log(this.testDateDataList)
 				if(this.testDateDataList.length == 0){
 					this.testDateAllData = []
 					this.defaultItemData = {}
@@ -590,7 +642,6 @@
 			},
 			// 参数赋值展示
 			assignment(item){
-				console.log(item)
 				this.num.X = item.viewpoint.split(',')[0]
 				this.num.Y = item.viewpoint.split(',')[1]
 				this.num.Z = item.viewpoint.split(',')[2]
@@ -602,6 +653,7 @@
 				this.dateListValue = item.testDate
 				this.form.detectionStation = item.detectionStation
 				this.form.parameterName = item.parameterName
+				this.computeTrans()
 			},
 			// 清除数据
 			clearData(){

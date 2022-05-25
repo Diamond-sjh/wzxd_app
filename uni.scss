@@ -83,14 +83,27 @@ $uni-font-size-paragraph:15px;
 	height: 100%;
 }
 .navbar /deep/ .u-navbar {
-	background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
+	// background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
+	background-color: #4987F7!important;
 }
 .navbar .slot-wrap {
 	width: 100%;
 	display: flex;
 	align-items: center;
-	padding: 0 12px;
 	flex-direction: row-reverse;
+	padding: 0 20px 0 12px;
+	line-height: 44px;
+	font-size: 16px;
+	color: #ffffff;
+}
+.navbar .navUpdateIcon {
+	padding-right: 20px;
+	line-height: 44px;
+	font-size: 20px;
+	color: #ffffff;
+}
+.navbar .slot-wrap .u-icon{
+	font-size: 20px;
 }
 .navbar .slot-wrap .search {
 	width: 80%;

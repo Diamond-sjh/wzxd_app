@@ -1,5 +1,5 @@
 <template>
-	<view class="msgDetail">
+	<view class="msgDetail navbar">
 		<u-navbar back-text="返回" title="任务详情" back-icon-color="white" title-color="white" :back-text-style="letVal"></u-navbar>
 		<u-cell-group>
 			<u-cell-item :arrow="false" title="监测日期：">{{form.testDate}}</u-cell-item>
@@ -11,7 +11,7 @@
 			<u-cell-item :arrow="false" title="观测值：">{{form.calculatZ}}</u-cell-item>
 		</u-cell-group>
 		<view class="containerCommon">
-			<u-button type="success" @click="upload">上传数据</u-button>
+			<u-button type="primary" @click="upload">上传数据</u-button>
 		</view>
 		<!-- 消息提示 -->
 		<u-toast ref="uToast" />
@@ -104,7 +104,4 @@
 </script>
 
 <style scoped>
-	.msgDetail /deep/ .u-navbar {
-		background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
-	}
 </style>

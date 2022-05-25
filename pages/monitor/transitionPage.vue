@@ -233,11 +233,6 @@
 page {
 	background-color: #f5f5f5;
 }
-.project .navUpdateIcon {
-		padding-right: 20px;
-		line-height: 44px;
-		font-size: 20px;
-	}
 .project {
 	.search {
 		display: flex;
@@ -248,7 +243,7 @@ page {
 		}
 	}
 	.scroll-list {
-		height: calc(100vh - var(--window-top) - var(--window-bottom) - 250rpx); // 105rpx 为 .search 的高度
+		height: calc(100vh - var(--window-top) - var(--window-bottom) - 200rpx); // 105rpx 为 .search 的高度
 		width: 100%;
 		.loadmore {
 			padding: 30rpx;

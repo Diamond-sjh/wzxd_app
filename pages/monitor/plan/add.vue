@@ -6,9 +6,10 @@
 			</view>
 		</u-navbar>
 		<view class="form containerCommon">
-			<u-form :model="form" ref="uForm" label-width="250" label-align="left">
+			<u-form :model="form" ref="uForm" label-width="240" label-align="left">
 				<u-form-item prop="projectId" label="工程名称：">
-					<u-input v-model="projectName" placeholder="请选择" type="select" @click="openSelect('projectId')" />
+					<!-- <u-input v-model="projectName" placeholder="请选择" type="select" @click="openSelect('projectId')" /> -->
+					<u-input :disabled="true" v-model="projectName" />
 				</u-form-item>
 				<u-form-item prop="monitorSectionNumber" label="监测断面桩号：">
 					<u-input v-model="form.monitorSectionNumber" @input="monitorSectionNumberChange" placeholder="请输入"/>
@@ -109,6 +110,11 @@
 		onReady() {
 			// 获取默认时间
 			this.form.burialDate = this.$utils.getDate(new Date(), 'yyyy-MM-dd')
+			let projectInfo = uni.getStorageSync('projectInfo') ? uni.getStorageSync('projectInfo') : {};
+			this.projectId = projectInfo.value
+			this.projectName = projectInfo.label
+			this.recordNumber = projectInfo.extra.recordNumber
+			this.testCompanyName = projectInfo.extra.company
 		},
 		methods: {
 			// 根据桩号获取开挖方法
@@ -167,7 +173,8 @@
 				}
 				if(type == 'testBasis' || type == 'judgeBasisList' || (type == "pointPosition" && (this.form.testItems=="拱顶下沉" || this.form.testItems=="拱脚下沉" || this.form.testItems=="地表下沉" || this.form.testItems=="周边位移")) ){
 					// 多选
-					this.defaultValue = this.form[type]?this.form[type].split(','):[]
+					this.defaultValue = this.form[type]?this.form[type].split(','):[],
+					console.log(this.paramsList)
 					this.isShowSelect = true
 				}else{
 					// 单选
@@ -188,6 +195,7 @@
 						// this.form = {}
 						this.form.projectId = this.projectId
 						this.defaultValue = [] //清空多选器的数据列表
+						this.form.pointPosition = ''
 						this.label = '标定系数(MPa/Hz2)：'
 						this.placeholder = "请输入"
 						switch (res[0].value){
@@ -285,6 +293,7 @@
 					})
 					return
 				}
+				this.form.wallRockGrade = this.form.wallRockGrade?this.form.wallRockGrade:''
 				let that = this
 				this.form.initialMonitoringDate = this.form.burialDate
 				this.form.projectId = this.projectId
@@ -336,6 +345,43 @@
 							}
 						});
 					}
+				}).catch(err => {
+					uni.getStorage({
+						key: 'plan_key',
+						success: (res) => {
+							let dataArr = res.data
+							let obj = JSON.parse(JSON.stringify(that.form))
+							dataArr.push(obj)
+							uni.setStorage({
+								key: 'plan_key',
+								data: dataArr,
+								success(res) {
+									console.log(res);
+									that.$u.toast('上传失败，信息本地保存成功')
+								},
+								fail(err) {
+									console.log(err);
+									that.$u.toast('上传失败，信息本地保存失败')
+								}
+							});
+						},
+						fail: (err) => {
+							let obj = JSON.parse(JSON.stringify(that.form))
+							let dataArr = [obj]
+							uni.setStorage({
+								key: 'plan_key',
+								data: dataArr,
+								success(res) {
+									console.log(res);
+									that.$u.toast('上传失败，信息本地保存成功')
+								},
+								fail(err) {
+									console.log(err);
+									that.$u.toast('上传失败，信息本地保存失败')
+								}
+							});
+						}
+					});
 				})
 				let paramForm = {
 					projectId:this.form.projectId,

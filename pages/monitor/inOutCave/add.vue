@@ -463,13 +463,13 @@
 				console.log(this.form)
 				// return
 				let that = this
-				// 获取默认时间
 				this.$httpMonitor.addInoutcaveObservationRecord(this.form).then(res => {
+					console.log(res)
 					if (res.code == 200) {
 						this.$refs.uToast.show({
 							title: '信息上传成功',
 							type: 'success',
-							back: true,
+							back: false,
 							duration: 500
 						})
 						const eventChannel = this.getOpenerEventChannel();
@@ -512,6 +512,43 @@
 							}
 						});
 					}
+				}).catch(err => {
+					uni.getStorage({
+						key: 'inoutcave_key',
+						success: (res) => {
+							let dataArr = res.data
+							let obj = JSON.parse(JSON.stringify(that.form))
+							dataArr.push(obj)
+							uni.setStorage({
+								key: 'inoutcave_key',
+								data: dataArr,
+								success(res) {
+									console.log(res);
+									that.$u.toast('上传失败，信息本地保存成功')
+								},
+								fail(err) {
+									console.log(err);
+									that.$u.toast('上传失败，信息本地保存失败')
+								}
+							});
+						},
+						fail: (err) => {
+							let obj = JSON.parse(JSON.stringify(that.form))
+							let dataArr = [obj]
+							uni.setStorage({
+								key: 'inoutcave_key',
+								data: dataArr,
+								success(res) {
+									console.log(res);
+									that.$u.toast('上传失败，信息本地保存成功')
+								},
+								fail(err) {
+									console.log(err);
+									that.$u.toast('上传失败，信息本地保存失败')
+								}
+							});
+						}
+					});
 				})
 			}
 		}

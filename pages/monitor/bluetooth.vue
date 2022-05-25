@@ -1,5 +1,6 @@
 <template>
-	<view class="wrap">
+	<view class="wrap navbar">
+		<u-navbar back-icon-color="white" title="蓝牙列表" title-color="white"></u-navbar>
 		<u-cell-group>
 			<u-cell-item 
 			v-for="(item,index) in bluetoothList" 

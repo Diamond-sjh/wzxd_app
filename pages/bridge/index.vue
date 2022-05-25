@@ -1,5 +1,5 @@
 <template>
-	<view class="addProject">
+	<view class="addProject navbar">
 		<u-navbar back-text="返回" back-icon-color="white" :back-text-style="letVal" :title='title' title-color="#ffffff">
 			<view class="slot-wrap">
 				<view class="rightNav" @click="bridgeListShow = true">
@@ -167,31 +167,12 @@
 		width: 100%;
 		height: 100%;
 	}
-	.addProject /deep/ .u-navbar {
-		background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
-	}
 	.addProject .slot-wrap {
 		width: 100%;
 		display: flex;
 		align-items: center;
 		padding: 0 12px;
 		flex-direction: row-reverse;
-	}
-	.addProject .slot-wrap .search {
-		width: 80%;
-		border: 1px solid;
-		border-radius: 40px;
-		height: 26px;
-		background: white;
-		padding: 3px 15px;
-	}
-	.addProject .slot-wrap .search /deep/ .u-input__input {
-		height: 18px;
-		line-height: 18px;
-	}
-	.addProject .slot-wrap .content {
-		color: white;
-		margin: 0 5px 0 10px;
 	}
 	.addProject .bottomContent {
 		display: flex;

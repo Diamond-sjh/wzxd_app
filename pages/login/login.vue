@@ -51,12 +51,12 @@
 					name:'监控量测'
 				}],
 				current:0,//登录环境的tab
-				username:'admin',//账号
-				password:'123456',//密码
+				username:'',//账号
+				password:'',//密码
 				// 机电定检登录传参
 				params:{
-					account:'wuhaohua',
-					password:'123456',
+					account:'',
+					password:'',
 				},
 				captcha:'',//验证码
 				captchaUrl:'',//验证码图片地址
@@ -122,27 +122,6 @@
 				this.params.account = this.username
 				this.$http.login(this.params).then((res)=>{
 					if(res.code == '200'){
-						/**
-						 * 获取用户登录的token
-						 * 	clientId
-						 * 	code
-						 */
-						// this.$http.getToken({
-						// 	clientId:'20005',
-						// 	code:res.data.code
-						// }).then((response)=>{
-						// 	if(response && response.indexOf('?token=') != -1){
-						// 		let token = response.split('?token=')[1]
-						// 		// uni.setStorageSync("userToken", {token:token})
-						// 		this.SET_USERTOKEN(token)
-						// 		this.backFunction()
-						// 	}else{
-						// 		uni.showToast({
-						// 		    icon: 'none',
-						// 		    title: '用户token获取失败',
-						// 		});
-						// 	}
-						// })
 						this.setUserToken({
 							data:{
 								clientId:'20005',
@@ -237,15 +216,16 @@
 		background-size:cover
 	}
 	.avatorWrapper{
-		height: 30vh;
+		height: 35vh;
 		width: 100vw;
 		display: flex;
 		justify-content: center;
 		align-items: flex-end;
 	}
 	.avator{
-		width: 200upx;
-		height: 200upx;
+		/* width: 400upx; */
+		/* height: 400upx; */
+		width: 300upx;
 		overflow: hidden;
 	}
 	.avator .img{

@@ -1,7 +1,7 @@
 <template>
 	<view class="navbar plan">
-		<u-navbar :isBack="false" back-icon-color="white" :title="title" title-color="white" :titleTap="toProjectPage">
-			<view slot="right" class="slot-wrap iconfont icon-shangchuan navUpdateIcon">
+		<u-navbar :isBack="false" back-icon-color="white" :titleWidth="500" :title="title" title-color="white" :titleTap="toProjectPage">
+			<view slot="right" class="slot-wrap iconfont icon-shangchuan">
 				<u-icon @click="jumpToPage('updateList')" name="shangchuan" custom-prefix="custom-icon"></u-icon>
 				<u-badge size="mini" type="success" :count='count' :offset="offset"></u-badge>
 			</view>
@@ -19,11 +19,13 @@
 				<u-cell-group>
 					<u-cell-item 
 						:title="item.testItems"
-						:label="item.pointPosition" 
 						:value="item.burialDate" 
 						v-for="(item,index) in planList"
 						@click="loolDetail(item)"
 						>
+						<view slot="label">
+							桩号：{{item.pointPosition}}
+						</view>
 					</u-cell-item>
 				</u-cell-group>
 				<view class="example-body">
@@ -192,11 +194,6 @@
 page {
 	background-color: #f5f5f5;
 }
-.plan .navUpdateIcon {
-		padding-right: 20px;
-		line-height: 44px;
-		font-size: 20px;
-	}
 .plan {
 	.search {
 		display: flex;

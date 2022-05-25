@@ -1,11 +1,11 @@
 <template>
 	<view class="navbar monitor">
 		<u-navbar :isBack="false" back-icon-color="white" :title="title" title-color="white" :titleTap="toProjectPage">
-			<view slot="right" class="slot-wrap iconfont icon-shangchuan navUpdateIcon">
+			<view slot="right" class="slot-wrap iconfont icon-shangchuan">
 				<u-icon @click="jumpToPage('updateList')" name="shangchuan" custom-prefix="custom-icon"></u-icon>
 				<u-badge size="mini" type="success" :count='count' :offset="offset"></u-badge>
-				<u-icon v-show="!isConnect" @click="jumpToPage('bluetooth')" style="margin-right: 5px;" name="lanya" custom-prefix="custom-icon" label="未连接" label-pos="left" margin-right ="2"></u-icon>
-				<u-icon v-show="isConnect" @click="jumpToPage('bluetooth')" style="margin-right: 5px;color: #007AFF;" name="lanya" custom-prefix="custom-icon" :label="blueName" label-pos="left" margin-right ="2"></u-icon>
+				<u-icon v-show="isConnect" @click="jumpToPage('bluetooth')" style="margin-right: 5px;color: #007AFF;" name="lanya" custom-prefix="custom-icon" :label="blueName" labelColor="#007AFF" label-pos="left" margin-right ="2"></u-icon>
+				<u-icon v-show="!isConnect" @click="jumpToPage('bluetooth')" style="margin-right: 5px;color: #ffffff" name="lanya" custom-prefix="custom-icon" label="未连接" labelColor="#ffffff" label-pos="left" margin-right ="2"></u-icon>
 			</view>
 			<view class="navbarRight">
 				<u-button type="success" size="mini" @click="logout()">注销</u-button>
@@ -106,7 +106,6 @@
 			this.projectId = projectInfo.value?projectInfo.value:''
 			this.recordNumber = projectInfo.recordNumber?projectInfo.recordNumber:''
 			this.title = projectInfo.label?projectInfo.label:'全站仪'
-			this.getData()
 			// #ifdef APP-PLUS
 			this.player()
 			// #endif
@@ -126,9 +125,12 @@
 		//下拉刷新
 		onPullDownRefresh(){
 			uni.stopPullDownRefresh();
+			this.detectionStation = ''
 			this.status = 'loading'
 			this.pageNum = 1
-			this.showMonitorList = []
+			this.getData()
+		},
+		mounted() {
 			this.getData()
 		},
 	    methods: {
@@ -189,10 +191,10 @@
 				this.monitorListCopy = []
 				this.monitorList = []
 				this.showMonitorList = []
-				uni.getStorage({
-					key: 'allMonitor_key',
-					success: (res) => {
-						res.data.forEach(val => {
+				try{
+					const res = uni.getStorageSync('allMonitor_key')
+					if(res){
+						res.forEach(val => {
 							// 筛选对应项目id的
 							if(val.projectId == this.projectId){
 								this.monitorListCopy.push(val)
@@ -205,17 +207,27 @@
 						}else{
 							this.status = 'noMore'
 						}
-					},
-					fail: (err) => {
+					}else{
 						this.monitorListCopy = []
 						this.monitorList = []
 						this.showMonitorList = []
 						this.status = 'noMore'
 					}
-				});
+				}catch(e){
+					//TODO handle the exception
+					this.monitorListCopy = []
+					this.monitorList = []
+					this.showMonitorList = []
+					this.status = 'noMore'
+				}
 				// 更新视图内部高度
 				this.$nextTick(()=>{
-					this.$refs.collapse.init()
+					let timer = setInterval(()=>{
+						if(this.$refs.collapse){
+							clearInterval(timer)
+							this.$refs.collapse.init()
+						}
+					},500)
 				})
 			},
 			// 数据处理
@@ -352,8 +364,6 @@
 						    }
 						},
 						success: (res) => {
-							console.log(this.blueDeviceId)
-							console.log(this.blueName)
 						    // 通过eventChannel向被打开页面传送数据
 							res.eventChannel.emit('toBluetooth', {deviceId:this.blueDeviceId,blueName:this.blueName})
 						},
@@ -375,7 +385,6 @@
 			},
 			// 点击标题返回项目选择页面
 			toProjectPage(){
-				console.log(123)
 				uni.reLaunch({
 					url: '/pages/monitor/transitionPage'
 				})
@@ -388,11 +397,6 @@
 page {
 	background-color: #f5f5f5;
 }
-.monitor .navUpdateIcon {
-		padding-right: 20px;
-		line-height: 44px;
-		font-size: 20px;
-	}
 .monitor {
 	.search {
 		display: flex;

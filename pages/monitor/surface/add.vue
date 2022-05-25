@@ -13,8 +13,14 @@
 				<u-form-item :required="true" prop="parameterName" label="检测参数：">
 					<u-input v-model="form.parameterName" placeholder="请选择检测参数" type="select" @click="openSelect('parameterName')" />
 				</u-form-item>
-				<u-form-item :required="true" prop="detectionStation" label="检测桩号：">
+				<!-- <u-form-item :required="true" prop="detectionStation" label="检测桩号：">
 					<u-input v-model="form.detectionStation" placeholder="请输入检测桩号" />
+				</u-form-item> -->
+				<u-form-item :required="true" prop="detectionStation" label="检测桩号：" >
+				      <u-input v-model="form.detectionStation" type="input" placeholder="请选择检测桩号" @confirm="searchDetectionStation" @blur="searchDetectionStation"/>
+				      <view slot="right">
+				        <u-icon size="40" name="search" color="#2979ff" @click="searchDetectionStation"/>
+				      </view>
 				</u-form-item>
 				<u-form-item :required="true" prop="installationPosition" label="测点编号：">
 					<u-input v-model="form.installationPosition" placeholder="请选择测点编号" type="select" @click="openSelect('installationPosition')" />
@@ -158,17 +164,62 @@
 				if (this.clickType == 'installationPosition') {
 					this.form.installationPosition = res[0].value
 				}
-
+				if (this.clickType == 'detectionStation') {
+					this.form.detectionStation = res[0].value
+				}
+				
+			},
+			// 模糊搜索 断面桩号
+			searchDetectionStation(){
+				if(this.isShowSelectList){
+					return
+				}
+				this.clickType = 'detectionStation'
+				//首先判断输入框是否为空
+				if(this.form.detectionStation == ''){
+					//先清空展示的数据
+					this.data = []
+					//this.data是下拉框显示的内容，如果为空就展示全部数据
+					this.paramsList.forEach(item => {
+						let obj = {
+							value:item.monitorName,
+							label:item.monitorName,
+							extra:item.testItem
+						}
+						this.data.push(obj)
+					})
+				//否则执行下面内容
+				}else{
+					//先清空展示的数据
+					this.data = []
+					//1.前端匹配
+					this.paramsList.forEach((item)=>{
+						if(item.monitorName.indexOf(this.form.detectionStation) != -1){
+							let obj = {
+								value:item.monitorName,
+								label:item.monitorName,
+								extra:item.testItem
+							}
+							this.data.push(obj)
+						}
+					})
+				} 
+				console.log(this.data)
+				this.isShowSelectList = true
 			},
 			// 点击保存按钮
 			submit() {
 				let that = this
 				this.$refs.uForm.validate(valid => {
 					if (valid) {
+						// if(this.installationPositionRemark){
+						// 	this.form.installationPosition = `${this.form.installationPosition}埋深${this.installationPositionRemark}m`
+						// }
+						let formParam = Object.assign({},this.form)
 						if(this.installationPositionRemark){
-							this.form.installationPosition = `${this.form.installationPosition}埋深${this.installationPositionRemark}m`
+							formParam.installationPosition = `${formParam.installationPosition}埋深${this.installationPositionRemark}m`
 						}
-						this.$httpMonitor.addGwzmRecordSon(this.form).then(res => {
+						this.$httpMonitor.addGwzmRecordSon(formParam).then(res => {
 							if (res.code == 200) {
 								this.$refs.uToast.show({
 									title: '信息上传成功',
@@ -216,6 +267,43 @@
 									}
 								});
 							}
+						}).catch(err => {
+							uni.getStorage({
+								key: 'surface_key',
+								success: (res) => {
+									let dataArr = res.data
+									let obj = JSON.parse(JSON.stringify(that.form))
+									dataArr.push(obj)
+									uni.setStorage({
+										key: 'surface_key',
+										data: dataArr,
+										success(res) {
+											console.log(res);
+											that.$u.toast('上传失败，信息本地保存成功')
+										},
+										fail(err) {
+											console.log(err);
+											that.$u.toast('上传失败，信息本地保存失败')
+										}
+									});
+								},
+								fail: (err) => {
+									let obj = JSON.parse(JSON.stringify(that.form))
+									let dataArr = [obj]
+									uni.setStorage({
+										key: 'surface_key',
+										data: dataArr,
+										success(res) {
+											console.log(res);
+											that.$u.toast('上传失败，信息本地保存成功')
+										},
+										fail(err) {
+											console.log(err);
+											that.$u.toast('上传失败，信息本地保存失败')
+										}
+									});
+								}
+							});
 						})
 					} else {
 						this.$refs.uToast.show({

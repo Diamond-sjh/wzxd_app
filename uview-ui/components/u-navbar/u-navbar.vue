@@ -109,7 +109,7 @@
 			// 标题的宽度，如果需要自定义右侧内容，且右侧内容很多时，可能需要减少这个宽度，单位rpx
 			titleWidth: {
 				type: [String, Number],
-				default: '250'
+				default: '300'
 			},
 			// 标题的颜色
 			titleColor: {

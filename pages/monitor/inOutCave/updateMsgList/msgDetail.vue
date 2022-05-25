@@ -1,5 +1,5 @@
 <template>
-	<view class="msgDetail">
+	<view class="msgDetail navbar">
 		<u-navbar back-text="返回" title="任务详情" back-icon-color="white" title-color="white" :back-text-style="letVal"></u-navbar>
 		<u-cell-group>
 			<u-cell-item :arrow="false" title="检测日期：">{{form.testDate}}</u-cell-item>
@@ -107,7 +107,7 @@
 			</view>
 		</view>
 		<view class="containerCommon" v-if="isShowBtn">
-			<u-button type="success" @click="upload">上传数据</u-button>
+			<u-button type="primary" @click="upload">上传数据</u-button>
 		</view>
 		<!-- 消息提示 -->
 		<u-toast ref="uToast" />
@@ -211,9 +211,6 @@
 <style scoped lang="scss">
 	page {
 		background: #f1f1f1;;
-	}
-	.msgDetail /deep/ .u-navbar {
-		background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
 	}
 	.msgDetail /deep/ .u-cell-title {
 		font-size: 16px;

@@ -7,7 +7,10 @@
 			"path": "pages/login/login",
 			"style": {
 				"navigationBarTitleText": "登录中心",
-				"navigationStyle":"custom"
+				"navigationStyle":"custom",
+				"app-plus":{
+					"softinputMode": "adjustPan"
+				}
 			}
 		},
 		{
@@ -54,7 +57,6 @@
 			"path": "pages/home/projectInfo/editAndAdd",
 			"style": {
 				"navigationBarTitleText": "新增/修改",
-				"enablePullDownRefresh":true,
 				"navigationStyle": "custom" ,// 隐藏系统导航栏
 				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
 			}
@@ -62,6 +64,7 @@
 		{
 			"path": "pages/home/viruseInfo/index",
 			"style": {
+				"enablePullDownRefresh":true,
 				"navigationBarTitleText": "病害信息",
 				"navigationStyle": "custom" ,// 隐藏系统导航栏
 				"navigationBarTextStyle": "white" // 状态栏字体为白色，只能为 white-白色，black-黑色 二选一
@@ -193,6 +196,7 @@
 		{
 			"path": "pages/monitor/bluetooth",
 			"style": {
+				"navigationStyle": "custom",// 隐藏系统导航栏
 				"navigationBarTitleText": "蓝牙列表"
 			}
 		},

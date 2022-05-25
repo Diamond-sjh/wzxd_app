@@ -1,7 +1,7 @@
 <template>
 	<view class="navbar inOutCave">
 		<u-navbar :isBack="false" back-icon-color="white" :title="title" title-color="white" :titleTap="toProjectPage">
-			<view slot="right" class="slot-wrap iconfont icon-shangchuan navUpdateIcon">
+			<view slot="right" class="slot-wrap iconfont icon-shangchuan">
 				<u-icon @click="jumpToPage('updateList')" name="shangchuan" custom-prefix="custom-icon"></u-icon>
 				<u-badge size="mini" type="success" :count='count' :offset="offset"></u-badge>
 			</view>
@@ -198,11 +198,6 @@
 page {
 	background-color: #f5f5f5;
 }
-.inOutCave .navUpdateIcon {
-		padding-right: 20px;
-		line-height: 44px;
-		font-size: 20px;
-	}
 .inOutCave {
 	.search {
 		display: flex;

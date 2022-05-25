@@ -1,5 +1,5 @@
 <template>
-	<view class="addProject">
+	<view class="addProject navbar">
 		<u-navbar back-text="返回" title="" back-icon-color="white" :back-text-style="letVal">
 			<view class="slot-wrap">
 				<view class="content" @click="search">搜索</view>
@@ -23,9 +23,9 @@
 				<u-dropdown-item v-model="chunnelName" title="所属隧道" :options="chunnelNameList" @change="chunnelNameChange"></u-dropdown-item>
 			</u-dropdown>
 			<view class="tagList">
-				<u-tag :text="routeName" type="success" />
-				<u-tag :text="roadsectionName" type="success" />
-				<u-tag :text="chunnelName" type="success" />
+				<u-tag :text="routeName" />
+				<u-tag :text="roadsectionName" />
+				<u-tag :text="chunnelName" />
 			</view>
 		</view>
 		<view class="cards">
@@ -425,31 +425,12 @@
 		width: 100%;
 		height: 100%;
 	}
-	.addProject /deep/ .u-navbar {
-		background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
-	}
 	.addProject .slot-wrap {
 		width: 100%;
 		display: flex;
 		align-items: center;
 		padding: 0 12px;
 		flex-direction: row-reverse;
-	}
-	.addProject .slot-wrap .search {
-		width: 80%;
-		border: 1px solid;
-		border-radius: 40px;
-		height: 26px;
-		background: white;
-		padding: 3px 15px;
-	}
-	.addProject .slot-wrap .search /deep/ .u-input__input {
-		height: 18px;
-		line-height: 18px;
-	}
-	.addProject .slot-wrap .content {
-		color: white;
-		margin: 0 5px 0 10px;
 	}
 	.addProject .downMenu {
 		width: 100%;

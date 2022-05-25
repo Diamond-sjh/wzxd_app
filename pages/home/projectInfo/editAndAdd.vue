@@ -1,5 +1,5 @@
 <template>
-	<view class="updateAndAdd">
+	<view class="updateAndAdd navbar">
 		<u-navbar back-text="返回" title="新增修改" back-icon-color="white" title-color="white" :back-text-style="letVal"></u-navbar>
 		<u-form :model="form" ref="uForm" label-width="150">
 			<u-form-item label="所属路线：">
@@ -143,9 +143,6 @@
 <style>
 	.updateAndAdd {
 		padding: 10px;
-	}
-	.updateAndAdd /deep/ .u-navbar {
-		background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;;
 	}
 	.updateAndAdd .btns{
 		display: flex;

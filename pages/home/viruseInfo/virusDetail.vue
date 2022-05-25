@@ -1,5 +1,5 @@
 <template>
-	<view class="virusDetail">
+	<view class="virusDetail navbar">
 		<u-navbar back-text="返回" title="病害详情" back-icon-color="white" title-color="white" :back-text-style="letVal"></u-navbar>
 		<u-cell-group>
 			<u-cell-item :arrow="false" title="所属路线：">{{form.routeLine}}</u-cell-item>
@@ -89,7 +89,7 @@
 				this.$http.VirusDetailInfo({id:this.id}).then(res => {
 					if(res.code == 200){
 						Object.assign(this.form,res.data)
-						this.src = res.data.imagePreviewUrl?res.data.imagePreviewUrl:''
+						this.src = res.data.imagePreviewUrl?res.data.imagePreviewUrl:'/static/imgError.png'
 					}
 				})
 			},			
@@ -132,7 +132,4 @@
 </script>
 
 <style scoped>
-	.virusDetail /deep/ .u-navbar {
-		background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
-	}
 </style>

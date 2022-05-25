@@ -1,5 +1,5 @@
 <template>
-	<view class="addVirus">
+	<view class="addVirus navbar">
 		<u-navbar 
 		back-text="返回" 
 		title="添加/修改病害信息" 
@@ -617,12 +617,6 @@
 <style scoped>
 	.addVirus {
 		padding: 20px;
-	}
-	.addVirus /deep/ .u-navbar {
-		background: linear-gradient(45deg, rgb(28, 187, 180), rgb(141, 198, 63))!important;
-	}
-	.addVirus .slot-wrap {
-		padding-right: 12px;
 	}
 	.addVirus .warningText {
 		color: red;
