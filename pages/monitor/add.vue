@@ -288,7 +288,6 @@
 					})
 				}
 				if(type == 'parameterName'){
-					console.log(this.testItemParams)
 					this.testItemParams.forEach(item => {
 						if(item.name == '拱顶下沉' || item.name == '拱脚下沉' || item.name == '地表下沉' || item.name == '周边位移'){
 							let obj = {
@@ -301,7 +300,6 @@
 					})
 				}
 				if(type == 'testName'){
-					console.log(this.pointPositionParams)
 					this.pointPositionParams.forEach(item => {
 						let obj = {
 							value:item,

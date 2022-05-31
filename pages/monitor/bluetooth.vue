@@ -24,7 +24,6 @@
 				bluetoothList: [], // 蓝牙设备列表
 				deviceId: "", // 要连接蓝牙设备id
 				bluetoothName:'',// 要连接蓝牙设备name
-				serverList: [], // 连接蓝牙设备的服务数据
 				serviceId: "", // 连接蓝牙设备的服务id
 				characteristics: [], // 连接蓝牙设备的特征值数据
 				notifyUUid:'',
@@ -121,12 +120,18 @@
 					// 这里的 deviceId 需要已经通过 createBLEConnection 与对应设备建立链接
 					deviceId: deviceId,
 					success: (res) => {
-						if(res.services && res.services.length > 0){
-							this.serverList = res.services
-							this.serviceId = res.services[3].uuid
-							this.getBLEDeviceCharacteristics() //6.0
+						for (var s = 0; s < res.services.length; s++) {
 						}
-						
+						if(res.services && res.services.length > 0){
+							res.services.some(item => {
+								if((item.uuid.includes("FFE0") || item.uuid.includes("49535343")) && item.isPrimary){
+									console.log(item.uuid)
+									this.serviceId = item.uuid
+									this.getBLEDeviceCharacteristics()
+									return true
+								}
+							})
+						}
 					},
 					fail: function(res) {
 						console.log(res)
@@ -144,8 +149,18 @@
 						console.log(res)
 						if(res.characteristics && res.characteristics.length > 0){
 							this.characteristics = res.characteristics
-							this.notifyUUid = res.characteristics[2].uuid
-							this.writeUUid = res.characteristics[3].uuid
+							if(this.serviceId.includes("49535343")){
+								this.notifyUUid = res.characteristics[2].uuid
+								this.writeUUid = res.characteristics[3].uuid
+							}else{
+								res.characteristics.some(item => {
+									if (item.properties.write && item.properties.notify) {
+										this.notifyUUid = item.uuid
+										this.writeUUid = item.uuid
+										return true
+									}
+								})
+							}
 							uni.setStorage({
 								key: 'storage_bluetooth',
 								data: {
