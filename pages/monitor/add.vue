@@ -301,6 +301,7 @@
 					})
 				}
 				if(type == 'testName'){
+					console.log(this.pointPositionParams)
 					this.pointPositionParams.forEach(item => {
 						let obj = {
 							value:item,
@@ -329,6 +330,7 @@
 						this.clearData()
 						this.form.parameterName = res[0].value
 						this.pointPositionParams = res[0].extra
+						console.log(this.pointPositionParams)
 						this.form.testName = this.pointPositionParams[0]?this.pointPositionParams[0]:''
 						if(this.dateListValue == '新增'){
 							return

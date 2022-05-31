@@ -410,9 +410,18 @@ const installationPosition2List = [
 // 开挖方法
 const excavationMethodList = [
 	{value: '台阶法', label: '台阶法'},
+	{value: '台阶法2拱顶', label: '台阶法2拱顶'},
+	{value: '台阶法3拱顶', label: '台阶法3拱顶'},
 	{value: '全断面法', label: '全断面法'},
-	{value: '单侧壁开挖法', label: '单侧壁开挖法'},
-	{value: '双侧壁导洞法', label: '双侧壁导洞法'},
+	{value: '全断面法2拱顶', label: '全断面法2拱顶'},
+	{value: '全断面法3拱顶', label: '全断面法3拱顶'},
+	{value: '左侧壁先行开挖', label: '左侧壁先行开挖'},
+	{value: '左侧壁先行开挖2拱顶', label: '左侧壁先行开挖2拱顶'},
+	{value: '左侧壁先行开挖3拱顶', label: '左侧壁先行开挖3拱顶'},
+	{value: '右侧壁先行开挖', label: '右侧壁先行开挖'},
+	{value: '右侧壁先行开挖2拱顶', label: '右侧壁先行开挖2拱顶'},
+	{value: '右侧壁先行开挖3拱顶', label: '右侧壁先行开挖3拱顶'},
+	{value: '双侧壁开挖法', label: '双侧壁开挖法'},
 	{value: '拱脚下沉', label: '拱脚下沉'},
 	{value: '地表下沉', label: '地表下沉'}
 ]

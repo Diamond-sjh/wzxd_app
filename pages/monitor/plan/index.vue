@@ -10,7 +10,7 @@
 			</view>
 		</u-navbar>
 		<view class="search">
-			<u-search class="searchContent" v-model="queryParams.testItems" placeholder="请输入检测参数关键字" :show-action="false" @custom="clickQuery" @search="clickQuery"></u-search>
+			<u-search class="searchContent" v-model="queryParams.monitorSectionNumber" placeholder="请输入桩号关键字" :show-action="false" @custom="clickQuery" @search="clickQuery"></u-search>
 			<view class="sea" @click="clickQuery()"><u-icon name="search" size="40"></u-icon></view>
 			<view class="add" @click="addInformation"><u-icon name="plus-circle" size="40"></u-icon></view>
 		</view>
@@ -18,13 +18,18 @@
 			<scroll-view class="scroll-list msg-list-item" scroll-y="true" @scrolltolower="getScrollData">
 				<u-cell-group>
 					<u-cell-item 
-						:title="item.testItems"
+						:title="item.monitorSectionNumber"
 						:value="item.burialDate" 
 						v-for="(item,index) in planList"
 						@click="loolDetail(item)"
 						>
 						<view slot="label">
-							桩号：{{item.pointPosition}}
+							<view class="">
+								检测参数：{{item.testItems}}
+							</view>
+							<view class="">
+								测点名称：{{item.pointPosition}}
+							</view>
 						</view>
 					</u-cell-item>
 				</u-cell-group>

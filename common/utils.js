@@ -1,6 +1,5 @@
 import store from '../store/index.js';
 let macValue;
-let bluetoothInfo = uni.getStorageSync('storage_bluetooth') ? uni.getStorageSync('storage_bluetooth') : {}
 let timer = null
 let timer1 = null
 export default {
@@ -53,6 +52,8 @@ export default {
 	},
 	// 启用 notify 功能
 	notifyBLECharacteristicValueChange(callback) {
+		let bluetoothInfo = uni.getStorageSync('storage_bluetooth') ? uni.getStorageSync('storage_bluetooth') : {}
+		console.log(bluetoothInfo)
 		uni.notifyBLECharacteristicValueChange({
 			deviceId:bluetoothInfo.deviceId,
 			serviceId:bluetoothInfo.serviceId,
@@ -96,6 +97,7 @@ export default {
 	},
 	write() {
 		console.log('write')
+		let bluetoothInfo = uni.getStorageSync('storage_bluetooth') ? uni.getStorageSync('storage_bluetooth') : {}
 		clearTimeout(timer1)
 		timer1 = null
 		let buffer = this.str2ab('Ed')

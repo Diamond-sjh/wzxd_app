@@ -103,10 +103,10 @@
 							  // 该方法回调中可以用于处理连接意外断开等异常情况
 							  console.log(res)
 							})
-							item.connect = true
 							//获取蓝牙服务
 							setTimeout(()=>{
 								that.getBLEDeviceServices(that.deviceId);
+								item.connect = true
 							},1500)
 						},
 						fail: (res) => {
@@ -196,6 +196,8 @@
 				uni.closeBLEConnection({
 				  deviceId:deviceId,
 				  success(res) {
+					const eventChannel = that.getOpenerEventChannel();
+					eventChannel.emit('bluetoothToIndex','stop');
 				    that.$refs.uToast.show({
 				    	title: '断开连接成功',
 				    	type: 'success',

@@ -2,7 +2,7 @@
 	<view class="navbar monitorAdd">
 		<u-navbar title="监控计划" title-color="white" back-icon-color="white">
 			<view class="slot-wrap">
-				<u-button class="content" size="mini" type="success" @click="submit">保存</u-button>
+				<u-button :disabled="clickSubmit" class="content" size="mini" type="success" @click="submit">保存</u-button>
 			</view>
 		</u-navbar>
 		<view class="form containerCommon">
@@ -88,6 +88,7 @@
 	export default {
 		data() {
 			return {
+				clickSubmit:false,//保存按钮是否禁点
 				form: {},
 				projectName:'',//工程名称
 				projectId:'',//工程Id
@@ -293,21 +294,118 @@
 					})
 					return
 				}
+				this.clickSubmit = true
 				this.form.wallRockGrade = this.form.wallRockGrade?this.form.wallRockGrade:''
 				let that = this
 				this.form.initialMonitoringDate = this.form.burialDate
 				this.form.projectId = this.projectId
-				this.$httpMonitor.addStatistics(this.form).then(res => {
-					if (res.code == 200) {
-						this.$refs.uToast.show({
-							title: '信息上传成功',
-							type: 'success',
-							back: false,
-							duration: 500
+				let queryParams = {
+					projectId: this.form.projectId,
+					monitorSectionNumber: this.form.monitorSectionNumber,
+					testItems: this.form.testItems
+				}
+				this.$httpMonitor.queryStatistics(queryParams).then(res => {
+					if(res.code == 200 && res.rows.length > 0){
+						let flag = res.rows.some(val => {
+							return this.form.pointPosition.includes(val.pointPosition)
 						})
-						const eventChannel = this.getOpenerEventChannel();
-						eventChannel.emit('toPlanIndex');
-					} else {
+						if(flag){
+							this.$refs.uToast.show({
+								title: '所选测点检测计划已存在！',
+								type: 'error',
+								back: false,
+								duration: 1000
+							})
+							this.clickSubmit = false
+							return
+						}
+					}
+					this.$httpMonitor.addStatistics(this.form).then(res => {
+						this.clickSubmit = false
+						if (res.code == 200) {
+							this.$refs.uToast.show({
+								title: '信息上传成功',
+								type: 'success',
+								back: false,
+								duration: 500
+							})
+							const eventChannel = this.getOpenerEventChannel();
+							eventChannel.emit('toPlanIndex');
+						} else {
+							uni.getStorage({
+								key: 'plan_key',
+								success: (res) => {
+									let dataArr = res.data
+									let obj = JSON.parse(JSON.stringify(that.form))
+									dataArr.push(obj)
+									uni.setStorage({
+										key: 'plan_key',
+										data: dataArr,
+										success(res) {
+											console.log(res);
+											that.$u.toast('上传失败，信息本地保存成功')
+										},
+										fail(err) {
+											console.log(err);
+											that.$u.toast('上传失败，信息本地保存失败')
+										}
+									});
+								},
+								fail: (err) => {
+									let obj = JSON.parse(JSON.stringify(that.form))
+									let dataArr = [obj]
+									uni.setStorage({
+										key: 'plan_key',
+										data: dataArr,
+										success(res) {
+											console.log(res);
+											that.$u.toast('上传失败，信息本地保存成功')
+										},
+										fail(err) {
+											console.log(err);
+											that.$u.toast('上传失败，信息本地保存失败')
+										}
+									});
+								}
+							});
+						}
+						let value = uni.getStorageSync('storage_projectPlan');
+						if(value.length > 0){
+							value.forEach(item => {
+								if(item.projectId == this.projectId){
+									let monitorList = JSON.parse(item.projectPlan).monitor
+									let index1 = monitorList.findIndex(item2 => {
+										return item2.monitorName == that.form.monitorSectionNumber
+									})
+									if(index1 == -1){
+										monitorList.push({monitorName:that.form.monitorSectionNumber,testItem:[{name:that.form.testItems,pointPosition:[that.form.pointPosition]}]})
+										let obj = {projectId:item.projectId,monitor:monitorList}
+										item.projectPlan = JSON.stringify(obj)
+									}else{
+										let testItemList = monitorList[index1].testItem
+										let index2 = testItemList.findIndex(item3 => {
+											return item3.name == that.form.testItems
+										})
+										if(index2 == -1){
+											testItemList.push({name:that.form.testItems,pointPosition:[that.form.pointPosition]})
+											let obj = {projectId:item.projectId,monitor:monitorList}
+											item.projectPlan = JSON.stringify(obj)
+										}else{
+											testItemList[index2].pointPosition = [testItemList[index2].pointPosition[0] + ',' + that.form.pointPosition]
+											let obj = {projectId:item.projectId,monitor:monitorList}
+											console.log(obj)
+											item.projectPlan = JSON.stringify(obj)
+										}
+									}
+								}
+							})
+						}
+						uni.setStorage({
+							key: 'storage_projectPlan',
+							data: value
+						});
+					}).catch(err => {
+						this.clickSubmit = false
 						uni.getStorage({
 							key: 'plan_key',
 							success: (res) => {
@@ -344,79 +442,80 @@
 								});
 							}
 						});
-					}
-				}).catch(err => {
-					uni.getStorage({
-						key: 'plan_key',
-						success: (res) => {
-							let dataArr = res.data
-							let obj = JSON.parse(JSON.stringify(that.form))
-							dataArr.push(obj)
-							uni.setStorage({
-								key: 'plan_key',
-								data: dataArr,
-								success(res) {
-									console.log(res);
-									that.$u.toast('上传失败，信息本地保存成功')
-								},
-								fail(err) {
-									console.log(err);
-									that.$u.toast('上传失败，信息本地保存失败')
+						let value = uni.getStorageSync('storage_projectPlan');
+						if(value.length > 0){
+							value.forEach(item => {
+								if(item.projectId == this.projectId){
+									let monitorList = JSON.parse(item.projectPlan).monitor
+									let index1 = monitorList.findIndex(item2 => {
+										return item2.monitorName == that.form.monitorSectionNumber
+									})
+									if(index1 == -1){
+										monitorList.push({monitorName:that.form.monitorSectionNumber,testItem:[{name:that.form.testItems,pointPosition:[that.form.pointPosition]}]})
+										let obj = {projectId:item.projectId,monitor:monitorList}
+										item.projectPlan = JSON.stringify(obj)
+									}else{
+										let testItemList = monitorList[index1].testItem
+										let index2 = testItemList.findIndex(item3 => {
+											return item3.name == that.form.testItems
+										})
+										if(index2 == -1){
+											testItemList.push({name:that.form.testItems,pointPosition:[that.form.pointPosition]})
+											let obj = {projectId:item.projectId,monitor:monitorList}
+											item.projectPlan = JSON.stringify(obj)
+										}else{
+											testItemList[index2].pointPosition = [testItemList[index2].pointPosition[0] + ',' + that.form.pointPosition]
+											let obj = {projectId:item.projectId,monitor:monitorList}
+											item.projectPlan = JSON.stringify(obj)
+										}
+									}
 								}
-							});
-						},
-						fail: (err) => {
-							let obj = JSON.parse(JSON.stringify(that.form))
-							let dataArr = [obj]
-							uni.setStorage({
-								key: 'plan_key',
-								data: dataArr,
-								success(res) {
-									console.log(res);
-									that.$u.toast('上传失败，信息本地保存成功')
-								},
-								fail(err) {
-									console.log(err);
-									that.$u.toast('上传失败，信息本地保存失败')
-								}
-							});
+							})
 						}
-					});
-				})
-				let paramForm = {
-					projectId:this.form.projectId,
-					testCompanyName:this.testCompanyName,
-					recordNumber:this.recordNumber,
-					parameterName:this.form.testItems,
-					testBasis:this.form.testBasis,
-					equipmentNumber:this.form.equipments,
-					detectionStation:this.form.monitorSectionNumber,
-					remark:this.form.remark,
-					creator:uni.getStorageSync('storage_userInfo').userId ? uni.getStorageSync('storage_userInfo').userId : null,
-					sampleInformation:'/',
-					testConditions:'/',
-					testLocationImage:'',
-					testBasis:this.form.testBasisNumber,
-					judgBasis:this.form.judgBasis
-				}
-				this.$httpMonitor.selectExcavation(
-					{
-						excavationMethod:this.form.excavationMethod,
-						monitorParam:this.form.testItems,
+						uni.setStorage({
+							key: 'storage_projectPlan',
+							data: value
+						});
+					})
+					let paramForm = {
+						projectId:this.form.projectId,
+						testCompanyName:this.testCompanyName,
+						recordNumber:this.recordNumber,
+						parameterName:this.form.testItems,
+						testBasis:this.form.testBasis,
+						equipmentNumber:this.form.equipments,
+						detectionStation:this.form.monitorSectionNumber,
+						remark:this.form.remark,
+						creator:uni.getStorageSync('storage_userInfo').userId ? uni.getStorageSync('storage_userInfo').userId : null,
+						sampleInformation:'/',
+						testConditions:'/',
+						testLocationImage:'',
+						testBasis:this.form.testBasisNumber,
+						judgBasis:this.form.judgBasis
 					}
-				).then(res => {
-					if(res.code == 200){
-						if(res.rows.length > 0){
-							paramForm.testLocationImage = res.rows[0].measuringPointImage
+					this.$httpMonitor.selectExcavation(
+						{
+							excavationMethod:this.form.excavationMethod,
+							monitorParam:this.form.testItems,
 						}
-						this.$httpMonitor.addGwzmRecord(paramForm).then(res => {
-							if(res.code == 200){
-								console.log('父表数据成功')
-							}else{
-								console.log('父表数据上传失败')
+					).then(res => {
+						if(res.code == 200){
+							if(res.rows.length > 0){
+								paramForm.testLocationImage = res.rows[0].measuringPointImage
 							}
-						})
-					}
+							this.$httpMonitor.addGwzmRecord(paramForm).then(res => {
+								if(res.code == 200){
+									console.log('父表数据成功')
+								}else{
+									console.log('父表数据上传失败')
+								}
+							})
+						}else{
+							
+						}
+					})
+				}).catch(err => {
+					this.clickSubmit = false
 				})
 			}
 		}
