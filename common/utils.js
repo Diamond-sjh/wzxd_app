@@ -1,7 +1,6 @@
 import store from '../store/index.js';
 let macValue;
-let timer = null
-let timer1 = null
+let timer1 = null;
 export default {
 	/**
 	 * 格式化时间 "yyyy-MM-dd HH:mm:ss"
@@ -76,19 +75,19 @@ export default {
 	// 监听低功耗蓝牙设备的特征值变化
 	onBLECharacteristicValueChange(callback) {
 		console.log('onBLECharacteristicValueChange')
+		let timer = null
 		uni.onBLECharacteristicValueChange((res) => {
 			macValue = macValue + this.ab2str(res.value);
-			console.log(macValue)
 			if(timer){
 				clearTimeout(timer) 
 				timer = null
-			}else{
-				timer = setTimeout(() => {
-					callback(macValue)
-					clearTimeout(timer)
-					timer = null
-				},1000)
 			}
+			timer = setTimeout(() => {
+				callback(macValue)
+				clearTimeout(timer)
+				timer = null
+			},1000)
+			
 		})
 		timer1 = setTimeout(() => {
 			this.write()

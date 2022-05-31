@@ -120,8 +120,6 @@
 					// 这里的 deviceId 需要已经通过 createBLEConnection 与对应设备建立链接
 					deviceId: deviceId,
 					success: (res) => {
-						for (var s = 0; s < res.services.length; s++) {
-						}
 						if(res.services && res.services.length > 0){
 							res.services.some(item => {
 								if((item.uuid.includes("FFE0") || item.uuid.includes("49535343")) && item.isPrimary){

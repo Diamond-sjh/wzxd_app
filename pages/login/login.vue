@@ -51,8 +51,8 @@
 					name:'监控量测'
 				}],
 				current:0,//登录环境的tab
-				username:'',//账号
-				password:'',//密码
+				username:'caiwenbin',//账号
+				password:'123456',//密码
 				// 机电定检登录传参
 				params:{
 					account:'',
