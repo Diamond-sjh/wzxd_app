@@ -195,15 +195,32 @@
 		},
 		computed:{
 			calculatZ(){
-				let arg1 = this.num.Z
-				let arg2 = this.num1.Z
-				var r1,r2,m,n;
+				let arg1 = this.num.X
+				let arg2 = this.num.Y
+				let arg3 = this.num.Z
+				let arg4 = this.num1.X
+				let arg5 = this.num1.Y
+				let arg6 = this.num1.Z
+				var r1,r2,r3,r4,r5,r6,a,b,c,m,n;
 				try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0}
 				try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0}
-				m=Math.pow(10,Math.max(r1,r2));
-				//动态控制精度长度
-				n=(r1>=r2)?r1:r2;
-				return ((arg2*m-arg1*m)/m).toFixed(1);
+				try{r3=arg3.toString().split(".")[1].length}catch(e){r3=0}
+				try{r4=arg4.toString().split(".")[1].length}catch(e){r4=0}
+				try{r5=arg5.toString().split(".")[1].length}catch(e){r5=0}
+				try{r6=arg6.toString().split(".")[1].length}catch(e){r6=0}
+				if(this.form.parameterName == '周边位移'){
+					m=Math.pow(10,Math.max(r1,r2,r3,r4,r5,r6));
+					a = ((arg4*m-arg1*m)/m)
+					b = ((arg5*m-arg2*m)/m)
+					c = ((arg6*m-arg3*m)/m)
+					return Math.sqrt(a*a+b*b+c*c).toFixed(1)
+				}else{
+					m=Math.pow(10,Math.max(r3,r6));
+					//动态控制精度长度
+					n=(r3>=r6)?r3:r6;
+					return ((arg6*m-arg3*m)/m).toFixed(1);
+				}
+				
 			}
 		},
 	    methods: {
@@ -270,7 +287,6 @@
 						}
 					})
 				} 
-				console.log(this.data)
 				this.isShowSelectList = true
 			},
 			// 打开列选择器

@@ -491,7 +491,8 @@
 						testConditions:'/',
 						testLocationImage:'',
 						testBasis:this.form.testBasisNumber,
-						judgBasis:this.form.judgBasis
+						judgBasis:this.form.judgBasis,
+						testDate:this.form.burialDate
 					}
 					this.$httpMonitor.selectExcavation(
 						{

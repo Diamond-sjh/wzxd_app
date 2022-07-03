@@ -86,7 +86,7 @@ const httpUploadRequest = (url, method, params) => {
 				'Authorization': token,
 				'X-Requested-With': 'XMLHttpRequest',
 				"Accept": "*/*",
-				"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+				"Content-Type": "multipart/form-data;charset=UTF-8"
 			},
 			dataType:'JSON',
 			success(res){
