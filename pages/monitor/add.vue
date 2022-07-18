@@ -244,7 +244,6 @@
 						X = Math.sin(arr[2])*Math.cos(arr[1])*arr[3]
 						Y = Math.sin(arr[2])*Math.sin(arr[1])*arr[3]
 						Z = Math.cos(arr[2])*arr[3]
-						console.log(X,Y,Z)
 						if(this.clickParam == 'num1'){
 							this.num1.X = this.accMul(X,1000).toFixed(3) 
 							this.num1.Y = this.accMul(Y,1000).toFixed(3)
@@ -435,6 +434,7 @@
 				this.clickParam = param
 				let a = uni.getStorageSync('storage_bluetooth') ? uni.getStorageSync('storage_bluetooth') : null
 				if(a.versions == '2.0'){
+					this.receiveDataArr = [];
 					bluetoothTool.sendData('0A255231512C31373031373A320D0A')
 					return
 				}
