@@ -105,6 +105,7 @@
 
 <script>
 	import configData from '@/common/configData'
+	import bluetoothTool from '@/common/BluetoothTool.js'
 	export default {
 	    data() {
 	        return {
@@ -155,7 +156,8 @@
 				},
 				clickParam:'num1',
 				lastTime:'',
-				firstTime:''
+				firstTime:'',
+				receiveDataArr:[]
 			}
 	    },
 		onReady() {
@@ -222,6 +224,41 @@
 				}
 				
 			}
+		},
+		mounted() {
+			//#ifdef APP-PLUS
+			// 蓝牙
+			bluetoothTool.init({
+				readDataCallback: (dataByteArr) => {
+					if(this.receiveDataArr.length >= 200) {
+						this.receiveDataArr = [];
+					}
+					this.receiveDataArr.push.apply(this.receiveDataArr, dataByteArr);
+					let str = ''
+					let arr = []
+					let X,Y,Z
+					str = this.receiveDataArr.join('')
+					str = str.split(':')[1]
+					arr = (str.replace(/[\r\n]/g,"")).split(',')
+					if(arr[0] == 0){
+						X = Math.sin(arr[2])*Math.cos(arr[1])*arr[3]
+						Y = Math.sin(arr[2])*Math.sin(arr[1])*arr[3]
+						Z = Math.cos(arr[2])*arr[3]
+						console.log(X,Y,Z)
+						if(this.clickParam == 'num1'){
+							this.num1.X = this.accMul(X,1000).toFixed(3) 
+							this.num1.Y = this.accMul(Y,1000).toFixed(3)
+							this.num1.Z = this.accMul(Z,1000).toFixed(3)
+						}else{
+							this.num.X = this.accMul(X,1000).toFixed(3)
+							this.num.Y = this.accMul(Y,1000).toFixed(3)
+							this.num.Z = this.accMul(Z,1000).toFixed(3)
+						}
+						this.computeTrans()
+					}
+				}
+			});
+			//#endif
 		},
 	    methods: {
 			// 选择日期
@@ -395,10 +432,12 @@
 			},
 			// 点击测量按钮
 			autoMeasure(param){
-				// this.clickParam="num1"
-				// this.receiveData('0,0,0,7.12035')
-				// return
 				this.clickParam = param
+				let a = uni.getStorageSync('storage_bluetooth') ? uni.getStorageSync('storage_bluetooth') : null
+				if(a.versions == '2.0'){
+					bluetoothTool.sendData('0A255231512C31373031373A320D0A')
+					return
+				}
 				this.$utils.notifyBLECharacteristicValueChange(this.receiveData)
 			},
 			// 接收测量数据

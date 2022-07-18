@@ -1,3 +1,8 @@
+/**
+ * html+ 串口蓝牙操作
+ * 2021.04.23 uni-app版本
+ * @auth boolTrue
+ */
 
 /**
  * 初始化参数
@@ -53,7 +58,9 @@ var blueToothTool = {
 		 * 接收到数据回调
 		 * @param {Array} dataByteArr
 		 */
-		readDataCallback: function(dataByteArr) {},
+		readDataCallback: function(dataByteArr) {
+			console.log(dataByteArr)
+		},
 		/**
 		 * 蓝牙连接中断回调
 		 * @param {Exception} e
@@ -95,12 +102,12 @@ var blueToothTool = {
 	 */
 	turnOnBluetooth() {
 		if(btAdapter == null) {
-			shortToast("没有蓝牙");
+			this.shortToast("没有蓝牙");
 			return;
 		}
 		if(!btAdapter.isEnabled()) {
 			if(activity == null) {
-				shortToast("未获取到activity");
+				this.shortToast("未获取到activity");
 				return;
 			} else {
 				let intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -109,7 +116,7 @@ var blueToothTool = {
 				return;
 			}
 		} else {
-			shortToast("蓝牙已经打开");
+			this.shortToast("蓝牙已经打开");
 		}
 	},
 	/**
@@ -129,13 +136,13 @@ var blueToothTool = {
 		}
 		this.state.bluetoothEnable = false;
 		this.cancelDiscovery();
-		closeBtSocket();
+		this.closeBtSocket();
 
 		if(btAdapter != null && btAdapter.isEnabled()) {
 			btAdapter.disable();
-			shortToast("蓝牙关闭成功");
+			this.shortToast("蓝牙关闭成功");
 		} else {
-			shortToast("蓝牙已经关闭");
+			this.shortToast("蓝牙已经关闭");
 		}
 	},
 	/**
@@ -150,7 +157,7 @@ var blueToothTool = {
 		if(btAdapter != null && btAdapter.isEnabled()) {
 			pairedDevicesAndroid = btAdapter.getBondedDevices();
 		} else {
-			shortToast("蓝牙未开启");
+			this.shortToast("蓝牙未开启");
 		}
 
 		if(!pairedDevicesAndroid) {
@@ -172,6 +179,7 @@ var blueToothTool = {
 	 * 发现设备
 	 */
 	discoveryNewDevice() {
+		let that = this
 		if(btFindReceiver != null) {
 			try {
 				activity.unregisterReceiver(btFindReceiver);
@@ -181,11 +189,17 @@ var blueToothTool = {
 			btFindReceiver = null;
 			this.cancelDiscovery();
 		}
+		// 获取安卓的一些系统信息
 		let Build = plus.android.importClass("android.os.Build");
-		
+		console.log(Build.VERSION.SDK_INT)
 		 //6.0以后的如果需要利用本机查找周围的wifi和蓝牙设备, 申请权限
         if(Build.VERSION.SDK_INT >= 6.0){
-			
+			plus.android.requestPermissions(
+			['android.permission.BLUETOOTH',
+			'android.permission.BLUETOOTH_ADMIN',
+			'android.permission.WRITE_EXTERNAL_STORAGE',
+			'android.permission.ACCESS_COARSE_LOCATION',
+			'android.permission.ACCESS_FINE_LOCATION'])
         }
 		let options = this.options
 		btFindReceiver = plus.android.implements("io.dcloud.android.content.BroadcastReceiver", {
@@ -203,8 +217,8 @@ var blueToothTool = {
 					options.discoveryDeviceCallback && options.discoveryDeviceCallback(newDevice);
 				}
 				if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED == action) { // 搜索完成
-					cancelDiscovery();
 					options.discoveryFinishedCallback && options.discoveryFinishedCallback();
+					that.cancelDiscovery();
 				}
 			}
 		});
@@ -274,22 +288,28 @@ var blueToothTool = {
 	 * @return {Boolean}
 	 */
 	connDevice(address, callback) {
+		// 字节输入流
 		let InputStream = plus.android.importClass("java.io.InputStream");
+		// 字节输出流
 		let OutputStream = plus.android.importClass("java.io.OutputStream");
+		// 建立RFCOMM通道(SPP协议),蓝牙Socket接口(类似TCP Socket),通过InputStream和OutputStream与其他设备传输数据
 		let BluetoothSocket = plus.android.importClass("android.bluetooth.BluetoothSocket");
-
+		// 取消发现蓝牙
 		this.cancelDiscovery();
+		
 		if(btSocket != null) {
 			this.closeBtSocket();
 		}
 		this.state.readThreadState = false;
 
 		try {
+			// 根据蓝牙地址获取远程蓝牙设备
 			let device = invoke(btAdapter, "getRemoteDevice", address);
+			// 根据UUID创建并返回一个BluetoothSocket,代表一个蓝牙socket的接口（和TCP Socket类似）
 			btSocket = invoke(device, "createRfcommSocketToServiceRecord", MY_UUID);
 		} catch(e) {
 			console.error(e);
-			shortToast("连接失败，获取Socket失败！");
+			this.shortToast("连接失败，获取Socket失败！");
 			callback(false)
 			return false;
 		}
@@ -317,12 +337,13 @@ var blueToothTool = {
 	 * @param {Object} address
 	 * @return {Boolean}
 	 */
-	disConnDevice() {
+	disConnDevice(callback) {
 		if(btSocket != null) {
 			this.closeBtSocket();
 		}
 		this.state.readThreadState = false;
-		this.shortToast("断开连接成功");
+		// this.shortToast("断开连接成功");
+		if(callback)callback()
 	},
 	/**
 	 * 断开连接设备
@@ -366,7 +387,9 @@ var blueToothTool = {
 			return false;
 		}
 		try {
+			// 获取输入流
 			btInStream = invoke(btSocket, "getInputStream");
+			// 获取输出流
 			btOutStream = invoke(btSocket, "getOutputStream");
 		} catch(e) {
 			console.error(e);
@@ -397,10 +420,12 @@ var blueToothTool = {
 						this.options.connExceptionCallback && this.options.connExceptionCallback(e);
 					}
 				}
-				let dataArr = [];
+				let tmp = ''
+				let dataArr = []
 				while(invoke(btInStream, "available") !== 0) {
 					let data = invoke(btInStream, "read");
-					dataArr.push(data);
+					tmp = String.fromCharCode(data)
+					dataArr.push(tmp);
 					let ct = new Date().getTime();
 					if(ct - t > 20) {
 						break;
@@ -418,29 +443,30 @@ var blueToothTool = {
 	 * @return {Boolean}
 	 */
 	sendData(dataStr) {
+		console.log(dataStr)
 		if(!btOutStream) {
 			this.shortToast("创建输出流失败！");
 			return;
 		}
-		let bytes = invoke(dataStr, 'getBytes', 'gbk');
+		let buffer = this.str2ab(dataStr)
+		console.log(buffer)
 		try {
-			btOutStream.write(bytes);
+			btOutStream.write(buffer);
 		} catch(e) {
 			return false;
 		}
 		return true;
 	},
-	sendByteData(byteData) {
-		if(!btOutStream) {
-			this.shortToast("创建输出流失败！");
-			return;
+	// 字符串转为ArrayBuffer对象，参数为字符串
+	str2ab(str) {
+		let len = str.length/2
+		let bytes =  []
+		for (var i=0; i<len; i++) {
+			// 设置占8-bit的字节数组  一个字节  16进制数据
+			bytes.push(parseInt(str.substring(i*2, i*2+2),16)) 
 		}
-		try {
-			btOutStream.write(byteData);
-		} catch(e) {
-			return false;
-		}
-		return true;
+		console.log(bytes)
+		return bytes;
 	}
 }
 

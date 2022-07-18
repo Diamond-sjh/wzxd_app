@@ -31,12 +31,12 @@
 								<u-col span="12">
 									<view class="apply-text"><span>观测值：</span>{{val.calculatZ}}</view>
 								</u-col>
-								<u-col span="12">
+								<!-- <u-col span="12">
 									<view class="apply-text"><span>本次变形：</span>{{val.lastTimeChange}}</view>
 								</u-col>
 								<u-col span="12">
 									<view class="apply-text"><span>累计变形：</span>{{val.firstTimeChange}}</view>
-								</u-col>
+								</u-col> -->
 							</u-row>
 							<hr>
 						</view>
@@ -356,9 +356,18 @@
 									success:(res1)=>{
 										console.log(res1)
 										if(res1.devices.length == 0){
-											this.blueName = ''
-											this.blueDeviceId = ''
-											this.isConnect = false
+											let value = uni.getStorageSync('storage_bluetooth')
+											console.log(value)
+											if(value.deviceId && value.bluetoothName){
+												this.blueName = value.bluetoothName
+												this.blueDeviceId = value.deviceId
+												this.isConnect = true
+											}else{
+												this.blueName = ''
+												this.blueDeviceId = ''
+												this.isConnect = false
+											}
+											
 										}else{
 											this.blueName = res1.devices[0].name
 											this.blueDeviceId = res1.devices[0].deviceId

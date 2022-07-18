@@ -16,6 +16,7 @@
 </template>
 
 <script>
+	import bluetoothTool from '@/common/BluetoothTool.js'
 	var that
 	export default{
 		data() {
@@ -91,12 +92,16 @@
 						this.stop(this.connectBluetooth.deviceId,item)
 					}
 				}else{
+					uni.showLoading({
+						title: '正在连接...'
+					})
 					createBLEConnection(item.deviceId)
 				}
 				function createBLEConnection(deviceId){
 					uni.createBLEConnection({
 						// 这里的 deviceId 需要已经通过 createBLEConnection 与对应设备建立链接
 						deviceId: deviceId, //设备id
+						timeout: 3000,
 						success: (res) => {
 							uni.onBLEConnectionStateChange(function (res) {
 							  // 该方法回调中可以用于处理连接意外断开等异常情况
@@ -104,18 +109,40 @@
 							})
 							//获取蓝牙服务
 							setTimeout(()=>{
-								that.getBLEDeviceServices(that.deviceId);
-								item.connect = true
+								that.getBLEDeviceServices(that.deviceId,item);
 							},1500)
 						},
 						fail: (res) => {
 							console.log(res)
+							uni.hideLoading()
+							// 经典蓝牙流程
+							bluetoothTool.connDevice(deviceId,(result)=>{
+								if(result) {
+									uni.setStorage({
+										key: 'storage_bluetooth',
+										data: {
+											versions:'2.0',
+											deviceId: that.deviceId,
+											bluetoothName: that.bluetoothName,
+											serviceId: '',
+											characteristicId: '',
+											notifyUUid:'',
+											writeUUid:''
+										},
+										success: () => {
+											that.backFunction()
+										}
+									})
+									uni.hideLoading()
+									item.connect = true
+								}
+							});
 						},
 					})
 				}
 			},
 			// 获取服务列表
-			getBLEDeviceServices(deviceId) {
+			getBLEDeviceServices(deviceId,itemDevive) {
 				uni.getBLEDeviceServices({
 					// 这里的 deviceId 需要已经通过 createBLEConnection 与对应设备建立链接
 					deviceId: deviceId,
@@ -126,6 +153,8 @@
 									console.log(item.uuid)
 									this.serviceId = item.uuid
 									this.getBLEDeviceCharacteristics()
+									itemDevive.connect = true
+									uni.hideLoading()
 									return true
 								}
 							})
@@ -133,6 +162,28 @@
 					},
 					fail: function(res) {
 						console.log(res)
+						// 经典蓝牙流程
+						bluetoothTool.connDevice(deviceId,(result)=>{
+							if(result) {
+								uni.setStorage({
+									key: 'storage_bluetooth',
+									data: {
+										versions:'2.0',
+										deviceId: that.deviceId,
+										bluetoothName: that.bluetoothName,
+										serviceId: '',
+										characteristicId: '',
+										notifyUUid:'',
+										writeUUid:''
+									},
+									success: () => {
+										that.backFunction()
+									}
+								})
+								uni.hideLoading()
+								itemDevive.connect = true
+							}
+						});
 					},
 				})
 			},
@@ -162,6 +213,7 @@
 							uni.setStorage({
 								key: 'storage_bluetooth',
 								data: {
+									versions:'4.0+',
 									deviceId: this.deviceId,
 									bluetoothName: this.bluetoothName,
 									serviceId: this.serviceId,
@@ -173,17 +225,6 @@
 									that.backFunction()
 								}
 							})
-							// this.setBluetoothInfo({
-							// 	data:{
-							// 		deviceId: this.deviceId,
-							// 		bluetoothName: this.bluetoothName,
-							// 		serviceId: this.serviceId,
-							// 		characteristicId: this.characteristics,
-							// 		notifyUUid:this.notifyUUid,
-							// 		writeUUid:this.writeUUid
-							// 	},
-							// 	callback:this.backFunction
-							// })
 						}
 					},
 					fail: function(res) {
@@ -194,7 +235,6 @@
 			// 蓝牙数据保存成功的回调
 			backFunction(){
 				let a = uni.getStorageSync('storage_bluetooth') ? uni.getStorageSync('storage_bluetooth') : null
-				console.log(a)
 				const eventChannel = this.getOpenerEventChannel();
 				eventChannel.emit('bluetoothToIndex');
 				this.$refs.uToast.show({
@@ -206,41 +246,60 @@
 			},
 			// 断开连接
 			stop(deviceId,connectDevice){
-				uni.closeBLEConnection({
-				  deviceId:deviceId,
-				  success(res) {
-					const eventChannel = that.getOpenerEventChannel();
-					eventChannel.emit('bluetoothToIndex','stop');
-				    that.$refs.uToast.show({
-				    	title: '断开连接成功',
-				    	type: 'success',
-				    	duration: 800
-				    })
-					uni.setStorage({
-						key: 'storage_bluetooth',
-						data: {
-							deviceId: '',
-							bluetoothName: '',
-							serviceId: '',
-							characteristicId: '',
-							notifyUUid:'',
-							writeUUid:''
-						}
+				let a = uni.getStorageSync('storage_bluetooth') ? uni.getStorageSync('storage_bluetooth') : null
+				if(a.versions == '2.0'){
+					bluetoothTool.disConnDevice(() => {
+						const eventChannel = that.getOpenerEventChannel();
+						eventChannel.emit('bluetoothToIndex','stop');
+						that.$refs.uToast.show({
+							title: '断开连接成功',
+							type: 'success',
+							duration: 800
+						})
+						uni.setStorage({
+							key: 'storage_bluetooth',
+							data: {
+								versions: '',
+								deviceId: '',
+								bluetoothName: '',
+								serviceId: '',
+								characteristicId: '',
+								notifyUUid:'',
+								writeUUid:''
+							}
+						})
+						connectDevice.connect = false
+						that.connectBluetooth = {}
 					})
-					// that.setBluetoothInfo({
-					// 	data:{
-					// 		deviceId: '',
-					// 		bluetoothName: '',
-					// 		serviceId: '',
-					// 		characteristicId: '',
-					// 		notifyUUid:'',
-					// 		writeUUid:''
-					// 	},
-					// })
-					connectDevice.connect = false
-					that.connectBluetooth = {}
-				  }
-				})
+				}else{
+					uni.closeBLEConnection({
+					  deviceId:deviceId,
+					  success(res) {
+						const eventChannel = that.getOpenerEventChannel();
+						eventChannel.emit('bluetoothToIndex','stop');
+						that.$refs.uToast.show({
+							title: '断开连接成功',
+							type: 'success',
+							duration: 800
+						})
+						uni.setStorage({
+							key: 'storage_bluetooth',
+							data: {
+								versions: '',
+								deviceId: '',
+								bluetoothName: '',
+								serviceId: '',
+								characteristicId: '',
+								notifyUUid:'',
+								writeUUid:''
+							}
+						})
+						connectDevice.connect = false
+						that.connectBluetooth = {}
+					  }
+					})
+					
+				}
 			}
 		}
 	}
