@@ -119,6 +119,7 @@
 					viewpoint:'',//基准点（后视点）坐标
 					realValue:'',//全站仪实时测量坐标
 					calculatZ:'',//ΔZ的值
+					outShapeRate:'',//本次变形速率
 				},
 				// 数据处理
 				monitorList:[],//全站仪数据--全量数据
@@ -239,8 +240,8 @@
 					let X,Y,Z
 					str = this.receiveDataArr.join('')
 					str = str.split(':')[1]
-					arr = (str.replace(/[\r\n]/g,"")).split(',')
-					if(arr[0] == 0){
+					arr = str?(str.replace(/[\r\n]/g,"")).split(','):[]
+					if(arr.length > 4 && arr[0] == 0){
 						X = Math.sin(arr[2])*Math.cos(arr[1])*arr[3]
 						Y = Math.sin(arr[2])*Math.sin(arr[1])*arr[3]
 						Z = Math.cos(arr[2])*arr[3]
@@ -477,6 +478,9 @@
 							if(arr.length > 0 && currentIndex < arr.length-1){
 								let arg1 = this.calculatZ//本次观测值
 								let arg2 = arr[currentIndex + 1].calculatZ//上一条数据
+								let previousTestDate = arr[currentIndex + 1].testDate
+								let currentTestDate = this.form.testDate
+								let dateDifference = Math.ceil(Math.abs(new Date(currentTestDate) - new Date(previousTestDate)) / 86400000)
 								let arg3 = arr[arr.length - 1].calculatZ//第一条数据
 								var r1,r2,m,n;
 								try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0}
@@ -485,7 +489,8 @@
 								//动态控制精度长度
 								n=(r1>=r2)?r1:r2;
 								this.lastTime = ((arg2*m-arg1*m)/m).toFixed(1);
-								this.firstTime = ((arg3*m-arg1*m)/m).toFixed(1)
+								this.firstTime = ((arg3*m-arg1*m)/m).toFixed(1);
+								this.form.outShapeRate = this.lastTime&&this.lastTime != 'NaN'?( this.lastTime / dateDifference).toFixed(1):0
 							}else{
 								this.lastTime = 0
 								this.firstTime = 0
@@ -506,12 +511,21 @@
 						this.form.lastTimeChange = this.lastTime
 						this.$httpMonitor.add(this.form).then(res => {
 							if(res.code == 200){
-								this.$refs.uToast.show({
-									title: '信息上传成功',
-									type: 'success',
-									back: false,
-									duration: 500
-								})
+								if(res.warn == 1){
+									this.$refs.uToast.show({
+										title: '上传成功,数据异常',
+										type: 'warning',
+										back: false,
+										duration: 2000
+									})
+								}else{
+									this.$refs.uToast.show({
+										title: '信息上传成功',
+										type: 'success',
+										back: false,
+										duration: 500
+									})
+								}
 								uni.getStorage({
 									key: 'allMonitor_key',
 									success: (res) => {

@@ -244,7 +244,8 @@ page {
 	}
 	.scroll-list {
 		// height: calc(100vh - var(--window-top) - var(--window-bottom) - 200rpx); // 105rpx 为 .search 的高度
-		height: calc(100vh - var(--window-top) - var(--window-bottom) - var(--status-bar-height) - 139px);
+		// height: calc(100vh - var(--window-top) - var(--window-bottom) - var(--status-bar-height) - 139px);
+		height: calc(100vh - var(--window-bottom) - var(--window-top) - var(--status-bar-height) - 180rpx);
 		width: 100%;
 		.loadmore {
 			padding: 30rpx;

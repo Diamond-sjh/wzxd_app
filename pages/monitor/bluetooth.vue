@@ -114,7 +114,6 @@
 						},
 						fail: (res) => {
 							console.log(res)
-							uni.hideLoading()
 							// 经典蓝牙流程
 							bluetoothTool.connDevice(deviceId,(result)=>{
 								if(result) {
