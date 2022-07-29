@@ -51,6 +51,7 @@
 			<view class="popupBox">
 				<view class="title">操作</view>
 				<view class="measureBtn" @click="addInformation('measure')">测量</view>
+				<view class="measureBtn" @click="jumpToPage('chart')">详情</view>
 				<view class="cancleBtn" @click="showPopup = false">取消</view>
 			</view>
 		</u-popup>
@@ -384,6 +385,19 @@
 						success: (res) => {
 						    // 通过eventChannel向被打开页面传送数据
 							res.eventChannel.emit('toBluetooth', {deviceId:this.blueDeviceId,blueName:this.blueName})
+						},
+						fail:(res) => {
+							console.log(res)
+						}
+					})
+				}
+				if(val =='chart'){
+					uni.navigateTo({
+						url:'/pages/monitor/chart',
+						success: (res) => {
+							this.showPopup = false
+						    // 通过eventChannel向被打开页面传送数据
+							res.eventChannel.emit('toChart', this.longPressItem)
 						},
 						fail:(res) => {
 							console.log(res)

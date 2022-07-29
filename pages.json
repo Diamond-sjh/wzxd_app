@@ -201,6 +201,13 @@
 			}
 		},
 		{
+			"path": "pages/monitor/chart",
+			"style": {
+				"navigationStyle": "custom",// 隐藏系统导航栏
+				"navigationBarTitleText": "测点详情"
+			}
+		},
+		{
 			"path": "pages/monitor/updateMsgList/index",
 			"style": {
 				"navigationBarTitleText": "未上传数据列表",

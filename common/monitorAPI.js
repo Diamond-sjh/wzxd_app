@@ -74,4 +74,8 @@ export default {
 	selectProjectPlan(params){
 		return request.httpTokenRequest("/project/statistics/selectProjectPlan", "GET", params,url)
 	},
+	// 查询预警信息
+	selectWarnList(params){
+		return request.httpTokenRequest("/project/warn/noPageList", "GET", params,url)
+	},
 }

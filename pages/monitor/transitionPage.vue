@@ -58,7 +58,7 @@
 		},
 	    methods: {
 			...mapMutations(['DELET_INFO']),
-			// 查询规范依据
+			// 查询项目计划
 			getParams(){
 				this.$httpMonitor.selectProjectPlan().then(res => {
 					if(res.code == 200){
@@ -145,7 +145,7 @@
 					}
 				})
 				// 查询全量的全站仪数据
-				this.$httpMonitor.queryAllData().then(res => {
+				this.$httpMonitor.queryAllData({requestPurpose:'回归曲线'}).then(res => {
 					if(res.code == 200){
 						let dataArr = res.data
 						uni.setStorage({
